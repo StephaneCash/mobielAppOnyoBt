@@ -1,5 +1,5 @@
-import { View, Text, Image, FlatList } from 'react-native'
-import React, { useEffect } from 'react'
+import { View, Image, FlatList, ActivityIndicator } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import Card from '../../components/Card'
 import dashboardStyles from '../Home/style'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux"
 const Videos = () => {
 
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -17,9 +18,11 @@ const Videos = () => {
   });
 
   const getDataAll = () => {
+    setLoading(true)
     fetch(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${"Kery James"}songs&type=video&key=AIzaSyD31fgEYyb7M2HmnrPS_CZMwjjwBa25ylA`)
       .then(res => res.json())
       .then(data => {
+        setLoading(false)
         dispatch({
           type: "add",
           payload: data.items
@@ -61,19 +64,28 @@ const Videos = () => {
           <Image source={require("../../images/cash.jpeg")} style={dashboardStyles.userImg} />
         </View>
       </View>
-      <FlatList
-        data={data}
-        renderItem={({ item }) => {
-          return <Card
-            videoId={item.id.videoId}
-            title={item.snippet.title}
-            channel={item.snippet.channelTitle}
-            publishTime={item.snippet.publishTime}
-            description={item.snippet.description}
-          />
-        }}
-        keyExtractor={item => item.id.videoId}
-      />
+      {
+        loading ? <ActivityIndicator
+          style={{
+            marginTop: 10
+          }}
+          size="large"
+          color="red"
+        /> : <FlatList
+          data={data}
+          renderItem={({ item }) => {
+            return <Card
+              videoId={item.id.videoId}
+              title={item.snippet.title}
+              channel={item.snippet.channelTitle}
+              publishTime={item.snippet.publishTime}
+              description={item.snippet.description}
+            />
+          }}
+          keyExtractor={item => item.id.videoId}
+        />
+      }
+
     </View>
   )
 }

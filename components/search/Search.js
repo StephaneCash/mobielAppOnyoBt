@@ -47,7 +47,7 @@ const Search = () => {
             >
                 <MaterialCommunityIcons
                     name="arrow-left"
-                    color={"#333"} size={35}
+                    color={"#333"} size={30}
                     onPress={() => navigation.navigate('home')}
                 />
                 <TextInput
@@ -63,7 +63,7 @@ const Search = () => {
                 />
                 <MaterialCommunityIcons
                     name="send"
-                    color={"#333"} size={35}
+                    color={"#333"} size={30}
                     onPress={() => getData()}
                 />
             </View>

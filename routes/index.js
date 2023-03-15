@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import TabsBottom from '../pages/tabs';
 import Search from '../components/search/Search';
 import VideoPlayer from '../pages/videos/VideoPlayer';
+import Login from '../pages/auth/Login';
 
 const Stack = createNativeStackNavigator();
 
@@ -12,9 +13,10 @@ const Routes = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName='home'
+                initialRouteName='login'
                 screenOptions={{ headerShown: false }}
             >
+                <Stack.Screen name="login" component={Login} />
                 <Stack.Screen name="home" component={TabsBottom} />
                 <Stack.Screen name="search" component={Search} />
                 <Stack.Screen name="videoPlayer" component={VideoPlayer} />
