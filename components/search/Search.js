@@ -42,7 +42,8 @@ const Search = () => {
                     justifyContent: "space-around",
                     elevation: 5,
                     backgroundColor: '#fff',
-                    alignItems: "center"
+                    alignItems: "center",
+                    marginBottom: 1
                 }}
             >
                 <MaterialCommunityIcons
@@ -55,7 +56,8 @@ const Search = () => {
                         width: "70%",
                         backgroundColor: "#ddd",
                         paddingLeft: 15,
-                        borderRadius: 56
+                        borderRadius: 56,
+                        height: 40
                     }}
                     value={value}
                     placeholder="Rechercher..."

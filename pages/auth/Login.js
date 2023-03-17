@@ -1,27 +1,37 @@
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native'
-import React, { useState } from 'react';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { View, Text, TextInput, TouchableOpacity, Alert, Image } from 'react-native'
+import React, { useContext, useState } from 'react';
 import { useNavigation } from "@react-navigation/native";
+import { baseUrl } from '../../bases/basesUrl';
+import axios from 'axios';
+import dashboardStyles from '../Home/style';
+import { useDispatch, useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Spinner from 'react-native-loading-spinner-overlay/lib';
 
 const Login = () => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigation();
 
     const handleAuth = () => {
-        if (!email) {
-            Alert.alert("Veuillez entrer votre adresse email svp.")
-        } else if (!password) {
-            Alert.alert("Veuillez entrer votre mot de passe svp.")
-        } else {
-            if (email === "kikonistephane@gmail.com" && password === "cash") {
-                navigate.navigate('home')
-            } else {
-                Alert.alert("Votre mot de passe ou adresse email est incorrect")
-            }
-        }
+        setLoading(true);
+        axios.post(`${baseUrl}/users/login`, {
+            email: email,
+            password: password
+        })
+            .then(res => {
+                let userInfo = res.data;
+                setLoading(false);
+                AsyncStorage.setItem("userInfo", JSON.stringify(userInfo));
+                navigate.navigate('home');
+            })
+            .catch(err => {
+                console.log(err)
+                setLoading(false);
+            })
     };
 
     return (
@@ -33,29 +43,25 @@ const Login = () => {
                 alignItems: "center"
             }}
         >
+            <Spinner visible={loading} color={"red"} />
             <Text
                 style={{
                     fontSize: 20
                 }}
             >
-                Bienvue sur OnyoBt
+                CONNEXION
             </Text>
 
-            <MaterialCommunityIcons
-                name="account-circle"
-                color={"#333"} size={50}
-                style={{
-                    marginTop: 22,
-                    marginBottom: 22
-                }}
-            />
+            <View style={{ marginTop: 20, marginBottom: 20 }}>
+                <Image source={require("../../images/logo.jpeg")} style={dashboardStyles.userImg} />
+            </View>
 
             <TextInput
                 style={{
                     width: "70%",
                     backgroundColor: "#ddd",
                     paddingLeft: 15,
-                    borderRadius: 56
+                    borderRadius: 10,
                 }}
                 placeholder="Email"
                 onChangeText={(text) => setEmail(text)}
@@ -66,7 +72,7 @@ const Login = () => {
                     width: "70%",
                     backgroundColor: "#ddd",
                     paddingLeft: 15,
-                    borderRadius: 56,
+                    borderRadius: 10,
                     marginTop: 20,
                     marginBottom: 20
                 }}
@@ -77,59 +83,24 @@ const Login = () => {
             <TouchableOpacity
                 onPress={() => handleAuth()}
                 style={{
-                    backgroundColor: 'red', padding: 15, borderRadius: 4, width: "70%", flexDirection: "column",
+                    backgroundColor: email && password ? "#e80300" : "silver", padding: 15, borderRadius: 10, width: "70%", flexDirection: "column",
                     justifyContent: "center", alignItems: "center"
                 }}
+                disabled={email && password ? false : true}
             >
                 <Text style={{ color: '#fff', fontSize: 17 }}>Connexion</Text>
             </TouchableOpacity>
-            <Text style={{ color: '#000', fontSize: 17, marginTop: 30 }}>Ou connectez-vous avec</Text>
-            <View
-                style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: 10
-                }}
-            >
-                <MaterialCommunityIcons
-                    name="google"
-                    color={"red"} size={30}
-                    style={{
-                        marginTop: 22,
-                        marginBottom: 22,
-                    }}
-                />
-                <MaterialCommunityIcons
-                    name="facebook"
-                    color={"#0e6bf7"} size={30}
-                    style={{
-                        marginTop: 22,
-                        marginBottom: 22
-                    }}
-                />
-                <MaterialCommunityIcons
-                    name="linkedin"
-                    color={"#0e6bf7"} size={30}
-                    style={{
-                        marginTop: 22,
-                        marginBottom: 22
-                    }}
-                />
+            <View style={{ marginTop: 10, flexDirection: "row", gap: 5 }}>
+                <Text style={{ color: '#0073bd', fontSize: 17, marginTop: 10 }}>Pas de compte ? </Text>
+                <Text
+                    onPress={() => navigate.navigate('signup')}
+                    style={{ color: '#0073bd', fontSize: 17, marginTop: 10, fontWeight: 900 }}
+                >
+                    créer un ici
+                </Text>
             </View>
 
-            <View
-                style={{
-                    borderTopWidth: 1
-                }}
-            >
-                <Text
-                    style={{
-                        marginTop: 10
-                    }}
-                >App Développée par l'équipe ONYO-BT</Text>
-            </View>
-        </View>
+        </View >
     )
 }
 
