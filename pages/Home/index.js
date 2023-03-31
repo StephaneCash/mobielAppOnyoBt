@@ -222,33 +222,34 @@ const Home = () => {
             <RETRAIT width={60} height={60} />
           </View>
         </View>
-
-        <View style={{
-          flexDirection: 'column',
-          backgroundColor: "#fff",
-          elevation: 2,
-          borderRadius: 5,
-          width: 170,
-          padding: 15,
-        }}>
-          <Text
-            style={{
-              fontSize: 16,
-              marginBottom: 6,
-              textAlign: "center",
-              fontWeight: "600"
-            }}
-          >RECHARGER</Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            <RECHARGE width={60} height={60} />
+        <TouchableOpacity>
+          <View style={{
+            flexDirection: 'column',
+            backgroundColor: "#fff",
+            elevation: 2,
+            borderRadius: 5,
+            width: 170,
+            padding: 15,
+          }}>
+            <Text
+              style={{
+                fontSize: 16,
+                marginBottom: 6,
+                textAlign: "center",
+                fontWeight: "600"
+              }}
+            >RECHARGER</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              <RECHARGE width={60} height={60} />
+            </View>
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
 
       <View style={dashboardStyles.spaceBettwen}>
