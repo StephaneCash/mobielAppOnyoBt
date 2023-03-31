@@ -13,14 +13,15 @@ const Routes = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName='login'
+                initialRouteName='home'
                 screenOptions={{ headerShown: false }}
             >
-                <Stack.Screen name="login" component={Login} />
-                <Stack.Screen name="signup" component={SignUp} />
                 <Stack.Screen name="home" component={TabsBottom} />
                 <Stack.Screen name="search" component={Search} />
                 <Stack.Screen name="videoPlayer" component={VideoPlayer} />
+                <Stack.Screen name="login" component={Login} />
+                <Stack.Screen name="signup" component={SignUp} />
+
             </Stack.Navigator>
         </NavigationContainer >
     )

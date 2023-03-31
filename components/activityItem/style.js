@@ -11,7 +11,7 @@ const Styles = StyleSheet.create({
         elevation: 2,
         borderRadius: 5,
         marginBottom: 5,
-        width: 200
+        width: 150
     },
     mainText: {
         marginTop: 10,

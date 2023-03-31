@@ -1,5 +1,5 @@
 import { View, Text, TextInput, TouchableOpacity, Alert, Image } from 'react-native'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigation } from "@react-navigation/native";
 import { baseUrl } from '../../bases/basesUrl';
 import axios from 'axios';
@@ -12,6 +12,7 @@ const SignUp = () => {
   const [pseudo, setPseudo] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [msgErr, setMsgErr] = useState('');
 
   const [loading, setLoading] = useState(false);
 
@@ -36,9 +37,14 @@ const SignUp = () => {
       })
       .catch(err => {
         console.log(err);
+        setMsgErr(err && err.response && err.response.data && err.response.data.message)
         setLoading(false);
       })
   };
+
+  useEffect (() => {
+    setMsgErr('');
+  }, []);
 
   return (
     <View
@@ -114,6 +120,12 @@ const SignUp = () => {
           style={{ color: '#0073bd', fontSize: 17, marginTop: 10, fontWeight: 900 }}
         >
           Connectez-vous ici
+        </Text>
+      </View>
+
+      <View style={{ marginTop: 10, flexDirection: "row", justifyContent: "center" }}>
+        <Text style={{ color: "red", fontSize: 17 }}>
+          {msgErr ? msgErr : ""}
         </Text>
       </View>
 

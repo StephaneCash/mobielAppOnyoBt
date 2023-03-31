@@ -1,5 +1,5 @@
 import { View, Text, TextInput, TouchableOpacity, Alert, Image } from 'react-native'
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigation } from "@react-navigation/native";
 import { baseUrl } from '../../bases/basesUrl';
 import axios from 'axios';
@@ -12,6 +12,7 @@ const Login = () => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [msgErr, setMsgErr] = useState("");
 
     const [loading, setLoading] = useState(false);
     const navigate = useNavigation();
@@ -25,14 +26,19 @@ const Login = () => {
             .then(res => {
                 let userInfo = res.data;
                 setLoading(false);
-                AsyncStorage.setItem("userInfo", JSON.stringify(userInfo));
+                AsyncStorage.setItem("userInfo", JSON.stringify(userInfo.pseudo));
                 navigate.navigate('home');
             })
             .catch(err => {
-                console.log(err)
+                console.log(err, " ERREURS____________");
+                setMsgErr(err && err.response && err.response.data && err.response.data.message);
                 setLoading(false);
             })
     };
+
+    useEffect(() => {
+        setMsgErr('');
+    }, []);
 
     return (
         <View
@@ -97,6 +103,12 @@ const Login = () => {
                     style={{ color: '#0073bd', fontSize: 17, marginTop: 10, fontWeight: 900 }}
                 >
                     créer un ici
+                </Text>
+            </View>
+
+            <View style={{ marginTop: 10, flexDirection: "row", justifyContent: "center" }}>
+                <Text style={{ color: "red", fontSize: 17 }}>
+                    {msgErr ? msgErr : ""}
                 </Text>
             </View>
 
