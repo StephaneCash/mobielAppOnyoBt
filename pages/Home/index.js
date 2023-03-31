@@ -208,9 +208,10 @@ const Home = () => {
             style={{
               fontSize: 16,
               marginBottom: 6,
-              textAlign: "center"
+              textAlign: "center",
+              fontWeight: "600"
             }}
-          >Retrait OBT</Text>
+          >RETIRER</Text>
           <View
             style={{
               flexDirection: "row",
@@ -234,9 +235,10 @@ const Home = () => {
             style={{
               fontSize: 16,
               marginBottom: 6,
-              textAlign: "center"
+              textAlign: "center",
+              fontWeight: "600"
             }}
-          >Pourcentage</Text>
+          >RECHARGER</Text>
           <View
             style={{
               flexDirection: "row",
