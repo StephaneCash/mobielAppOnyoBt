@@ -8,16 +8,19 @@ const dashboardStyles = StyleSheet.create({
         alignItems: "center",
         paddingHorizontal: PADDING.horizontal,
         paddingVertical: PADDING.vertical,
-        backgroundColor: "#fff"
+        backgroundColor: "#006abd",
+        elevation: 2,
+        shadowColor: '#000'
     },
     userImg: {
-        width: 50,
-        height: 50,
+        width: 30,
+        height: 30,
         borderRadius: 50 / 2
     },
     userName: {
         fontSize: 16,
-        fontWeight: "900"
+        fontWeight: "900",
+        color: '#fff'
     },
     scrollabelList: {
         paddingHorizontal: PADDING.horizontal,

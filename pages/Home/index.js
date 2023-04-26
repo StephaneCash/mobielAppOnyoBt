@@ -1,37 +1,47 @@
-import { View, Text, ScrollView, Image, FlatList, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, Image, FlatList, TouchableOpacity, Alert } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react';
 import dashboardStyles from './style.js';
-import { FakaData } from '../../fakeData/fakeActivitty.js';
-import ActivityItem from '../../components/activityItem/index.js';
-import { FakeVideos } from '../../fakeData/fakeVideoComment.js';
-import VideoPlus from '../../components/videosPlusComments/index.js';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import SVG_TRANSACTION from "../../images/svg/undraw_credit_card_re_blml.svg";
 import SVG_MONEY from "../../images/svg/undraw_wallet_re_cx9u.svg";
 import SOLDE from "../../images/svg/solde.svg";
-import RETRAIT from "../../images/svg/retrait.svg";
 import POURCENTAGE from "../../images/svg/pourcentage.svg";
-import RECHARGE from "../../images/svg/recharge.svg";
+import { ContextApp } from '../../context/AuthContext.js';
+import { useNavigation } from "@react-navigation/native";
+import Icon from 'react-native-vector-icons/EvilIcons.js';
 
 const Home = () => {
 
-  const [nameUser, setNameUser] = useState("Stéphane");
+  const { fullDataUserConnected, compteUser } = useContext(ContextApp);
+  const navigation = useNavigation();
+
+  const handleNavigate = () => {
+    navigation.navigate('settings/profil')
+  }
 
   return (
     <ScrollView>
       <View style={dashboardStyles.header}>
-        <Text style={dashboardStyles.userName}>
-          {nameUser && nameUser}
-        </Text>
-        <Image source={require("../../images/cash.jpeg")} style={dashboardStyles.userImg} />
+        <View style={{
+          display: "flex",
+          flexDirection: "column"
+        }}>
+          <Text style={dashboardStyles.userName}>
+            {fullDataUserConnected && fullDataUserConnected.pseudo && fullDataUserConnected.pseudo}
+          </Text>
+          <Text style={{ fontWeight: "bold", color: "#fff" }}>{compteUser && compteUser.numero && "Votre numéro : " + compteUser.numero}</Text>
+        </View>
+        <View style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 20
+        }}>
+          <Icon name='search' style={{ fontSize: 30, color: "#fff", fontWeight: 100 }} />
+          <TouchableOpacity onPress={() => handleNavigate()}>
+            <Image source={require("../../images/cash.jpeg")} style={dashboardStyles.userImg} />
+          </TouchableOpacity>
+        </View>
       </View>
-
-      <Text style={{
-        padding: 15,
-        fontSize: 20,
-        color: "#0e6bf7",
-        fontWeight: "bold",
-      }}>Tableau de bord</Text>
 
       <View style={{
         flexDirection: "row",
@@ -40,7 +50,8 @@ const Home = () => {
         marginLeft: 15,
         marginRight: 15,
         gap: 20,
-        marginBottom: 20
+        marginBottom: 20,
+        marginTop: 20
       }}>
         <View style={{
           flexDirection: 'column',
@@ -64,13 +75,16 @@ const Home = () => {
             }}
           >
             <SVG_TRANSACTION width={60} height={60} />
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "bold",
-                color: "#333"
-              }}
-            >22</Text>
+            <ScrollView
+            >
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  color: "#333"
+                }}
+              >0</Text>
+            </ScrollView>
           </View>
         </View>
 
@@ -96,13 +110,16 @@ const Home = () => {
             }}
           >
             <SVG_MONEY width={60} height={60} />
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "bold",
-                color: "#333"
-              }}
-            >14 OBT</Text>
+            <ScrollView
+            >
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  color: "#333"
+                }}
+              >0</Text>
+            </ScrollView>
           </View>
         </View>
       </View>
@@ -137,13 +154,18 @@ const Home = () => {
             }}
           >
             <SOLDE width={60} height={60} />
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "bold",
-                color: "#333"
-              }}
-            >160</Text>
+            <ScrollView
+            >
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  color: "#333"
+                }}
+              >
+                {compteUser && compteUser.solde && compteUser.solde}
+              </Text>
+            </ScrollView>
           </View>
         </View>
 
@@ -170,13 +192,18 @@ const Home = () => {
             }}
           >
             <POURCENTAGE width={60} height={60} />
-            <Text
-              style={{
-                fontSize: 18,
-                fontWeight: "bold",
-                color: "#333",
-              }}
-            >0.677167676ZZZZ7</Text>
+            <ScrollView
+            >
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  color: "#333"
+                }}
+              >
+                {compteUser && compteUser.solde && compteUser.solde / 100} %
+              </Text>
+            </ScrollView>
           </View>
         </View>
       </View>
@@ -196,59 +223,39 @@ const Home = () => {
         gap: 20,
         marginTop: 10
       }}>
-        <View style={{
+
+        <TouchableOpacity style={{
           flexDirection: 'column',
           backgroundColor: "#fff",
           elevation: 2,
-          borderRadius: 5,
+          borderRadius: 10,
           width: 170,
           padding: 15
         }}>
           <Text
             style={{
               fontSize: 16,
-              marginBottom: 6,
               textAlign: "center",
               fontWeight: "600"
             }}
           >RETIRER</Text>
-          <View
+        </TouchableOpacity>
+
+        <TouchableOpacity style={{
+          flexDirection: 'column',
+          backgroundColor: "#fff",
+          elevation: 2,
+          borderRadius: 10,
+          width: 170,
+          padding: 15
+        }}>
+          <Text
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center"
+              fontSize: 16,
+              textAlign: "center",
+              fontWeight: "600"
             }}
-          >
-            <RETRAIT width={60} height={60} />
-          </View>
-        </View>
-        <TouchableOpacity>
-          <View style={{
-            flexDirection: 'column',
-            backgroundColor: "#fff",
-            elevation: 2,
-            borderRadius: 5,
-            width: 170,
-            padding: 15,
-          }}>
-            <Text
-              style={{
-                fontSize: 16,
-                marginBottom: 6,
-                textAlign: "center",
-                fontWeight: "600"
-              }}
-            >RECHARGER</Text>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center"
-              }}
-            >
-              <RECHARGE width={60} height={60} />
-            </View>
-          </View>
+          >RECHARGER</Text>
         </TouchableOpacity>
       </View>
 

@@ -1,136 +1,195 @@
-import { View, Text, TextInput, TouchableOpacity, Alert, Image } from 'react-native'
-import React, { useEffect, useState } from 'react';
+import React, {  useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Alert, Image, StyleSheet } from 'react-native'
 import { useNavigation } from "@react-navigation/native";
 import { baseUrl } from '../../bases/basesUrl';
 import axios from 'axios';
-import dashboardStyles from '../Home/style';
 import Spinner from 'react-native-loading-spinner-overlay/lib';
-
 
 const SignUp = () => {
 
-  const [pseudo, setPseudo] = useState("");
+  const [pseudo, setPseudo] = useState('')
   const [email, setEmail] = useState("");
+  const [numTel, setNumTel] = useState("");
   const [password, setPassword] = useState("");
-  const [msgErr, setMsgErr] = useState('');
+  const [confirmPass, setConfirmPass] = useState("");
 
   const [loading, setLoading] = useState(false);
-
   const navigate = useNavigation();
 
-  const handleSignUp = () => {
+  const createUser = () => {
     setLoading(true);
     axios.post(`${baseUrl}/users/register`, {
-      pseudo: pseudo,
       email: email,
+      pseudo: pseudo,
+      numTel: numTel,
       password: password
     })
-      .then(() => {
+      .then(res => {
         setLoading(false);
-        navigate.navigate('login')
-        dispatch({
-          type: "signup",
-          payload: {
-            isAdd: true
-          }
-        })
+        navigate.navigate('login');
+        Alert.alert(res && res.data && res.data.message);
       })
       .catch(err => {
-        console.log(err);
-        setMsgErr(err && err.response && err.response.data && err.response.data.message)
+        Alert.alert(err && err.response && err.response.data && err.response.data.message);
         setLoading(false);
       })
   };
 
-  useEffect (() => {
-    setMsgErr('');
-  }, []);
+  const validateForm = () => {
+    const formInputs = [pseudo, email, numTel, password, confirmPass];
+    const passwords_match = password === confirmPass;
+
+    if (formInputs.includes('') || formInputs.includes(undefined)) {
+      Alert.alert("Veuillez remplir tous les champs svp !")
+      return;
+    }
+
+    if (passwords_match) return createUser();
+    else {
+      Alert.alert("Les mots de passe ne correspondent pas.")
+      return;
+    }
+  }
 
   return (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center"
-      }}
-    >
+    <View style={styles.mainView}>
       <Spinner visible={loading} color={"red"} />
-      <Text
-        style={{
-          fontSize: 20
-        }}
-      >
-        INSCRIPTION
-      </Text>
-
-      <View style={{ marginTop: 20, marginBottom: 20 }}>
-        <Image source={require("../../images/logo.jpeg")} style={dashboardStyles.userImg} />
+      <View style={styles.logoView}>
+        <Image source={require("../../images/logo.jpeg")} style={styles.logoImage} />
       </View>
+      <View style={styles.formView}>
+        <View style={styles.formMain}>
+          <TextInput
+            placeholder='Entrer votre nom*'
+            style={styles.textInput}
+            placeholderTextColor={'#fff'}
+            value={pseudo}
+            onChangeText={(value) => setPseudo(value)}
+          />
+          <TextInput
+            placeholder='Adresse email*'
+            style={styles.textInput}
+            placeholderTextColor={'#fff'}
+            value={email}
+            onChangeText={(value) => setEmail(value)}
+          />
+          <TextInput
+            placeholder='Numéro de téléphone*'
+            style={styles.textInput}
+            placeholderTextColor={'#fff'}
+            value={numTel}
+            onChangeText={(value) => setNumTel(value)}
+          />
+          <TextInput
+            placeholder='Mot de passe*'
+            style={styles.textInput}
+            placeholderTextColor={'#fff'}
+            secureTextEntry={true}
+            value={password}
+            onChangeText={(value) => setPassword(value)}
+          />
+          <TextInput
+            placeholder='Confirmer le mot de passe*'
+            style={styles.textInput}
+            placeholderTextColor={'#fff'}
+            secureTextEntry={true}
+            value={confirmPass}
+            onChangeText={(value) => setConfirmPass(value)}
+          />
 
-      <TextInput
-        style={{
-          width: "70%",
-          backgroundColor: "#ddd",
-          paddingLeft: 15,
-          borderRadius: 10
-        }}
-        placeholder="Pseudo"
-        onChangeText={(text) => setPseudo(text)}
-      />
+          <TouchableOpacity style={styles.button} onPress={validateForm}>
+            <Text style={styles.textButton}>S'inscrire</Text>
+          </TouchableOpacity>
+        </View>
 
-      <TextInput
-        style={{
-          width: "70%",
-          backgroundColor: "#ddd",
-          paddingLeft: 15,
-          marginTop: 20,
-          borderRadius: 10
-        }}
-        placeholder="Email"
-        onChangeText={(text) => setEmail(text)}
-      />
-
-      <TextInput
-        style={{
-          width: "70%",
-          backgroundColor: "#ddd",
-          paddingLeft: 15,
-          borderRadius: 10,
-          marginTop: 20,
-          marginBottom: 20
-        }}
-        secureTextEntry={true}
-        placeholder="Mot de passe"
-        onChangeText={(text) => setPassword(text)}
-      />
-      <TouchableOpacity
-        onPress={() => handleSignUp()}
-        style={{
-          backgroundColor: '#e80300', padding: 15, borderRadius: 10, width: "70%", flexDirection: "column",
-          justifyContent: "center", alignItems: "center"
-        }}
-      >
-        <Text style={{ color: '#fff', fontSize: 17 }}>Inscription</Text>
-      </TouchableOpacity>
-      <View style={{ marginTop: 10, flexDirection: "column", gap: 5 }}>
-        <Text style={{ color: '#0073bd', fontSize: 17, marginTop: 10 }}>Avez-vous déjà un de compte ? </Text>
-        <Text
-          onPress={() => navigate.navigate('login')}
-          style={{ color: '#0073bd', fontSize: 17, marginTop: 10, fontWeight: 900 }}
-        >
-          Connectez-vous ici
-        </Text>
+        <TouchableOpacity style={styles.btnSignUp} onPress={() => navigate.navigate('login')}>
+          <Text style={styles.signUpText}>
+            Connectez-vous
+          </Text>
+        </TouchableOpacity>
       </View>
-
-      <View style={{ marginTop: 10, flexDirection: "row", justifyContent: "center" }}>
-        <Text style={{ color: "red", fontSize: 17 }}>
-          {msgErr ? msgErr : ""}
-        </Text>
-      </View>
-
-    </View>
+    </View >
   )
 }
 
-export default SignUp
+const styles = StyleSheet.create({
+  mainView: {
+    marginTop: 40,
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  logoView: {
+    width: "100%",
+    height: "30%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: '#fff'
+  },
+  formView: {
+    width: "100%",
+    height: "80%",
+    backgroundColor: "#006abd",
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30
+  },
+  logoImage: {
+    width: "30%",
+    resizeMode: "contain"
+  },
+  text1: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: "bold",
+    marginLeft: 20,
+    marginTop: 30
+  },
+  formMain: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 30
+  },
+  textInput: {
+    width: "90%",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    height: 52,
+    borderRadius: 10,
+    paddingLeft: 10,
+    marginTop: 20,
+    color: "#fff",
+    fontSize: 16
+  },
+  button: {
+    width: "90%",
+    height: 52,
+    backgroundColor: '#f60501',
+    borderRadius: 10,
+    marginTop: 20,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textButton: {
+    fontWeight: "bold",
+    fontSize: 18,
+    color: "#fff"
+  },
+  btnSignUp: {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    marginTop: 20
+  },
+  signUpText: {
+    color: "#fff",
+    fontSize: 15
+  }
+})
+
+export default SignUp;
