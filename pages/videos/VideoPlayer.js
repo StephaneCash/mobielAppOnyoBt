@@ -25,8 +25,9 @@ const VideoPlayer = ({ route, navigation }) => {
     return (
         <View style={styles.mainPlayerView}>
             <View style={{ height: height / 3, backgroundColor: "gray", width: "100%" }}>
-                <Video style={styles.videoP}
+                <Video style={{ width: width, height: "100%" }}
                     source={{ uri: baseUrlFile + route.params.data.video }}
+                    controls={true}
                 />
             </View>
             <Text style={styles.postTitle}>{postData && postData.title}</Text>

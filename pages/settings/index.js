@@ -1,10 +1,39 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { View, Text, TouchableOpacity } from 'react-native'
+import React, { useContext } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from "@react-navigation/native";
+import { ContextApp } from '../../context/AuthContext';
+
 
 const Settings = () => {
+
+  const navigationRoute = useNavigation();
+
+  const { setUserConnected } = useContext(ContextApp);
+
+  const logoutHandle = async () => {
+    try {
+      await AsyncStorage.removeItem(
+        'userConnected',
+      );
+      setUserConnected(null);
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
   return (
-    <View>
-      <Text>Settings</Text>
+    <View style={{
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center"
+    }}>
+      <TouchableOpacity
+        style={{ borderRadius: 10, borderWidth: 1, padding: 10 }}
+        onPress={logoutHandle}
+      >
+        <Text>Déconnexion</Text>
+      </TouchableOpacity>
     </View>
   )
 }
