@@ -1,11 +1,12 @@
 import { View, Text, FlatList, ActivityIndicator, StyleSheet, TextInput, Image, TouchableOpacity } from 'react-native'
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import { useNavigation } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux"
-import { baseUrl } from '../../bases/basesUrl';
 import { ContextApp } from '../../context/AuthContext';
 import { dateParserFunction } from '../../outils/constantes';
+import Feather from 'react-native-vector-icons/Feather';
+
 
 const Videos = () => {
 
@@ -17,29 +18,18 @@ const Videos = () => {
 
   const { fullDataUserConnected } = useContext(ContextApp);
 
-  const [data, setData] = useState([]);
+  const data = useSelector(state => state.posts.value);
+  const users = useSelector(state => state.users.value);
 
-  const getDataAll = () => {
-    setLoading(true)
-    fetch(`${baseUrl}/posts`)
-      .then(res => res.json())
-      .then(data => {
-        setLoading(false);
-        dispatch({
-          type: "add",
-          payload: data.items
-        })
-        setData(data)
-      })
-      .catch(err => {
-        console.log(err)
-      })
+  const isLoading = useSelector(state => state.posts.loading);
+  const views = [];
+
+  const handleCountNumberViews = (val) => {
+    views.push(val);
+    // console.log('__________________________________________________________________________')
+    // console.log(views.length , " ::::::::::::DATA DATA")
   }
 
-  useEffect(() => {
-    getDataAll();
-  }, []);
-  
   return (
     <View
       style={{ flex: 1 }}
@@ -50,6 +40,10 @@ const Videos = () => {
           placeholder='Rechercher...'
           placeholderTextColor={'#000'}
         />
+
+        <TouchableOpacity>
+          <Feather name="plus-circle" size={40} />
+        </TouchableOpacity>
       </View>
       {
         data && data.length < 0 ? <ActivityIndicator
@@ -70,9 +64,14 @@ const Videos = () => {
                     <View style={styles.namePoster}>
                       <Text style={{ color: "#000", fontSize: 16 }}>
                         {
-                          fullDataUserConnected && fullDataUserConnected.pseudo && fullDataUserConnected.pseudo
+                          users && users.map(val => {
+                            if (val._id === item.posterId) {
+                              return val.pseudo
+                            }
+                          })
                         }
                       </Text>
+
                       <Text>
                         Publié {dateParserFunction(item.createdAt)}
                       </Text>
@@ -84,11 +83,21 @@ const Videos = () => {
                 </View>
 
                 <TouchableOpacity style={styles.touchableImage}
-                  onPress={() => navigation.navigate('videoPlayer', { data: item })}
+                  onPress={() => {
+                    handleCountNumberViews(item)
+                    navigation.navigate('videoPlayer', { data: item })
+                  }}
                 >
-                  <Image source={require("../../images/img1.jpeg")} style={styles.coverImage} />
+                  <Image source={require("../../images/sad.jpg")} style={styles.coverImage} />
                 </TouchableOpacity>
+
+                <Text style={{ color: "#000", fontSize: 16, fontWeight: "bold" }}>
+                  {
+                    item.title
+                  }
+                </Text>
               </View>
+
             }}
             keyExtractor={item => item._id}
           />
@@ -100,17 +109,20 @@ const Videos = () => {
 const styles = StyleSheet.create({
   mainView: {
     backgroundColor: "#fff",
-    alignItems: "center"
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
   },
   textInput: {
     height: 42,
-    width: "90%",
+    width: "75%",
     backgroundColor: "#ddd",
     borderRadius: 20,
     paddingLeft: 15,
     color: "#000",
-    marginBottom: 20,
-    marginTop: 20
+    marginBottom: 10,
+    marginTop: 10
   },
   postTitle: {
     width: "100%",

@@ -2,11 +2,22 @@ import React from 'react';
 import { View } from 'react-native';
 import Routes from './routes';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import { reducer } from "./reducers/reducer"
 import ContextAppGlobal from './context/AuthContext';
 
-const store = createStore(reducer);
+import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers } from "redux";
+import postSlice, { getAllPosts } from './reducers/Posts.reducer';
+import usersSlice, { getAllUsers } from './reducers/User.reducer';
+
+const store = configureStore({
+  reducer: combineReducers({
+    posts: postSlice.reducer,
+    users: usersSlice.reducer
+  })
+});
+
+store.dispatch(getAllPosts());
+store.dispatch(getAllUsers());
 
 const App = () => {
   return (
