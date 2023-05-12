@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { baseUrl } from "../bases/basesUrl";
+import { Alert } from "react-native"
 
 export const getAllPosts = createAsyncThunk("posts/getData", async (arg, {
     rejectWithValue
@@ -20,7 +21,9 @@ export const createPost = createAsyncThunk("posts/add", async (arg, {
 
     try {
         const response = await axios.post(`${baseUrl}/posts`, arg.data, arg.config);
-        console.log('success', response)
+        if (response.status === 201) {
+            Alert.alert('Publication effectuée avec succès')
+        }
         return response.data
     } catch (error) {
         rejectWithValue(error.response);

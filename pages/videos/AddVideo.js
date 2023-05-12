@@ -51,7 +51,7 @@ const AddVideo = () => {
             }
 
             body.append('posterId', userConnected && userConnected.user)
-            body.append('descriprion', message);
+            body.append('description', message);
 
             let form = {};
             form.data = body;
@@ -66,8 +66,6 @@ const AddVideo = () => {
             handleError(e)
         }
     }
-
-    console.log(message)
 
     return (
         <View

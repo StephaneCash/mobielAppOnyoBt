@@ -34,7 +34,7 @@ const VideoPlayer = ({ route, navigation }) => {
     })
 
     const [likes, setLikes] = useState([])
-    
+
     const dataArr = []
 
     useEffect(() => {
@@ -70,6 +70,12 @@ const VideoPlayer = ({ route, navigation }) => {
                     width: "98%", padding: 13, color: '#000', fontWeight: "bold"
                 }}
             >{route.params && route.params.data && route.params.data.title.replace(/yt1s\.io\-/g, "").split("&")[0]}</Text>
+
+            <Text
+                style={{
+                    width: "98%", padding: 13, color: '#000', 
+                }}
+            >{route.params && route.params.data && route.params.data.description}</Text>
             <View
                 style={{
                     width: "100%",
