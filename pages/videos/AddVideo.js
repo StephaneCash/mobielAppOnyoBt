@@ -107,7 +107,7 @@ const AddVideo = () => {
                             width: "100%"
                         }}
                         onPress={handleUpload} >
-                        <Text style={{ textAlign: "center", color: "#fff" }}>Télécharger</Text>
+                        <Text style={{ textAlign: "center", color: "#fff" }}>Choisir une vidéo</Text>
                     </Pressable>
             }
 
