@@ -83,7 +83,7 @@ const AddVideo = () => {
             <Text style={{
                 fontSize: 16,
                 fontWeight: "bold"
-            }}>Télécharger votre vidéo</Text>
+            }}>Publier vos vidéos</Text>
             <TextInput style={{
                 height: 100,
                 width: "100%",
