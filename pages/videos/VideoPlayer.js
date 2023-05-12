@@ -71,11 +71,14 @@ const VideoPlayer = ({ route, navigation }) => {
                 }}
             >{route.params && route.params.data && route.params.data.title.replace(/yt1s\.io\-/g, "").split("&")[0]}</Text>
 
-            <Text
-                style={{
-                    width: "98%", padding: 13, color: '#000', 
-                }}
-            >{route.params && route.params.data && route.params.data.description}</Text>
+            {
+                route.params && route.params.data && route.params.data.description &&
+                <Text
+                    style={{
+                        width: "98%", padding: 13, color: '#000',
+                    }}
+                >{route.params && route.params.data && route.params.data.description}</Text>
+            }
             <View
                 style={{
                     width: "100%",
