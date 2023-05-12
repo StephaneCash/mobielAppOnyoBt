@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, FlatList, ActivityIndicator, SafeAreaView } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Video from 'react-native-video';
 import { baseUrlFile } from '../../bases/basesUrl';
 import { dateParserFunction } from '../../outils/constantes';
@@ -14,9 +14,9 @@ const VideoPlayer = ({ route, navigation }) => {
 
     const { height } = Dimensions.get("screen");
 
-    const { fullDataUserConnected } = useContext(ContextApp);
+    const [isLike, setIsLike] = useState(0);
 
-    console.log(fullDataUserConnected , "USER USER USER")
+    const { fullDataUserConnected } = useContext(ContextApp);
 
     const data = useSelector(state => state.posts.value);
     const users = useSelector(state => state.users.value);
@@ -32,6 +32,26 @@ const VideoPlayer = ({ route, navigation }) => {
             nom = val.commenterPseudo && val.commenterPseudo.split('')[0]
         }
     })
+
+    const [likes, setLikes] = useState([])
+    
+    const dataArr = []
+
+    useEffect(() => {
+        setLikes(route.params && route.params.data && route.params.data.comments && route.params.data.likers)
+    }, []);
+
+    const likePost = () => {
+        console.log("LIKE")
+        setIsLike(1);
+        dataArr.push(fullDataUserConnected && fullDataUserConnected._id)
+        //likes(fullDataUserConnected && fullDataUserConnected._id)
+    }
+
+    const disLikePost = () => {
+        console.log("LIKE")
+        setIsLike(2);
+    }
 
     return (
         <View style={styles.mainPlayerView}>
@@ -78,23 +98,31 @@ const VideoPlayer = ({ route, navigation }) => {
                         width: "35%"
                     }}
                 >
-                    <View style={{
+                    <TouchableOpacity style={{
                         flexDirection: "row",
                         alignItems: "center",
+                    }}
+                        onPress={likePost}
+                    >
+                        {
+                            isLike === 1 ? <AntDesign size={30} name='like1' color={"#0668b4"} /> : <AntDesign size={30} name='like2' />
+                        }
+                        <Text>
+                            {likes && likes.length}
+                        </Text>
+                    </TouchableOpacity>
 
-                    }}>
-                        <AntDesign size={30} name='like2' />
-                        <Text>15 k</Text>
-                    </View>
-
-                    <View style={{
+                    <TouchableOpacity style={{
                         flexDirection: "row",
                         alignItems: "center",
-
-                    }}>
-                        <AntDesign size={30} name='dislike2' />
+                    }}
+                        onPress={disLikePost}
+                    >
+                        {
+                            isLike === 2 ? <AntDesign size={30} name='dislike1' color={"#0668b4"} /> : <AntDesign size={30} name='dislike2' />
+                        }
                         <Text>15</Text>
-                    </View>
+                    </TouchableOpacity>
                 </TouchableOpacity>
 
                 <TouchableOpacity>
