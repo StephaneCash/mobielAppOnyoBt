@@ -17,12 +17,14 @@ export const getAllPosts = createAsyncThunk("posts/getData", async (arg, {
 export const createPost = createAsyncThunk("posts/add", async (arg, {
     rejectWithValue
 }) => {
+
     try {
-        const { data } = await axios.post(`${baseUrl}/posts`);
-        return data
+        const response = await axios.post(`${baseUrl}/posts`, arg.data, arg.config);
+        console.log('success', response)
+        return response.data
     } catch (error) {
         rejectWithValue(error.response);
-        console.log(error.response)
+        console.log(error, " ERREUR")
     }
 });
 

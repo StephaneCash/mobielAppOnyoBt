@@ -1,11 +1,12 @@
 import { View, Text, FlatList, ActivityIndicator, StyleSheet, TextInput, Image, TouchableOpacity } from 'react-native'
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import { useNavigation } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux"
 import { ContextApp } from '../../context/AuthContext';
 import { dateParserFunction } from '../../outils/constantes';
 import Feather from 'react-native-vector-icons/Feather';
+import { getAllPosts } from '../../reducers/Posts.reducer';
 
 
 const Videos = () => {
@@ -41,12 +42,14 @@ const Videos = () => {
           placeholderTextColor={'#000'}
         />
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => {
+          navigation.navigate('videos/add')
+        }}>
           <Feather name="plus-circle" size={40} />
         </TouchableOpacity>
       </View>
       {
-        data && data.length < 0 ? <ActivityIndicator
+        data && data.length === 0 ? <ActivityIndicator
           style={{
             marginTop: 10
           }}
@@ -65,7 +68,7 @@ const Videos = () => {
                       <Text style={{ color: "#000", fontSize: 16 }}>
                         {
                           users && users.map(val => {
-                            if (val._id === item.posterId) {
+                            if (val._id ===  item.posterId) {
                               return val.pseudo
                             }
                           })
@@ -73,7 +76,7 @@ const Videos = () => {
                       </Text>
 
                       <Text>
-                        Publié {dateParserFunction(item.createdAt)}
+                        Publié {dateParserFunction(item && item.createdAt)}
                       </Text>
                     </View>
                   </View>
@@ -93,13 +96,13 @@ const Videos = () => {
 
                 <Text style={{ color: "#000", fontSize: 16, fontWeight: "bold" }}>
                   {
-                    item.title
+                    item && item.title
                   }
                 </Text>
               </View>
 
             }}
-            keyExtractor={item => item._id}
+            keyExtractor={item => item && item._id}
           />
       }
     </View>

@@ -8,6 +8,7 @@ import Login from '../pages/auth/Login';
 import SignUp from '../pages/auth/SignUp';
 import { ContextApp } from '../context/AuthContext';
 import EditUser from '../pages/profil/EditUser';
+import AddVideo from '../pages/videos/AddVideo';
 
 
 const Stack = createNativeStackNavigator();
@@ -30,6 +31,7 @@ const Routes = () => {
                             <Stack.Screen name="search" component={Search} />
                             <Stack.Screen name="videoPlayer" component={VideoPlayer} />
                             <Stack.Screen name="settings/profil" component={EditUser} />
+                            <Stack.Screen name="videos/add" component={AddVideo} />
                         </>
                     ) : (
                         <>

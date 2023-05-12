@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, FlatList, ActivityIndicator, SafeAreaView, StatusBar } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, FlatList, ActivityIndicator, SafeAreaView } from 'react-native'
+import React, { useContext, useState } from 'react'
 import Video from 'react-native-video';
 import { baseUrlFile } from '../../bases/basesUrl';
 import { dateParserFunction } from '../../outils/constantes';
@@ -9,13 +9,14 @@ import { useSelector } from 'react-redux';
 import { ContextApp } from '../../context/AuthContext';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import { Stack, Avatar } from "@react-native-material/core";
 
 const VideoPlayer = ({ route, navigation }) => {
 
     const { height } = Dimensions.get("screen");
 
     const { fullDataUserConnected } = useContext(ContextApp);
+
+    console.log(fullDataUserConnected , "USER USER USER")
 
     const data = useSelector(state => state.posts.value);
     const users = useSelector(state => state.users.value);
@@ -37,7 +38,7 @@ const VideoPlayer = ({ route, navigation }) => {
             <View style={{ height: height / 3.9, backgroundColor: "gray", width: "100%" }}>
                 <Video
                     style={styles.videoP}
-                    source={{ uri: baseUrlFile + route.params.data.video }}
+                    source={{ uri: route && route.params && route.params.data && baseUrlFile + route.params.data.video }}
                     controls={true}
                     resizeMode="contain"
                     isLooping
@@ -148,7 +149,7 @@ const VideoPlayer = ({ route, navigation }) => {
                             flexDirection: "row",
                             justifyContent: "space-between",
                             alignItems: "center",
-                            width:"100%"
+                            width: "100%"
                         }}
                     >
                         <View
@@ -161,7 +162,7 @@ const VideoPlayer = ({ route, navigation }) => {
                             <Avatar label={nom} size={30} color='#fff' image={{ uri: "https://mui.com/statisc/images/avatar/1.jpg" }} />
 
                             <SafeAreaView style={{
-                                width:"80%"
+                                width: "80%"
                             }} >
                                 <FlatList
                                     data={route.params && route.params.data && route.params.data.comments && route.params.data.comments}
@@ -203,7 +204,7 @@ const VideoPlayer = ({ route, navigation }) => {
                             data={data}
                             style={{ marginBottom: 10 }}
                             renderItem={({ item }) => {
-                                if (route.params && route.params.data && route.params.data._id !== item._id) {
+                                if (item && route.params && route.params.data && route.params.data._id !== item._id) {
                                     return <View style={styles.postView}>
                                         <View style={styles.postTitle}>
                                             <View style={styles.viewImage}>
@@ -219,7 +220,7 @@ const VideoPlayer = ({ route, navigation }) => {
                                                         }
                                                     </Text>
                                                     <Text>
-                                                        Publié {dateParserFunction(item.createdAt)}
+                                                        Publié {dateParserFunction(item && item.createdAt)}
                                                     </Text>
                                                 </View>
                                             </View>
@@ -237,13 +238,13 @@ const VideoPlayer = ({ route, navigation }) => {
                                         </TouchableOpacity>
                                         <Text style={{ color: "#000", fontSize: 16, fontWeight: "bold" }}>
                                             {
-                                                item.title
+                                                item && item.title
                                             }
                                         </Text>
                                     </View>
                                 }
                             }}
-                            keyExtractor={item => item._id}
+                            keyExtractor={item => item && item._id}
                         />
                 }
 
