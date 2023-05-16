@@ -121,7 +121,6 @@ export const postSlice = createSlice({
             state.loading = false;
             state.isSuccess = true;
             let stateVal = state.value.filter(val => {
-                console.log(val._id, " VALUE ID ", action.payload._id)
                 return val._id === action.payload._id;
             })
 

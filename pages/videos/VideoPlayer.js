@@ -23,19 +23,9 @@ const VideoPlayer = ({ route, navigation }) => {
     const [showComment, setShowComment] = useState(false);
 
     const [post, setPost] = useState()
-    const [nom, setNom] = useState()
 
     const data = useSelector(state => state.posts.value);
     const users = useSelector(state => state.users.value);
-
-    useEffect(() => {
-        post && post.comments && post.comments.map((val, index) => {
-            if (index === 0) {
-                let name = val.commenterPseudo && val.commenterPseudo.split('')[0]
-                return setNom(name)
-            }
-        })
-    }, [route.params && route.params.data, dataArr])
 
     const dataArr = useSelector(state => state.posts.value)
 
@@ -221,7 +211,7 @@ const VideoPlayer = ({ route, navigation }) => {
                     </View>
                     <TouchableOpacity style={{}} onPress={showMoreComments}>
                         <Text style={{ color: "#fff" }}>
-                            Voir plus
+                            {!showComment ? "Voir plus" : "Fermer"}
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -248,7 +238,7 @@ const VideoPlayer = ({ route, navigation }) => {
                     showComment &&
                     <FlatList
                         data={post && post.comments && post.comments}
-                        style={{ marginBottom: 10, flex: 1, display: "flex" }}
+                        style={{ marginBottom: 10,  }}
                         renderItem={({ item, index }) => {
                             return users.map(user => {
                                 arrIndex.push(index)
@@ -421,7 +411,8 @@ const styles = StyleSheet.create({
         paddingRight: 13,
         flexDirection: 'row',
         alignItems: "center",
-        gap: 10
+        gap: 10,
+        marginBottom: 10
     },
     button: {
         width: "25%",
