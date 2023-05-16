@@ -37,9 +37,6 @@ export const commentPost = createAsyncThunk("posts/comment", async (arg, {
 
     try {
         const response = await axios.patch(`${baseUrl}/posts/comment/${arg.idPost}`, arg.form);
-        if (response.status === 200) {
-            Alert.alert('Publication effectuée avec succès')
-        }
         return response.data
     } catch (error) {
         rejectWithValue(error.response);
