@@ -31,6 +31,36 @@ export const createPost = createAsyncThunk("posts/add", async (arg, {
     }
 });
 
+export const commentPost = createAsyncThunk("posts/comment", async (arg, {
+    rejectWithValue
+}) => {
+
+    try {
+        const response = await axios.patch(`${baseUrl}/posts/comment/${arg.idPost}`, arg.form);
+        if (response.status === 200) {
+            Alert.alert('Publication effectuée avec succès')
+        }
+        return response.data
+    } catch (error) {
+        rejectWithValue(error.response);
+        console.log(error, " ERREUR")
+    }
+});
+
+export const likePostHanlde = createAsyncThunk("posts/like", async (arg, {
+    rejectWithValue
+}) => {
+
+    try {
+        const response = await axios.patch(`${baseUrl}/posts/like/${arg.idPost}`, { id: arg.id });
+        return response.data
+    } catch (error) {
+        rejectWithValue(error.response);
+        console.log(error, " ERREUR")
+    }
+});
+
+
 export const postSlice = createSlice({
     name: "posts",
     initialState: {
@@ -63,6 +93,48 @@ export const postSlice = createSlice({
             state.isSuccess = true;
         },
         [createPost.rejected]: (state, action) => {
+            state.loading = false;
+            state.isSuccess = false;
+        },
+        //Like Post
+        [likePostHanlde.pending]: (state, action) => {
+            state.loading = true;
+        },
+        [likePostHanlde.fulfilled]: (state, action) => {
+            state.loading = false;
+            state.isSuccess = true;
+            let stateVal = state.value.filter(val => {
+                return val._id === action.payload._id;
+            })
+            stateVal.map(val => {
+                if (val._id !== action.payload._id) {
+                    return val.likers.push(action.payload._id)
+                }
+            })
+        },
+        [likePostHanlde.rejected]: (state, action) => {
+            state.loading = false;
+            state.isSuccess = false;
+        },
+        // Comment post
+        [commentPost.pending]: (state, action) => {
+            state.loading = true;
+        },
+        [commentPost.fulfilled]: (state, action) => {
+            state.loading = false;
+            state.isSuccess = true;
+            let stateVal = state.value.filter(val => {
+                console.log(val._id, " VALUE ID ", action.payload._id)
+                return val._id === action.payload._id;
+            })
+
+            stateVal.map(val => {
+                if (val._id === action.payload._id) {
+                    return val.comments.push(action.payload)
+                }
+            })
+        },
+        [commentPost.rejected]: (state, action) => {
             state.loading = false;
             state.isSuccess = false;
         },

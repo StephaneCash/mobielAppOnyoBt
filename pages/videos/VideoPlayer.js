@@ -1,64 +1,104 @@
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, FlatList, ActivityIndicator, SafeAreaView } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, FlatList, ActivityIndicator, SafeAreaView, TextInput, ScrollView } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Video from 'react-native-video';
 import { baseUrlFile } from '../../bases/basesUrl';
 import { dateParserFunction } from '../../outils/constantes';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ContextApp } from '../../context/AuthContext';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import { commentPost, getAllPosts, likePostHanlde } from '../../reducers/Posts.reducer';
+import { Avatar } from "@react-native-material/core";
 
 const VideoPlayer = ({ route, navigation }) => {
 
     const { height } = Dimensions.get("screen");
 
     const [isLike, setIsLike] = useState(0);
-
+    const [valueComment, setValueSearch] = useState('');
+    const dispatch = useDispatch();
     const { fullDataUserConnected } = useContext(ContextApp);
+    const [showComment, setShowComment] = useState(false);
+
+    const [post, setPost] = useState()
+    const [nom, setNom] = useState()
 
     const data = useSelector(state => state.posts.value);
     const users = useSelector(state => state.users.value);
 
-    const [comment, setComment] = useState('');
-
-    const tailleComments = route.params && route.params.data && route.params.data.comments && route.params.data.comments.length;
-
-    let nom = "";
-
-    route.params && route.params.data && route.params.data.comments && route.params.data.comments.map((val, index) => {
-        if (index === 0) {
-            nom = val.commenterPseudo && val.commenterPseudo.split('')[0]
-        }
-    })
-
-    const [likes, setLikes] = useState([])
-
-    const dataArr = []
-
     useEffect(() => {
-        setLikes(route.params && route.params.data && route.params.data.comments && route.params.data.likers)
-    }, []);
+        post && post.comments && post.comments.map((val, index) => {
+            if (index === 0) {
+                let name = val.commenterPseudo && val.commenterPseudo.split('')[0]
+                return setNom(name)
+            }
+        })
+    }, [route.params && route.params.data, dataArr])
+
+    const dataArr = useSelector(state => state.posts.value)
 
     const likePost = () => {
-        console.log("LIKE")
-        setIsLike(1);
-        dataArr.push(fullDataUserConnected && fullDataUserConnected._id)
-        //likes(fullDataUserConnected && fullDataUserConnected._id)
+        let data = {}
+        data.idPost = route && route.params && route.params.data && route.params.data._id;
+        data.id = fullDataUserConnected && fullDataUserConnected._id;
+        dispatch(likePostHanlde(data))
+        dispatch(getAllPosts())
+    }
+
+    const commeentPost = () => {
+        let data = {}
+        let form = {};
+        data.idPost = route && route.params && route.params.data && route.params.data._id;
+        form.commenterId = fullDataUserConnected && fullDataUserConnected._id;
+        form.text = valueComment;
+        form.commenterPseudo = fullDataUserConnected && fullDataUserConnected.pseudo;
+        data.form = form;
+        dispatch(commentPost(data))
+        dispatch(getAllPosts())
     }
 
     const disLikePost = () => {
-        console.log("LIKE")
         setIsLike(2);
     }
+
+    useEffect(() => {
+        dataArr && dataArr.map(val => {
+            if (route && route.params && route.params.data && route.params.data._id === val._id) {
+                let value = val;
+                setPost(value)
+                return setPost(value)
+            }
+        })
+    }, [route.params && route.params.data, dataArr])
+
+    useEffect(() => {
+        dataArr && dataArr.map(val => {
+            return val.likers && val.likers.map(value => {
+                //console.log(value, " ICI CEST DATA")
+                if (fullDataUserConnected && fullDataUserConnected._id === value) {
+                    //    console.log(value && fullDataUserConnected._id, value, " TEST VLAUE")
+                    return setIsLike(1);
+                } else {
+                    return setIsLike(0);
+                }
+            })
+        })
+    }, [dataArr])
+
+    const showMoreComments = () => {
+        setShowComment(!showComment)
+    };
+
+    let arrIndex = []
 
     return (
         <View style={styles.mainPlayerView}>
             <View style={{ height: height / 3.9, backgroundColor: "gray", width: "100%" }}>
                 <Video
                     style={styles.videoP}
-                    source={{ uri: route && route.params && route.params.data && baseUrlFile + route.params.data.video }}
+                    source={{ uri: post && baseUrlFile + post.video }}
                     controls={true}
                     resizeMode="contain"
                     isLooping
@@ -69,15 +109,15 @@ const VideoPlayer = ({ route, navigation }) => {
                 style={{
                     width: "98%", padding: 13, color: '#000', fontWeight: "bold"
                 }}
-            >{route.params && route.params.data && route.params.data.title.replace(/yt1s\.io\-/g, "").split("&")[0]}</Text>
+            >{post && post.title.replace(/yt1s\.io\-/g, "").split("&")[0]}</Text>
 
             {
-                route.params && route.params.data && route.params.data.description &&
+                post && post.description &&
                 <Text
                     style={{
                         width: "98%", padding: 13, color: '#000',
                     }}
-                >{route.params && route.params.data && route.params.data.description}</Text>
+                >{post && post.description}</Text>
             }
             <View
                 style={{
@@ -86,7 +126,7 @@ const VideoPlayer = ({ route, navigation }) => {
                 }}
             >
                 <Text>
-                    Publié {dateParserFunction(route.params && route.params.data && route.params.data.createdAt)}
+                    Publié {dateParserFunction(post && post.createdAt)}
                 </Text>
             </View>
 
@@ -117,7 +157,9 @@ const VideoPlayer = ({ route, navigation }) => {
                             isLike === 1 ? <AntDesign size={30} name='like1' color={"#0668b4"} /> : <AntDesign size={30} name='like2' />
                         }
                         <Text>
-                            {likes && likes.length}
+                            {
+                                post && post.likers && post.likers.length
+                            }
                         </Text>
                     </TouchableOpacity>
 
@@ -130,7 +172,7 @@ const VideoPlayer = ({ route, navigation }) => {
                         {
                             isLike === 2 ? <AntDesign size={30} name='dislike1' color={"#0668b4"} /> : <AntDesign size={30} name='dislike2' />
                         }
-                        <Text>15</Text>
+                        <Text>0</Text>
                     </TouchableOpacity>
                 </TouchableOpacity>
 
@@ -156,75 +198,80 @@ const VideoPlayer = ({ route, navigation }) => {
                 </TouchableOpacity>
             </View>
 
-            <TouchableOpacity
+            <View
                 style={{
                     width: "95%",
                     padding: 13,
-                    backgroundColor: "#0b6cc7d0",
+                    backgroundColor: "#0668b4",
                     marginRight: 13,
                     marginLeft: 13,
                     borderRadius: 5,
-                    minHeight: 70,
                     justifyContent: "center",
                     gap: 10,
+                    maxHeight: showComment ? "100%" : 70,
+                    flex: 1,
                 }}
             >
-                <Text
-                    style={{
-                        color: "#fff"
-                    }}
-                >
-                    Commentaires : {
-                        tailleComments
-                    }
-                </Text>
 
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    <View style={{}}>
+                        <Text style={{ color: "#fff" }}>
+                            Commentaires : {post && post.comments.length}
+                        </Text>
+                    </View>
+                    <TouchableOpacity style={{}} onPress={showMoreComments}>
+                        <Text style={{ color: "#fff" }}>
+                            Voir plus
+                        </Text>
+                    </TouchableOpacity>
+                </View>
                 {
-                    tailleComments > 0 &&
+                    showComment &&
                     <View
                         style={{
                             flexDirection: "row",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            width: "100%"
+                            gap: 10
                         }}
                     >
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                gap: 10
-                            }}
-                        >
-                            <Avatar label={nom} size={30} color='#fff' image={{ uri: "https://mui.com/statisc/images/avatar/1.jpg" }} />
-
-                            <SafeAreaView style={{
-                                width: "80%"
-                            }} >
-                                <FlatList
-                                    data={route.params && route.params.data && route.params.data.comments && route.params.data.comments}
-                                    style={{ marginBottom: 10 }}
-                                    renderItem={({ item, index }) => {
-                                        return users.map(user => {
-                                            if (user._id === item.commenterId) {
-                                                return index === 0 && <View style={styles.viewComment}>
-                                                    <Text key={index} style={{ color: "#fff" }}>{item.text}</Text>
-                                                </View>
-                                            }
-                                        })
-                                    }}
-                                    keyExtractor={item => item._id}
-                                />
-                            </SafeAreaView>
-                        </View>
-
-                        <TouchableOpacity>
-                            <EvilIcons name='chevron-down' size={35} color={'#fff'} />
+                        <TextInput style={styles.textInput}
+                            value={valueComment} onChangeText={(value) => setValueSearch(value)}
+                            placeholder='Votre commentaire...'
+                            placeholderTextColor={'#000'}
+                        />
+                        <TouchableOpacity style={styles.button} onPress={commeentPost} >
+                            <Text style={styles.textButton}>Commenter</Text>
                         </TouchableOpacity>
                     </View>
                 }
 
-            </TouchableOpacity>
+                {
+                    showComment &&
+                    <FlatList
+                        data={post && post.comments && post.comments}
+                        style={{ marginBottom: 10, flex: 1, display: "flex" }}
+                        renderItem={({ item, index }) => {
+                            return users.map(user => {
+                                arrIndex.push(index)
+                                if (user._id === item.commenterId) {
+                                    return <View key={index} style={{
+                                        flexDirection: "column",
+                                        flex: 1
+                                    }}>
+                                        <View style={styles.viewComment} >
+                                            <Avatar label={item.commenterPseudo} size={30} color='#fff'
+                                                image={{ uri: "https://mui.com/statisc/images/avatar/1.jpg" }} />
+                                            <Text key={index} style={{ color: "#fff" }}>{item.text}</Text>
+                                        </View>
+                                    </View>
+                                }
+                            })
+                        }}
+                        keyExtractor={item => item._id}
+                    />
+                }
+
+
+            </View>
 
             <View
                 style={{ flex: 1 }}
@@ -318,13 +365,10 @@ const styles = StyleSheet.create({
     },
     textInput: {
         height: 42,
-        width: "75%",
-        backgroundColor: "#ddd",
+        width: "50%",
         borderRadius: 20,
         paddingLeft: 15,
         color: "#000",
-        marginBottom: 10,
-        marginTop: 10
     },
     postTitle: {
         width: "100%",
@@ -375,6 +419,31 @@ const styles = StyleSheet.create({
     },
     viewComment: {
         paddingRight: 13,
+        flexDirection: 'row',
+        alignItems: "center",
+        gap: 10
+    },
+    button: {
+        width: "25%",
+        height: 42,
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    textButton: {
+        fontWeight: "bold",
+        fontSize: 15,
+        color: "#444"
+    },
+    textInput: {
+        height: 42,
+        width: "70%",
+        backgroundColor: "#fff",
+        borderRadius: 5,
+        paddingLeft: 15,
+        color: "#000",
     },
 
 })

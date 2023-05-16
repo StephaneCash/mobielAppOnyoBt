@@ -6,13 +6,11 @@ import { useSelector, useDispatch } from "react-redux"
 import { ContextApp } from '../../context/AuthContext';
 import { dateParserFunction } from '../../outils/constantes';
 import Feather from 'react-native-vector-icons/Feather';
-import { getAllPosts } from '../../reducers/Posts.reducer';
 
 
 const Videos = () => {
 
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(false);
   const [valueSearch, setValueSearch] = useState("");
 
   const dispatch = useDispatch();
