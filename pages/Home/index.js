@@ -8,6 +8,9 @@ import POURCENTAGE from "../../images/svg/pourcentage.svg";
 import { ContextApp } from '../../context/AuthContext.js';
 import { useNavigation } from "@react-navigation/native";
 import Icon from 'react-native-vector-icons/EvilIcons.js';
+import { useSelector } from 'react-redux';
+import { baseUrlFile } from '../../bases/basesUrl.js';
+import { Avatar } from "@react-native-material/core";
 
 const Home = () => {
 
@@ -17,6 +20,7 @@ const Home = () => {
   const handleNavigate = () => {
     navigation.navigate('settings/profil')
   }
+  const user = useSelector(state => state.users.value)
 
   return (
     <ScrollView>
@@ -26,7 +30,11 @@ const Home = () => {
           flexDirection: "column"
         }}>
           <Text style={dashboardStyles.userName}>
-            {fullDataUserConnected && fullDataUserConnected.pseudo && fullDataUserConnected.pseudo}
+            {user && user.map(val => {
+              if (fullDataUserConnected && fullDataUserConnected._id === val._id) {
+                return val.pseudo
+              }
+            })}
           </Text>
           <Text style={{ fontWeight: "bold", color: "#fff" }}>{compteUser && compteUser.numero && "Votre numéro : " + compteUser.numero}</Text>
         </View>
@@ -38,7 +46,12 @@ const Home = () => {
         }}>
           <Icon name='search' style={{ fontSize: 30, color: "#fff", fontWeight: 100 }} />
           <TouchableOpacity onPress={() => handleNavigate()}>
-            <Image source={require("../../images/cash.jpeg")} style={dashboardStyles.userImg} />
+            {user && user.map(val => {
+              if (fullDataUserConnected && fullDataUserConnected._id === val._id) {
+                return <Avatar key={val._id} label={val && val.pseudo && val.pseudo} size={30} color='#fff'
+                  image={{ uri: val && baseUrlFile + "/" + val.url }} style={dashboardStyles.userImg} />
+              }
+            })}
           </TouchableOpacity>
         </View>
       </View>
@@ -83,7 +96,7 @@ const Home = () => {
                   fontWeight: "bold",
                   color: "#333"
                 }}
-              >0</Text>
+              >0 OBT</Text>
             </ScrollView>
           </View>
         </View>
@@ -118,7 +131,7 @@ const Home = () => {
                   fontWeight: "bold",
                   color: "#333"
                 }}
-              >0</Text>
+              >0 OBT</Text>
             </ScrollView>
           </View>
         </View>
@@ -163,7 +176,7 @@ const Home = () => {
                   color: "#333"
                 }}
               >
-                {compteUser && compteUser.solde && compteUser.solde}
+                {compteUser && compteUser.solde && compteUser.solde} OBT
               </Text>
             </ScrollView>
           </View>
@@ -201,7 +214,7 @@ const Home = () => {
                   color: "#333"
                 }}
               >
-                {compteUser && compteUser.solde && compteUser.solde / 100} %
+                {compteUser && compteUser.solde && compteUser.solde / 100} % OBT
               </Text>
             </ScrollView>
           </View>

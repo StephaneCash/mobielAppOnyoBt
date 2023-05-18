@@ -32,6 +32,7 @@ const Routes = () => {
                             <Stack.Screen name="videoPlayer" component={VideoPlayer} />
                             <Stack.Screen name="settings/profil" component={EditUser} />
                             <Stack.Screen name="videos/add" component={AddVideo} />
+                            <Stack.Screen name="editprofil" component={EditUser} />
                         </>
                     ) : (
                         <>

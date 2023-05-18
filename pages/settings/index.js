@@ -29,7 +29,14 @@ const Settings = () => {
       justifyContent: "center"
     }}>
       <TouchableOpacity
-        style={{ borderRadius: 10, borderWidth: 1, padding: 10 }}
+        style={{ borderRadius: 10, borderWidth: 1, padding: 10,  }}
+        onPress={()=>navigationRoute.navigate("editprofil")}
+      >
+        <Text>Modifier profil photo</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={{ borderRadius: 10, borderWidth: 1, padding: 10, marginTop: 10 }}
         onPress={logoutHandle}
       >
         <Text>Déconnexion</Text>

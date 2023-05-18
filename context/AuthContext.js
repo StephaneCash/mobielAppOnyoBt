@@ -21,19 +21,21 @@ const ContextAppGlobal = ({ children }) => {
     }
 
     const getUserById = async () => {
-        axios.get(`${baseUrl}/users/${userConnected && userConnected.user}`)
-            .then(res => {
-                setFullDataUserConnected(res.data)
-            })
-            .catch(err => {
-                console.log(err, " ERREUR")
-            })
+        if (userConnected && userConnected.user) {
+            axios.get(`${baseUrl}/users/${userConnected && userConnected.user}`)
+                .then(res => {
+                    setFullDataUserConnected(res.data)
+                })
+                .catch(err => {
+                    console.log(err, " ERREUR")
+                })
+        }
     }
 
     const getCompteUser = async () => {
         axios.get(`${baseUrl}/comptes/${userConnected && userConnected.user}`)
             .then(res => {
-                setCompteUser(res.data)
+                setCompteUser(res.data);
             })
             .catch(err => {
                 console.log(err, " ERREUR")
@@ -50,6 +52,12 @@ const ContextAppGlobal = ({ children }) => {
             getCompteUser();
         }
     }, [userConnected]);
+    console.log( " __________________________________________________")
+
+    console.log(userConnected , " USER")
+
+    console.log( " __________________________________________________")
+    
 
     return (
         <ContextApp.Provider

@@ -12,7 +12,7 @@ import usersSlice, { getAllUsers } from './reducers/User.reducer';
 const store = configureStore({
   reducer: combineReducers({
     posts: postSlice.reducer,
-    users: usersSlice.reducer
+    users: usersSlice.reducer,
   })
 });
 

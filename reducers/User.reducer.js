@@ -14,6 +14,19 @@ export const getAllUsers = createAsyncThunk("users/getData", async (arg, {
     }
 });
 
+export const changeProfil = createAsyncThunk("users/change", async (arg, {
+    rejectWithValue
+}) => {
+    console.log(arg , " USER REDUX")
+    try {
+        const response = await axios.put(`${baseUrl}/users/${arg && arg.id && arg.id}`, arg.data, arg.config);
+        return response.data
+    } catch (error) {
+        rejectWithValue(error.response);
+        console.log(error, " ERREUR")
+    }
+});
+
 export const usersSlice = createSlice({
     name: "users",
     initialState: {
@@ -36,6 +49,22 @@ export const usersSlice = createSlice({
             state.loading = false;
             state.isSuccess = false;
         },
+        // UPDATE USER
+        [changeProfil.pending]: (state, action) => {
+            state.loading = true;
+        },
+        [changeProfil.fulfilled]: (state, action) => {
+            state.loading = false;
+            state.isSuccess = true;
+            state.value = state.value.filter(val => {
+                return val._id !== action.payload._id;
+            })
+            state.value.push(action.payload);
+        },
+        [changeProfil.rejected]: (state, action) => {
+            state.loading = false;
+            state.isSuccess = false;
+        }
     }
 })
 

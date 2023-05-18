@@ -2,13 +2,13 @@ import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, FlatList, 
 import React, { useContext, useEffect, useState } from 'react'
 import Video from 'react-native-video';
 import { baseUrlFile } from '../../bases/basesUrl';
-import { dateParserFunction } from '../../outils/constantes';
+import { dateParserFunction, timestampParser } from '../../outils/constantes';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import { ContextApp } from '../../context/AuthContext';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { commentPost, getAllPosts, likePostHanlde } from '../../reducers/Posts.reducer';
 import { Avatar } from "@react-native-material/core";
 
@@ -28,6 +28,7 @@ const VideoPlayer = ({ route, navigation }) => {
     const users = useSelector(state => state.users.value);
 
     const dataArr = useSelector(state => state.posts.value)
+    const isLoadng = useSelector(state => state.posts.loading)
 
     const likePost = () => {
         let data = {}
@@ -66,9 +67,7 @@ const VideoPlayer = ({ route, navigation }) => {
     useEffect(() => {
         dataArr && dataArr.map(val => {
             return val.likers && val.likers.map(value => {
-                //console.log(value, " ICI CEST DATA")
                 if (fullDataUserConnected && fullDataUserConnected._id === value) {
-                    //    console.log(value && fullDataUserConnected._id, value, " TEST VLAUE")
                     return setIsLike(1);
                 } else {
                     return setIsLike(0);
@@ -81,14 +80,18 @@ const VideoPlayer = ({ route, navigation }) => {
         setShowComment(!showComment)
     };
 
-    let arrIndex = []
+    let arrIndex = [];
+
+    useEffect(() => {
+        setValueSearch("")
+    }, [isLoadng])
 
     return (
         <View style={styles.mainPlayerView}>
             <View style={{ height: height / 3.9, backgroundColor: "gray", width: "100%" }}>
                 <Video
                     style={styles.videoP}
-                    source={{ uri: post && baseUrlFile + post.video }}
+                    source={{ uri: post && baseUrlFile + "/" + post.video }}
                     controls={true}
                     resizeMode="contain"
                     isLooping
@@ -229,7 +232,7 @@ const VideoPlayer = ({ route, navigation }) => {
                             placeholderTextColor={'#000'}
                         />
                         <TouchableOpacity style={styles.button} onPress={commeentPost} >
-                            <Text style={styles.textButton}>Commenter</Text>
+                            <Ionicons name="send" style={styles.textButton} />
                         </TouchableOpacity>
                     </View>
                 }
@@ -238,19 +241,24 @@ const VideoPlayer = ({ route, navigation }) => {
                     showComment &&
                     <FlatList
                         data={post && post.comments && post.comments}
-                        style={{ marginBottom: 10,  }}
+                        style={{ marginBottom: 10, }}
                         renderItem={({ item, index }) => {
                             return users.map(user => {
                                 arrIndex.push(index)
                                 if (user._id === item.commenterId) {
-                                    return <View key={index} style={{
+                                    return <View key={user._id} style={{
                                         flexDirection: "column",
                                         flex: 1
                                     }}>
                                         <View style={styles.viewComment} >
                                             <Avatar label={item.commenterPseudo} size={30} color='#fff'
-                                                image={{ uri: "https://mui.com/statisc/images/avatar/1.jpg" }} />
+                                                image={{ uri: user && baseUrlFile + "/" + user.url }} />
+                                            <Text key={index} style={{ color: "#fff" }}>{item.commenterPseudo}</Text>
+
                                             <Text key={index} style={{ color: "#fff" }}>{item.text}</Text>
+                                            <Text key={index} style={{ color: "#fff" }}>{timestampParser(item.timestamp)}</Text>
+
+
                                         </View>
                                     </View>
                                 }
@@ -282,7 +290,14 @@ const VideoPlayer = ({ route, navigation }) => {
                                     return <View style={styles.postView}>
                                         <View style={styles.postTitle}>
                                             <View style={styles.viewImage}>
-                                                <Image source={require("../../images/cash.jpeg")} style={styles.image} />
+                                                {
+                                                    users && users.map((val, index) => {
+                                                        if (val._id === item.posterId) {
+                                                            return <Avatar key={index} style={{ backgroundColor: "silver", }} tintColor='#fff' label={val && val.pseudo && val.pseudo} size={40} color='#fff'
+                                                                image={{ uri: val && baseUrlFile + "/" + val.url }} />
+                                                        }
+                                                    })
+                                                }
                                                 <View style={styles.namePoster}>
                                                     <Text style={{ color: "#000", fontSize: 16 }}>
                                                         {

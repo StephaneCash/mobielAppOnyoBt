@@ -6,6 +6,8 @@ import { useSelector, useDispatch } from "react-redux"
 import { ContextApp } from '../../context/AuthContext';
 import { dateParserFunction } from '../../outils/constantes';
 import Feather from 'react-native-vector-icons/Feather';
+import { Avatar } from "@react-native-material/core";
+import { baseUrlFile } from '../../bases/basesUrl.js';
 
 
 const Videos = () => {
@@ -25,8 +27,6 @@ const Videos = () => {
 
   const handleCountNumberViews = (val) => {
     views.push(val);
-    // console.log('__________________________________________________________________________')
-    // console.log(views.length , " ::::::::::::DATA DATA")
   }
 
   return (
@@ -61,12 +61,20 @@ const Videos = () => {
               return <View style={styles.postView}>
                 <View style={styles.postTitle}>
                   <View style={styles.viewImage}>
-                    <Image source={require("../../images/cash.jpeg")} style={styles.image} />
+                    {
+                      users && users.map(val => {
+                        if (item && item.posterId && item.posterId === val._id) {
+                          return <Avatar key={val._id} style={{backgroundColor:"silver",}} tintColor='#fff' label={val && val.pseudo && val.pseudo} size={40} color='#fff'
+                            image={{ uri: val && baseUrlFile + "/" + val.url }} />
+                        }
+                      })
+                    }
+
                     <View style={styles.namePoster}>
                       <Text style={{ color: "#000", fontSize: 16 }}>
                         {
                           users && users.map(val => {
-                            if (val._id ===  item.posterId) {
+                            if (item && item.posterId && item.posterId === val._id) {
                               return val.pseudo
                             }
                           })
