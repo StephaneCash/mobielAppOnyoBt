@@ -114,7 +114,6 @@ const SignUp = () => {
 
 const styles = StyleSheet.create({
   mainView: {
-    marginTop: 40,
     flex: 1,
     flexDirection: 'column',
     justifyContent: "center",
@@ -130,7 +129,7 @@ const styles = StyleSheet.create({
   },
   formView: {
     width: "100%",
-    height: "80%",
+    height: "70%",
     backgroundColor: "#006abd",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30

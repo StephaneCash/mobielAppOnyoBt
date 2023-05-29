@@ -102,7 +102,6 @@ const Login = () => {
 
 const styles = StyleSheet.create({
     mainView: {
-        marginTop: 40,
         flex: 1,
         flexDirection: 'column',
         justifyContent: "center",

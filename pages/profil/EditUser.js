@@ -53,7 +53,7 @@ const EditUser = () => {
             let form = {};
             form.data = body;
             form.config = config;
-            form.id = fullDataUserConnected && fullDataUserConnected._id;
+            form.id = fullDataUserConnected && fullDataUserConnected._id && fullDataUserConnected._id;
 
             console.log(fullDataUserConnected && fullDataUserConnected._id, " USER USER USER")
 

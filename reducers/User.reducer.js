@@ -17,9 +17,9 @@ export const getAllUsers = createAsyncThunk("users/getData", async (arg, {
 export const changeProfil = createAsyncThunk("users/change", async (arg, {
     rejectWithValue
 }) => {
-    console.log(arg , " USER REDUX")
+    console.log(arg.id , " USER REDUX")
     try {
-        const response = await axios.put(`${baseUrl}/users/${arg && arg.id && arg.id}`, arg.data, arg.config);
+        const response = await axios.put(`${baseUrl}/users/${arg.id}`, arg.data, arg.config);
         return response.data
     } catch (error) {
         rejectWithValue(error.response);

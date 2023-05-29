@@ -60,9 +60,9 @@ const TabsBottom = () => {
         name="conferences"
         component={Conferences}
         options={{
-          tabBarLabel: 'Conférences',
+          tabBarLabel: 'Contacts',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="human-capacity-increase" color={"#fff"} size={25} />
+            <MaterialCommunityIcons name="phone" color={"#fff"} size={25} />
           ),
           tabBarBadge: 0,
         }}
