@@ -113,14 +113,14 @@ const styles = StyleSheet.create({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
     },
     formView: {
         width: "100%",
-        height: "70%",
+        flex:1,
         backgroundColor: "#006abd",
         borderTopLeftRadius: 30,
-        borderTopRightRadius: 30
+        borderTopRightRadius: 30,
     },
     logoImage: {
         width: "30%",

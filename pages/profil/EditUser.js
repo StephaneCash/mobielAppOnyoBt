@@ -36,7 +36,7 @@ const EditUser = () => {
 
             const body = new FormData();
 
-            body.append('image', {
+            body.append('file', {
                 uri: pickerResult.fileCopyUri,
                 type: pickerResult.type,
                 name: pickerResult.name,
@@ -54,8 +54,6 @@ const EditUser = () => {
             form.data = body;
             form.config = config;
             form.id = fullDataUserConnected && fullDataUserConnected._id && fullDataUserConnected._id;
-
-            console.log(fullDataUserConnected && fullDataUserConnected._id, " USER USER USER")
 
             dispatch(changeProfil(form))
 

@@ -34,6 +34,23 @@ export const rechargeCompte = createAsyncThunk("comptes/add", async (arg, {
     }
 });
 
+export const reduceCompte = createAsyncThunk("comptes/reduce", async (arg, {
+    rejectWithValue
+}) => {
+    try {
+        const response = await axios.patch(`${baseUrl}/comptes/reduce/${arg && arg}`, {
+            num: 0.002
+        });
+        if (response.status === 200) {
+            return response.data
+        }
+    } catch (error) {
+        rejectWithValue(error.response);
+        console.log(error && error.response && error.response.data && error.response.data.message, " ERREUR");
+        Alert.alert(error && error.response && error.response.data && error.response.data.message);
+    }
+});
+
 
 export const compteslice = createSlice({
     name: "comptes",
@@ -71,6 +88,22 @@ export const compteslice = createSlice({
             state.isSuccess = true;
         },
         [rechargeCompte.rejected]: (state, action) => {
+            state.loading = false;
+            state.isSuccess = false;
+        },
+        [reduceCompte.pending]: (state, action) => {
+            state.loading = true;
+        },
+        [reduceCompte.fulfilled]: (state, action) => {
+            state.loading = false;
+            if (action.payload) {
+                state.value = action.payload;
+            } else {
+                state.value = state.value;
+            }
+            state.isSuccess = true;
+        },
+        [reduceCompte.rejected]: (state, action) => {
             state.loading = false;
             state.isSuccess = false;
         },

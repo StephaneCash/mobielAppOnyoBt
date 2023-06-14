@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   },
   logoView: {
     width: "100%",
-    height: "30%",
+    height: "20%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   },
   formView: {
     width: "100%",
-    height: "70%",
+    flex:1,
     backgroundColor: "#006abd",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30

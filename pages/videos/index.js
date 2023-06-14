@@ -1,5 +1,5 @@
-import { View, Text, FlatList, ActivityIndicator, StyleSheet, TextInput, Image, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, ActivityIndicator, StyleSheet, TextInput, Image, TouchableOpacity, Alert } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import { useNavigation } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux"
@@ -8,6 +8,8 @@ import { Avatar } from "@react-native-material/core";
 import { baseUrlFile } from '../../bases/basesUrl.js';
 import moment from 'moment';
 import { getAllPosts } from '../../reducers/Posts.reducer.js';
+import { reduceCompte } from '../../reducers/Compte.reducer.js';
+import { ContextApp } from '../../context/AuthContext.js';
 
 
 const Videos = () => {
@@ -15,11 +17,14 @@ const Videos = () => {
   const navigation = useNavigation();
   const [valueSearch, setValueSearch] = useState("");
 
+  const { fullDataUserConnected } = useContext(ContextApp);
+
   const dispatch = useDispatch();
   moment.locale('fr');
 
   const data = useSelector(state => state.posts.value);
   const users = useSelector(state => state.users.value);
+  const compte = useSelector(state => state.comptes.value);
 
   const views = [];
 
@@ -28,8 +33,17 @@ const Videos = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllPosts())
+    dispatch(getAllPosts());
   }, []);
+
+  const viewPlayerVideo = (item) => {
+    if (compte && compte.solde > 1) {
+      dispatch(reduceCompte(fullDataUserConnected && fullDataUserConnected._id))
+      navigation.navigate('videoPlayer', { data: item });
+    } else {
+      Alert.alert('Votre solde est insuffisant pour regarder cette vidéo')
+    }
+  }
 
   return (
     <View
@@ -96,7 +110,7 @@ const Videos = () => {
                 <TouchableOpacity style={styles.touchableImage}
                   onPress={() => {
                     handleCountNumberViews(item)
-                    navigation.navigate('videoPlayer', { data: item })
+                    viewPlayerVideo(item)
                   }}
                 >
                   <Image source={require("../../images/sad.jpg")} style={styles.coverImage} />
