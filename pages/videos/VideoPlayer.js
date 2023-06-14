@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { commentPost, getAllPosts, likePostHanlde } from '../../reducers/Posts.reducer';
 import { Avatar } from "@react-native-material/core";
+import moment from 'moment';
 
 const VideoPlayer = ({ route, navigation }) => {
 
@@ -66,7 +67,7 @@ const VideoPlayer = ({ route, navigation }) => {
 
     useEffect(() => {
         dataArr && dataArr.map(val => {
-            return val.likers && val.likers.map(value => {
+            return val && val.likers && val.likers.map(value => {
                 if (fullDataUserConnected && fullDataUserConnected._id === value) {
                     return setIsLike(1);
                 } else {
@@ -119,7 +120,7 @@ const VideoPlayer = ({ route, navigation }) => {
                 }}
             >
                 <Text>
-                    Publié {dateParserFunction(post && post.createdAt)}
+                    {moment(post && post.createdAt).fromNow()}
                 </Text>
             </View>
 
@@ -309,7 +310,7 @@ const VideoPlayer = ({ route, navigation }) => {
                                                         }
                                                     </Text>
                                                     <Text>
-                                                        Publié {dateParserFunction(item && item.createdAt)}
+                                                        {moment(item && item.createdAt).fromNow()}
                                                     </Text>
                                                 </View>
                                             </View>

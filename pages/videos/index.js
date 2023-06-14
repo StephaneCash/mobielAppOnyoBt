@@ -8,6 +8,7 @@ import { dateParserFunction } from '../../outils/constantes';
 import Feather from 'react-native-vector-icons/Feather';
 import { Avatar } from "@react-native-material/core";
 import { baseUrlFile } from '../../bases/basesUrl.js';
+import moment from 'moment';
 
 
 const Videos = () => {
@@ -16,6 +17,7 @@ const Videos = () => {
   const [valueSearch, setValueSearch] = useState("");
 
   const dispatch = useDispatch();
+  moment.locale('fr');
 
   const { fullDataUserConnected } = useContext(ContextApp);
 
@@ -64,7 +66,7 @@ const Videos = () => {
                     {
                       users && users.map(val => {
                         if (item && item.posterId && item.posterId === val._id) {
-                          return <Avatar key={val._id} style={{backgroundColor:"silver",}} tintColor='#fff' label={val && val.pseudo && val.pseudo} size={40} color='#fff'
+                          return <Avatar key={val._id} style={{ backgroundColor: "silver", }} tintColor='#fff' label={val && val.pseudo && val.pseudo} size={40} color='#fff'
                             image={{ uri: val && baseUrlFile + "/" + val.url }} />
                         }
                       })
@@ -82,7 +84,7 @@ const Videos = () => {
                       </Text>
 
                       <Text>
-                        Publié {dateParserFunction(item && item.createdAt)}
+                        {moment(item && item.createdAt).fromNow()}...
                       </Text>
                     </View>
                   </View>
