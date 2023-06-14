@@ -56,9 +56,9 @@ const AddVideo = () => {
             let form = {};
             form.data = body;
             form.config = config;
-            
 
-           dispatch(createPost(form))
+
+            dispatch(createPost(form))
 
             setUploading(false)
 
@@ -83,7 +83,8 @@ const AddVideo = () => {
         >
             <Text style={{
                 fontSize: 16,
-                fontWeight: "bold"
+                fontWeight: "bold",
+                color: "#666"
             }}>Publier vos vidéos</Text>
             <TextInput style={{
                 height: 100,
@@ -108,7 +109,7 @@ const AddVideo = () => {
                             width: "100%"
                         }}
                         onPress={handleUpload} >
-                        <Text style={{ textAlign: "center", color: "#fff" }}>Choisir une vidéo</Text>
+                        <Text style={{ textAlign: "center", color: "#fff", fontSize: 17 }}>Choisir une vidéo</Text>
                     </Pressable>
             }
 

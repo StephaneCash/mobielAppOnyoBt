@@ -56,7 +56,7 @@ const VideoPlayer = ({ route, navigation }) => {
 
     useEffect(() => {
         dataArr && dataArr.map(val => {
-            if (route && route.params && route.params.data && route.params.data._id === val._id) {
+            if (route && route.params && route.params.data && val && val._id && route.params.data._id === val._id) {
                 let value = val;
                 setPost(value)
                 return setPost(value)
@@ -83,7 +83,7 @@ const VideoPlayer = ({ route, navigation }) => {
     let arrIndex = [];
 
     useEffect(() => {
-        setValueSearch("")
+        setValueSearch("");
     }, [isLoadng])
 
     return (
@@ -118,7 +118,7 @@ const VideoPlayer = ({ route, navigation }) => {
                     paddingHorizontal: 13,
                 }}
             >
-                <Text>
+                <Text style={{ color: '#444' }}>
                     {moment(post && post.createdAt).fromNow()}
                 </Text>
             </View>
@@ -137,19 +137,21 @@ const VideoPlayer = ({ route, navigation }) => {
                         flexDirection: "row",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        width: "35%"
+                        width: "35%",
+                        color: "#222"
                     }}
                 >
                     <TouchableOpacity style={{
                         flexDirection: "row",
                         alignItems: "center",
+                        color: '#666'
                     }}
                         onPress={likePost}
                     >
                         {
-                            isLike === 1 ? <AntDesign size={30} name='like1' color={"#0668b4"} /> : <AntDesign size={30} name='like2' />
+                            isLike === 1 ? <AntDesign size={30} name='like1' color={"#666"} /> : <AntDesign size={30} name='like2' color={"#666"} />
                         }
-                        <Text>
+                        <Text style={{ color: '#666' }}>
                             {
                                 post && post.likers && post.likers.length
                             }
@@ -163,9 +165,9 @@ const VideoPlayer = ({ route, navigation }) => {
                         onPress={disLikePost}
                     >
                         {
-                            isLike === 2 ? <AntDesign size={30} name='dislike1' color={"#0668b4"} /> : <AntDesign size={30} name='dislike2' />
+                            isLike === 2 ? <AntDesign size={30} name='dislike1' color={"#666"} /> : <AntDesign size={30} color={"#666"} name='dislike2' />
                         }
-                        <Text>0</Text>
+                        <Text style={{ color: "#666" }}>0</Text>
                     </TouchableOpacity>
                 </TouchableOpacity>
 
@@ -175,8 +177,8 @@ const VideoPlayer = ({ route, navigation }) => {
                         alignItems: "center",
 
                     }}>
-                        <MaterialCommunityIcons size={30} name='share-outline' />
-                        <Text>Partager</Text>
+                        <MaterialCommunityIcons color={"#666"} size={30} name='share-outline' />
+                        <Text style={{ color: '#666' }}>Partager</Text>
                     </View>
                 </TouchableOpacity>
 
@@ -186,7 +188,7 @@ const VideoPlayer = ({ route, navigation }) => {
                         alignItems: "center",
 
                     }}>
-                        <AntDesign size={30} name='download' />
+                        <AntDesign color={'#666'} size={30} name='download' />
                     </View>
                 </TouchableOpacity>
             </View>
@@ -308,7 +310,7 @@ const VideoPlayer = ({ route, navigation }) => {
                                                             })
                                                         }
                                                     </Text>
-                                                    <Text>
+                                                    <Text style={{color:"#666"}}>
                                                         {moment(item && item.createdAt).fromNow()}
                                                     </Text>
                                                 </View>

@@ -59,7 +59,7 @@ const Videos = () => {
         <TouchableOpacity onPress={() => {
           navigation.navigate('videos/add')
         }}>
-          <Feather name="plus-circle" size={40} />
+          <Feather name="plus" color={"#666"} size={30} />
         </TouchableOpacity>
       </View>
       {
@@ -74,13 +74,14 @@ const Videos = () => {
             data={data}
             style={{ marginBottom: 10 }}
             renderItem={({ item, index }) => {
-              return <View style={styles.postView}>
+              return <View style={styles.postView} key={index}>
                 <View style={styles.postTitle}>
                   <View style={styles.viewImage}>
                     {
                       users && users.map(val => {
                         if (item && item.posterId && item.posterId === val._id) {
-                          return <Avatar key={val._id} style={{ backgroundColor: "silver", }} tintColor='#fff' label={val && val.pseudo && val.pseudo} size={40} color='#fff'
+                          return <Avatar key={val._id} style={{ backgroundColor: "silver", }} tintColor='#fff'
+                            label={val && val.pseudo && val.pseudo} size={40} color='#fff'
                             image={{ uri: val && baseUrlFile + "/" + val.url }} />
                         }
                       })
@@ -97,7 +98,7 @@ const Videos = () => {
                         }
                       </Text>
 
-                      <Text>
+                      <Text style={{color:'#444'}}>
                         {moment(item && item.createdAt).fromNow()}...
                       </Text>
                     </View>
@@ -124,7 +125,8 @@ const Videos = () => {
               </View>
 
             }}
-            keyExtractor={item => item && item._id}
+            
+            keyExtractor={(item) => item && item._id}
           />
       }
     </View>

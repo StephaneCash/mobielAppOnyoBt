@@ -22,7 +22,7 @@ const RechargeCompte = () => {
     }
     return (
         <View style={styles.mainView}>
-            <Text>RECHARGE COMPTE</Text>
+            <Text style={{ fontSize: 17, color: '#666' }}>RECHARGE COMPTE</Text>
             <TextInput style={styles.textInput}
                 value={value} onChangeText={(value) => setvalue(value)}
                 placeholder='Entrer votre code'

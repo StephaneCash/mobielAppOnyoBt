@@ -61,24 +61,23 @@ const Home = () => {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        marginLeft: 15,
-        marginRight: 15,
-        gap: 20,
         marginBottom: 20,
-        marginTop: 20
+        marginTop: 20,
+        padding: 10
       }}>
         <View style={{
           flexDirection: 'column',
           backgroundColor: "#fff",
           elevation: 2,
           borderRadius: 5,
-          width: 170,
+          width: "48%",
           padding: 15
         }}>
           <Text
             style={{
               fontSize: 16,
-              marginBottom: 6
+              marginBottom: 6,
+              color: '#000'
             }}
           >Transactions/jour</Text>
           <View
@@ -107,20 +106,23 @@ const Home = () => {
           backgroundColor: "#fff",
           elevation: 2,
           borderRadius: 5,
-          width: 170,
+          width: "48%",
           padding: 15
         }}>
           <Text
             style={{
               fontSize: 16,
-              marginBottom: 6
+              marginBottom: 6,
+
+              color: '#000'
             }}
           >Argent gagné</Text>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
-              gap: 10
+              gap: 10,
+
             }}
           >
             <SVG_MONEY width={60} height={60} />
@@ -142,22 +144,22 @@ const Home = () => {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        marginLeft: 15,
-        marginRight: 15,
-        gap: 20
+        padding: 10
+
       }}>
         <View style={{
           flexDirection: 'column',
           backgroundColor: "#fff",
           elevation: 2,
           borderRadius: 5,
-          width: 170,
+          width: "48%",
           padding: 15
         }}>
           <Text
             style={{
               fontSize: 16,
-              marginBottom: 6
+              marginBottom: 6,
+              color: '#000'
             }}
           >Solde</Text>
           <View
@@ -188,13 +190,14 @@ const Home = () => {
           backgroundColor: "#fff",
           elevation: 2,
           borderRadius: 5,
-          width: 170,
+          width: "48%",
           padding: 15
         }}>
           <Text
             style={{
               fontSize: 16,
-              marginBottom: 6
+              marginBottom: 6,
+              color: '#000z='
             }}
           >Pourcentage</Text>
           <View
@@ -226,16 +229,15 @@ const Home = () => {
         padding: 15,
         fontSize: 20,
         fontWeight: "bold",
+        color: "#000"
       }}>Opérations</Text>
 
       <View style={{
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        marginLeft: 15,
-        marginRight: 15,
-        gap: 20,
-        marginTop: 10
+        marginTop: 10,
+        padding: 10
       }}>
 
         <TouchableOpacity style={{
@@ -243,14 +245,15 @@ const Home = () => {
           backgroundColor: "#fff",
           elevation: 2,
           borderRadius: 10,
-          width: 170,
+          width: "48%",
           padding: 15
         }}>
           <Text
             style={{
               fontSize: 16,
               textAlign: "center",
-              fontWeight: "600"
+              fontWeight: "600",
+              color: '#000'
             }}
           >RETIRER</Text>
         </TouchableOpacity>
@@ -262,14 +265,15 @@ const Home = () => {
             backgroundColor: "#fff",
             elevation: 2,
             borderRadius: 10,
-            width: 170,
+            width: '48%',
             padding: 15
           }}>
           <Text
             style={{
               fontSize: 16,
               textAlign: "center",
-              fontWeight: "600"
+              fontWeight: "600",
+              color: '#000'
             }}
           >RECHARGER</Text>
         </TouchableOpacity>

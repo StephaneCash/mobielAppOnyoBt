@@ -1,56 +1,86 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-const Contact = ({ contact }) => {
+import React, { memo } from 'react';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+
+import PropTypes from 'prop-types';
+import Avatar from './Avatar';
+
+const getAvatarInitials = (textString) => {
+    if (!textString) return '';
+    const text = textString.trim();
+    const textSplit = text.split(' ');
+    if (textSplit.length <= 1) return text.charAt(0);
+    const initials =
+        textSplit[0].charAt(0) + textSplit[textSplit.length - 1].charAt(0);
+    return initials;
+};
+
+const Contact = (props) => {
+  
+    const { item, onPress } = props;
     return (
-        <View style={styles.contactCon}>
-            <View style={styles.imgCon}>
-                <View style={styles.placeholder}>
-                    <Text style={styles.txt}>{contact?.givenName[0]}</Text>
+        <View>
+            <TouchableOpacity onPress={() => onPress(item)}>
+                <View style={styles.itemContainer}>
+                    <View style={styles.leftElementContainer}>
+                        <Avatar
+                            img={
+                                item.hasThumbnail ?
+                                    { uri: item.thumbnailPath } : undefined
+                            }
+                            placeholder={getAvatarInitials(
+                                `${item.givenName} ${item.familyName}`,
+                            )}
+                            width={40}
+                            height={40}
+                        />
+                    </View>
+                    <View style={styles.rightSectionContainer}>
+                        <View style={styles.mainTitleContainer}>
+                            <Text
+                                style={
+                                    styles.titleStyle
+                                }>{`${item.givenName} ${item.familyName}`}</Text>
+                        </View>
+                    </View>
                 </View>
-            </View>
-            <View style={styles.contactDat}>
-                <Text style={styles.name}>
-                    {contact?.givenName} {contact?.middleName && contact.middleName + ' '}
-                    {contact?.familyName}
-                </Text>
-                <Text style={styles.phoneNumber}>
-                    {contact?.phoneNumbers[0]?.number}
-                </Text>
-            </View>
+            </TouchableOpacity>
         </View>
     );
 };
+
 const styles = StyleSheet.create({
-    contactCon: {
-        flex: 1,
+    itemContainer: {
         flexDirection: 'row',
-        padding: 5,
-        borderBottomWidth: 0.5,
-        borderBottomColor: '#d9d9d9',
+        minHeight: 44,
+        height: 63,
     },
-    imgCon: {},
-    placeholder: {
-        width: 55,
-        height: 55,
-        borderRadius: 30,
-        overflow: 'hidden',
-        backgroundColor: '#d9d9d9',
+    leftElementContainer: {
+        justifyContent: 'center',
         alignItems: 'center',
-        justifyContent: 'center',
+        flex: 2,
+        paddingLeft: 13,
     },
-    contactDat: {
+    rightSectionContainer: {
+        marginLeft: 18,
+        flexDirection: 'row',
+        flex: 20,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderColor: 'silver',
+    },
+    mainTitleContainer: {
+        justifyContent: 'center',
+        flexDirection: 'column',
         flex: 1,
-        justifyContent: 'center',
-        paddingLeft: 5,
     },
-    txt: {
-        fontSize: 18,
-    },
-    name: {
+    titleStyle: {
         fontSize: 16,
-    },
-    phoneNumber: {
-        color: '#888',
+        color:'#555'
     },
 });
-export default Contact;
+
+export default memo(Contact);
+
+Contact.propTypes = {
+    item: PropTypes.object,
+    onPress: PropTypes.func,
+};

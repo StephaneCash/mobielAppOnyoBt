@@ -1,5 +1,5 @@
 import { TextInput, Text, View, Alert, Pressable } from 'react-native';
-import DocumentPicker, {types } from 'react-native-document-picker'
+import DocumentPicker, { types } from 'react-native-document-picker'
 import { useContext, useState } from 'react'
 import Loader from '../videos/Loader';
 import { ContextApp } from '../../context/AuthContext.js';
@@ -80,7 +80,8 @@ const EditUser = () => {
         >
             <Text style={{
                 fontSize: 16,
-                fontWeight: "bold"
+                fontWeight: "bold",
+                color: "#888"
             }}>Change votre photo de profil</Text>
             {
                 isLoading ? <Loader /> :
@@ -93,7 +94,7 @@ const EditUser = () => {
                             width: "100%"
                         }}
                         onPress={handleUpload} >
-                        <Text style={{ textAlign: "center", color: "#fff" }}>Choisir une image</Text>
+                        <Text style={{ textAlign: "center", color: "#fff", fontSize: 17 }}>Choisir une image</Text>
                     </Pressable>
             }
 

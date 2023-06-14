@@ -1,8 +1,7 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import TabsBottom from '../pages/tabs';
-import Search from '../components/search/Search';
 import VideoPlayer from '../pages/videos/VideoPlayer';
 import Login from '../pages/auth/Login';
 import SignUp from '../pages/auth/SignUp';
@@ -36,7 +35,6 @@ const Routes = () => {
                     userConnected && userConnected.token ? (
                         <>
                             <Stack.Screen name="home" component={TabsBottom} />
-                            <Stack.Screen name="search" component={Search} />
                             <Stack.Screen name="videoPlayer" component={VideoPlayer} />
                             <Stack.Screen name="settings/profil" component={EditUser} />
                             <Stack.Screen name="videos/add" component={AddVideo} />
