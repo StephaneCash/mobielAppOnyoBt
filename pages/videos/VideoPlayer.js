@@ -1,8 +1,7 @@
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, FlatList, ActivityIndicator, SafeAreaView, TextInput, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, FlatList, ActivityIndicator, TextInput } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Video from 'react-native-video';
 import { baseUrlFile } from '../../bases/basesUrl';
-import { dateParserFunction, timestampParser } from '../../outils/constantes';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -242,22 +241,23 @@ const VideoPlayer = ({ route, navigation }) => {
                     showComment &&
                     <FlatList
                         data={post && post.comments && post.comments}
+                        keyExtractor={item => item._id}
                         style={{ marginBottom: 10, }}
                         renderItem={({ item, index }) => {
                             return users.map(user => {
                                 arrIndex.push(index)
                                 if (user._id === item.commenterId) {
-                                    return <View key={user._id} style={{
+                                    return <View key={item._id} style={{
                                         flexDirection: "column",
                                         flex: 1
                                     }}>
-                                        <View style={styles.viewComment} >
+                                        <View style={styles.viewComment} key={`${item._id}-1`}>
                                             <Avatar label={item.commenterPseudo} size={30} color='#fff'
                                                 image={{ uri: user && baseUrlFile + "/" + user.url }} />
                                             <Text key={index} style={{ color: "#fff" }}>{item.commenterPseudo}</Text>
 
                                             <Text key={index} style={{ color: "#fff" }}>{item.text}</Text>
-                                            <Text key={index} style={{ color: "#fff" }}>{timestampParser(item.timestamp)}</Text>
+                                            <Text key={index} style={{ color: "#fff" }}>, {moment(item.timestamp).fromNow()}</Text>
 
 
                                         </View>
@@ -265,7 +265,6 @@ const VideoPlayer = ({ route, navigation }) => {
                                 }
                             })
                         }}
-                        keyExtractor={item => item._id}
                     />
                 }
 
@@ -294,7 +293,7 @@ const VideoPlayer = ({ route, navigation }) => {
                                                 {
                                                     users && users.map((val, index) => {
                                                         if (val._id === item.posterId) {
-                                                            return <Avatar key={index} style={{ backgroundColor: "silver", }} tintColor='#fff' label={val && val.pseudo && val.pseudo} size={40} color='#fff'
+                                                            return <Avatar key={val._id} style={{ backgroundColor: "silver", }} tintColor='#fff' label={val && val.pseudo && val.pseudo} size={40} color='#fff'
                                                                 image={{ uri: val && baseUrlFile + "/" + val.url }} />
                                                         }
                                                     })

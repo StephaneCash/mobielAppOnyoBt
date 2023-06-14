@@ -56,8 +56,9 @@ const AddVideo = () => {
             let form = {};
             form.data = body;
             form.config = config;
+            
 
-            dispatch(createPost(form))
+           dispatch(createPost(form))
 
             setUploading(false)
 

@@ -22,12 +22,13 @@ export const createPost = createAsyncThunk("posts/add", async (arg, {
     try {
         const response = await axios.post(`${baseUrl}/posts`, arg.data, arg.config);
         if (response.status === 201) {
-            Alert.alert('Publication effectuée avec succès')
+            Alert.alert('Publication effectuée avec succès');
         }
         return response.data
     } catch (error) {
         rejectWithValue(error.response);
-        console.log(error, " ERREUR")
+        console.log(error, " ERREUR");
+        Alert.alert('Erreur lors du téléchargement...');
     }
 });
 
@@ -86,7 +87,7 @@ export const postSlice = createSlice({
         },
         [createPost.fulfilled]: (state, action) => {
             state.loading = false;
-            state.value.push(action.payload)
+            state.value.unshift(action.payload)
             state.isSuccess = true;
         },
         [createPost.rejected]: (state, action) => {

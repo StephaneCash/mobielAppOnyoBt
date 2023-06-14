@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import TabsBottom from '../pages/tabs';
@@ -9,13 +9,21 @@ import SignUp from '../pages/auth/SignUp';
 import { ContextApp } from '../context/AuthContext';
 import EditUser from '../pages/profil/EditUser';
 import AddVideo from '../pages/videos/AddVideo';
+import RechargeCompte from '../components/recharge/RechargeCompte';
+import { useDispatch } from 'react-redux';
+import { getCompteByUserId } from '../reducers/Compte.reducer';
 
 
 const Stack = createNativeStackNavigator();
 
 const Routes = () => {
 
-    const { userConnected } = useContext(ContextApp);
+    const { userConnected, fullDataUserConnected } = useContext(ContextApp);
+    let dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(getCompteByUserId(fullDataUserConnected && fullDataUserConnected._id));
+    }, [fullDataUserConnected]);
 
     return (
         <NavigationContainer>
@@ -33,6 +41,7 @@ const Routes = () => {
                             <Stack.Screen name="settings/profil" component={EditUser} />
                             <Stack.Screen name="videos/add" component={AddVideo} />
                             <Stack.Screen name="editprofil" component={EditUser} />
+                            <Stack.Screen name="rechargeCompte" component={RechargeCompte} />
                         </>
                     ) : (
                         <>

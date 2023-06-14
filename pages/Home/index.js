@@ -14,13 +14,14 @@ import { Avatar } from "@react-native-material/core";
 
 const Home = () => {
 
-  const { fullDataUserConnected, compteUser } = useContext(ContextApp);
+  const { fullDataUserConnected } = useContext(ContextApp);
   const navigation = useNavigation();
 
   const handleNavigate = () => {
     navigation.navigate('settings/profil')
   }
   const user = useSelector(state => state.users.value)
+  const compte = useSelector(state => state.comptes.value);
 
   return (
     <ScrollView>
@@ -36,7 +37,7 @@ const Home = () => {
               }
             })}
           </Text>
-          <Text style={{ fontWeight: "bold", color: "#fff" }}>{compteUser && compteUser.numero && "Votre numéro : " + compteUser.numero}</Text>
+          <Text style={{ fontWeight: "bold", color: "#fff" }}>{compte && compte.numero && "Votre numéro : " + compte.numero}</Text>
         </View>
         <View style={{
           display: "flex",
@@ -176,7 +177,7 @@ const Home = () => {
                   color: "#333"
                 }}
               >
-                {compteUser && compteUser.solde && compteUser.solde} OBT
+                {compte && compte.solde && compte.solde} OBT
               </Text>
             </ScrollView>
           </View>
@@ -214,7 +215,7 @@ const Home = () => {
                   color: "#333"
                 }}
               >
-                {compteUser && compteUser.solde && compteUser.solde / 100} % OBT
+                {compte && compte.solde && compte.solde / 100} % OBT
               </Text>
             </ScrollView>
           </View>
@@ -254,14 +255,16 @@ const Home = () => {
           >RETIRER</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={{
-          flexDirection: 'column',
-          backgroundColor: "#fff",
-          elevation: 2,
-          borderRadius: 10,
-          width: 170,
-          padding: 15
-        }}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('rechargeCompte')}
+          style={{
+            flexDirection: 'column',
+            backgroundColor: "#fff",
+            elevation: 2,
+            borderRadius: 10,
+            width: 170,
+            padding: 15
+          }}>
           <Text
             style={{
               fontSize: 16,

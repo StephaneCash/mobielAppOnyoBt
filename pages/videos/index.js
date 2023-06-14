@@ -1,14 +1,13 @@
 import { View, Text, FlatList, ActivityIndicator, StyleSheet, TextInput, Image, TouchableOpacity } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import { useNavigation } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux"
-import { ContextApp } from '../../context/AuthContext';
-import { dateParserFunction } from '../../outils/constantes';
 import Feather from 'react-native-vector-icons/Feather';
 import { Avatar } from "@react-native-material/core";
 import { baseUrlFile } from '../../bases/basesUrl.js';
 import moment from 'moment';
+import { getAllPosts } from '../../reducers/Posts.reducer.js';
 
 
 const Videos = () => {
@@ -19,17 +18,18 @@ const Videos = () => {
   const dispatch = useDispatch();
   moment.locale('fr');
 
-  const { fullDataUserConnected } = useContext(ContextApp);
-
   const data = useSelector(state => state.posts.value);
   const users = useSelector(state => state.users.value);
 
-  const isLoading = useSelector(state => state.posts.loading);
   const views = [];
 
   const handleCountNumberViews = (val) => {
     views.push(val);
-  }
+  };
+
+  useEffect(() => {
+    dispatch(getAllPosts())
+  }, []);
 
   return (
     <View
