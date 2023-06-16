@@ -2,6 +2,8 @@ import axios from 'axios';
 import React, { createContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { baseUrl } from '../bases/basesUrl';
+import { useDispatch } from 'react-redux';
+import { getCompteByUserId } from '../reducers/Compte.reducer';
 
 export const ContextApp = createContext();
 
@@ -9,7 +11,8 @@ const ContextAppGlobal = ({ children }) => {
 
     const [userConnected, setUserConnected] = useState(null);
     const [fullDataUserConnected, setFullDataUserConnected] = useState(null);
-    const [compteUser, setCompteUser] = useState(null);
+
+    const dispatch = useDispatch()
 
     const getUserConnected = async () => {
         try {
@@ -32,16 +35,6 @@ const ContextAppGlobal = ({ children }) => {
         }
     }
 
-    const getCompteUser = async () => {
-        axios.get(`${baseUrl}/comptes/${userConnected && userConnected.user}`)
-            .then(res => {
-                setCompteUser(res.data);
-            })
-            .catch(err => {
-                console.log(err, " ERREUR")
-            })
-    }
-
     useEffect(() => {
         getUserConnected();
     }, []);
@@ -49,20 +42,14 @@ const ContextAppGlobal = ({ children }) => {
     useEffect(() => {
         if (userConnected && userConnected.user) {
             getUserById();
-            getCompteUser();
+            dispatch(getCompteByUserId(userConnected && userConnected.user))
         }
     }, [userConnected]);
-    console.log( " __________________________________________________")
-
-    console.log(userConnected , " USER")
-
-    console.log( " __________________________________________________")
-    
 
     return (
         <ContextApp.Provider
             value={{
-                userConnected, setUserConnected, fullDataUserConnected, compteUser
+                userConnected, setUserConnected, fullDataUserConnected,
             }}
         >
             {children}

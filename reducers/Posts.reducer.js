@@ -11,7 +11,7 @@ export const getAllPosts = createAsyncThunk("posts/getData", async (arg, {
         return data
     } catch (error) {
         rejectWithValue(error.response);
-        console.log(error.response)
+        console.log(error.response);
     }
 });
 
@@ -51,6 +51,19 @@ export const likePostHanlde = createAsyncThunk("posts/like", async (arg, {
 
     try {
         const response = await axios.patch(`${baseUrl}/posts/like/${arg.idPost}`, { id: arg.id });
+        return response.data
+    } catch (error) {
+        rejectWithValue(error.response);
+        console.log(error, " ERREUR")
+    }
+});
+
+export const viewPost = createAsyncThunk("posts/like", async (arg, {
+    rejectWithValue
+}) => {
+    console.log(arg)
+    try {
+        const response = await axios.patch(`${baseUrl}/posts/views/${arg._id}`, { id: arg.posterId });
         return response.data
     } catch (error) {
         rejectWithValue(error.response);
@@ -132,6 +145,27 @@ export const postSlice = createSlice({
             })
         },
         [commentPost.rejected]: (state, action) => {
+            state.loading = false;
+            state.isSuccess = false;
+        },
+        //VIEWS ADD
+
+        [viewPost.pending]: (state, action) => {
+            state.loading = true;
+        },
+        [viewPost.fulfilled]: (state, action) => {
+            state.loading = false;
+            state.isSuccess = true;
+            let stateVal = state.value.filter(val => {
+                return val._id === action.payload._id;
+            })
+            stateVal.map(val => {
+                if (val._id !== action.payload._id) {
+                    return val.views.push(action.payload._id)
+                }
+            })
+        },
+        [viewPost.rejected]: (state, action) => {
             state.loading = false;
             state.isSuccess = false;
         },

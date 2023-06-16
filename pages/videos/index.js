@@ -7,8 +7,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import { Avatar } from "@react-native-material/core";
 import { baseUrlFile } from '../../bases/basesUrl.js';
 import moment from 'moment';
-import { getAllPosts } from '../../reducers/Posts.reducer.js';
-import { reduceCompte } from '../../reducers/Compte.reducer.js';
+import { getAllPosts, viewPost } from '../../reducers/Posts.reducer.js';
+import { addSoldeCompte, reduceCompte } from '../../reducers/Compte.reducer.js';
 import { ContextApp } from '../../context/AuthContext.js';
 
 
@@ -30,6 +30,7 @@ const Videos = () => {
 
   const handleCountNumberViews = (val) => {
     views.push(val);
+    dispatch(viewPost(val));
   };
 
   useEffect(() => {
@@ -38,7 +39,7 @@ const Videos = () => {
 
   const viewPlayerVideo = (item) => {
     if (compte && compte.solde > 1) {
-      dispatch(reduceCompte(fullDataUserConnected && fullDataUserConnected._id))
+      dispatch(reduceCompte(fullDataUserConnected && fullDataUserConnected._id));
       navigation.navigate('videoPlayer', { data: item });
     } else {
       Alert.alert('Votre solde est insuffisant pour regarder cette vidéo')
@@ -98,20 +99,25 @@ const Videos = () => {
                         }
                       </Text>
 
-                      <Text style={{color:'#444'}}>
-                        {moment(item && item.createdAt).fromNow()}...
+                      <Text style={{ color: '#444' }}>
+                        {moment(item && item.createdAt).fromNow()}
                       </Text>
                     </View>
                   </View>
                   <View>
-                    <Icon name='options-vertical' color={'#111'} />
+                    <Text style={{ color: "#000" }}>
+                      {
+                        item && item.views && item.views.length
+                      } {" "} vues
+                    </Text>
                   </View>
                 </View>
 
                 <TouchableOpacity style={styles.touchableImage}
                   onPress={() => {
                     handleCountNumberViews(item)
-                    viewPlayerVideo(item)
+                    viewPlayerVideo(item && item._id)
+                    dispatch(addSoldeCompte(item && item.posterId && item.posterId));
                   }}
                 >
                   <Image source={require("../../images/sad.jpg")} style={styles.coverImage} />
@@ -125,7 +131,7 @@ const Videos = () => {
               </View>
 
             }}
-            
+
             keyExtractor={(item) => item && item._id}
           />
       }

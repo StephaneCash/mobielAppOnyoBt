@@ -1,10 +1,6 @@
-import { View, Text, ScrollView, Image, FlatList, TouchableOpacity, Alert } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react';
 import dashboardStyles from './style.js';
-import SVG_TRANSACTION from "../../images/svg/undraw_credit_card_re_blml.svg";
-import SVG_MONEY from "../../images/svg/undraw_wallet_re_cx9u.svg";
-import SOLDE from "../../images/svg/solde.svg";
-import POURCENTAGE from "../../images/svg/pourcentage.svg";
 import { ContextApp } from '../../context/AuthContext.js';
 import { useNavigation } from "@react-navigation/native";
 import Icon from 'react-native-vector-icons/EvilIcons.js';
@@ -22,6 +18,8 @@ const Home = () => {
   }
   const user = useSelector(state => state.users.value)
   const compte = useSelector(state => state.comptes.value);
+
+  console.log(compte, " USER COMPTE")
 
   return (
     <ScrollView>
@@ -60,9 +58,6 @@ const Home = () => {
       <View style={{
         flexDirection: "row",
         justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: 20,
-        marginTop: 20,
         padding: 10
       }}>
         <View style={{
@@ -87,7 +82,6 @@ const Home = () => {
               gap: 10
             }}
           >
-            <SVG_TRANSACTION width={60} height={60} />
             <ScrollView
             >
               <Text
@@ -96,7 +90,8 @@ const Home = () => {
                   fontWeight: "bold",
                   color: "#333"
                 }}
-              >0 OBT</Text>
+              ></Text>
+              <Text style={{ color: "red", fontWeight: "bold", }}>OBT</Text>
             </ScrollView>
           </View>
         </View>
@@ -113,7 +108,6 @@ const Home = () => {
             style={{
               fontSize: 16,
               marginBottom: 6,
-
               color: '#000'
             }}
           >Argent gagné</Text>
@@ -125,7 +119,6 @@ const Home = () => {
 
             }}
           >
-            <SVG_MONEY width={60} height={60} />
             <ScrollView
             >
               <Text
@@ -134,7 +127,12 @@ const Home = () => {
                   fontWeight: "bold",
                   color: "#333"
                 }}
-              >0 OBT</Text>
+              >
+                {
+                  compte && compte.pourcentage && compte.pourcentage
+                }</Text>
+
+              <Text style={{ color: "red", fontWeight: "bold", }}>OBT</Text>
             </ScrollView>
           </View>
         </View>
@@ -143,16 +141,14 @@ const Home = () => {
       <View style={{
         flexDirection: "row",
         justifyContent: "space-between",
-        alignItems: "center",
-        padding: 10
-
+        padding: 10,
       }}>
         <View style={{
           flexDirection: 'column',
           backgroundColor: "#fff",
           elevation: 2,
           borderRadius: 5,
-          width: "48%",
+          width: "100%",
           padding: 15
         }}>
           <Text
@@ -169,7 +165,6 @@ const Home = () => {
               gap: 10
             }}
           >
-            <SOLDE width={60} height={60} />
             <ScrollView
             >
               <Text
@@ -179,47 +174,9 @@ const Home = () => {
                   color: "#333"
                 }}
               >
-                {compte && compte.solde && compte.solde} OBT
+                {compte && compte.solde && compte.solde}
               </Text>
-            </ScrollView>
-          </View>
-        </View>
-
-        <View style={{
-          flexDirection: 'column',
-          backgroundColor: "#fff",
-          elevation: 2,
-          borderRadius: 5,
-          width: "48%",
-          padding: 15
-        }}>
-          <Text
-            style={{
-              fontSize: 16,
-              marginBottom: 6,
-              color: '#000z='
-            }}
-          >Pourcentage</Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 10,
-              overflow: "scroll"
-            }}
-          >
-            <POURCENTAGE width={60} height={60} />
-            <ScrollView
-            >
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: "bold",
-                  color: "#333"
-                }}
-              >
-                {compte && compte.solde && compte.solde / 100} % OBT
-              </Text>
+              <Text style={{ color: "red", fontWeight: "bold", }}>OBT</Text>
             </ScrollView>
           </View>
         </View>
@@ -236,7 +193,6 @@ const Home = () => {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        marginTop: 10,
         padding: 10
       }}>
 
@@ -279,9 +235,15 @@ const Home = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={dashboardStyles.spaceBettwen}>
+      <View style={{
+        flexDirection: 'column',
+        backgroundColor: "#fff",
+        borderRadius: 10,
+        width: "100%",
+        padding: 15
+      }}>
         <Text style={dashboardStyles.videoTitle}>
-          Transactions
+          Vos forfaits
         </Text>
 
         <TouchableOpacity>

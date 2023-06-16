@@ -41,6 +41,7 @@ const Login = () => {
             .catch(err => {
                 Alert.alert(err && err.response && err.response.data && err.response.data.message);
                 setLoading(false);
+                console.log(err)
             })
     };
 
