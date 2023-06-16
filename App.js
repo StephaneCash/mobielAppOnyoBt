@@ -8,7 +8,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from "redux";
 import postSlice, { getAllPosts } from './reducers/Posts.reducer';
 import usersSlice, { getAllUsers } from './reducers/User.reducer';
-import compteslice, { getCompteByUserId } from './reducers/Compte.reducer';
+import compteslice from './reducers/Compte.reducer';
 
 const store = configureStore({
   reducer: combineReducers({
