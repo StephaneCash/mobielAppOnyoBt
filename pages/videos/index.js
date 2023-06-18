@@ -28,9 +28,13 @@ const Videos = () => {
 
   const views = [];
 
-  const handleCountNumberViews = (val) => {
-    views.push(val);
-    dispatch(viewPost(val));
+  const handleCountNumberViews = (item) => {
+    let form = {}
+    form.postId = item && item._id;
+    form.id = fullDataUserConnected && fullDataUserConnected._id;
+    views.push(item.posterId)
+
+    dispatch(viewPost(form));
   };
 
   useEffect(() => {
@@ -38,12 +42,19 @@ const Videos = () => {
   }, []);
 
   const viewPlayerVideo = (item) => {
-    if (compte && compte.solde > 1) {
+    if (compte && compte.solde > 0.002) {
       dispatch(reduceCompte(fullDataUserConnected && fullDataUserConnected._id));
       navigation.navigate('videoPlayer', { data: item });
     } else {
-      Alert.alert('Votre solde est insuffisant pour regarder cette vidéo')
+      Alert.alert('Votre solde est insuffisnt pour regarder cette vidéo')
     }
+  }
+
+  const addSolde = (item) => {
+    let userA = {}
+    userA.uid = fullDataUserConnected && fullDataUserConnected._id;
+    userA.id = item && item.posterId && item.posterId
+    dispatch(addSoldeCompte(userA));
   }
 
   return (
@@ -115,9 +126,9 @@ const Videos = () => {
 
                 <TouchableOpacity style={styles.touchableImage}
                   onPress={() => {
-                    handleCountNumberViews(item)
                     viewPlayerVideo(item && item._id)
-                    dispatch(addSoldeCompte(item && item.posterId && item.posterId));
+                    addSolde(item)
+                    handleCountNumberViews(item)
                   }}
                 >
                   <Image source={require("../../images/sad.jpg")} style={styles.coverImage} />

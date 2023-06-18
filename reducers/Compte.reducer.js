@@ -39,7 +39,7 @@ export const reduceCompte = createAsyncThunk("comptes/reduce", async (arg, {
 }) => {
     try {
         const response = await axios.patch(`${baseUrl}/comptes/reduce/${arg && arg}`, {
-            num: 0.002
+            num: 0.002,
         });
         if (response.status === 200) {
             return response.data
@@ -55,8 +55,9 @@ export const addSoldeCompte = createAsyncThunk("comptes/addSolde", async (arg, {
     rejectWithValue
 }) => {
     try {
-        const response = await axios.patch(`${baseUrl}/comptes/add-solde/${arg && arg}`, {
-            num: 0.0005
+        console.log(arg , " ELEPHANT")
+        const response = await axios.patch(`${baseUrl}/comptes/add-solde/${arg && arg.id}`, {
+            uid: arg.uid
         });
         if (response.status === 200) {
             return response.data
@@ -130,11 +131,6 @@ export const compteslice = createSlice({
         },
         [addSoldeCompte.fulfilled]: (state, action) => {
             state.loading = false;
-            if (action.payload) {
-                state.value = action.payload;
-            } else {
-                state.value = state.value;
-            }
             state.isSuccess = true;
         },
         [addSoldeCompte.rejected]: (state, action) => {
