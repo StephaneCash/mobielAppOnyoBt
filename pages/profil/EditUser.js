@@ -1,17 +1,20 @@
-import { TextInput, Text, View, Alert, Pressable } from 'react-native';
+import { TextInput, Text, View, Alert, Pressable, TouchableOpacity } from 'react-native';
 import DocumentPicker, { types } from 'react-native-document-picker'
 import { useContext, useState } from 'react'
 import Loader from '../videos/Loader';
 import { ContextApp } from '../../context/AuthContext.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeProfil } from '../../reducers/User.reducer';
+import { useNavigation } from "@react-navigation/native";
+
 
 const EditUser = () => {
     const [uploading, setUploading] = useState(false)
 
     const isLoading = useSelector(state => state.users.loading);
+    const navigation = useNavigation();
 
-    const { fullDataUserConnected } = useContext(ContextApp);
+    const { userConnected } = useContext(ContextApp);
 
     const handleError = (e) => {
         if (DocumentPicker.isCancel(e)) {
@@ -53,7 +56,7 @@ const EditUser = () => {
             let form = {};
             form.data = body;
             form.config = config;
-            form.id = fullDataUserConnected && fullDataUserConnected._id && fullDataUserConnected._id;
+            form.id = userConnected && userConnected.user;
 
             dispatch(changeProfil(form))
 
@@ -78,6 +81,25 @@ const EditUser = () => {
                 gap: 20
             }}
         >
+            <TouchableOpacity
+                onPress={() => navigation.navigate('home')}
+                style={{
+                    flexDirection: 'column',
+                    backgroundColor: "#fff",
+                    elevation: 2,
+                    borderRadius: 10,
+                    width: '48%',
+                    padding: 15
+                }}>
+                <Text
+                    style={{
+                        fontSize: 16,
+                        textAlign: "center",
+                        fontWeight: "600",
+                        color: '#000'
+                    }}
+                >Retour</Text>
+            </TouchableOpacity>
             <Text style={{
                 fontSize: 16,
                 fontWeight: "bold",

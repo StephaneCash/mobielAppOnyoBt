@@ -179,7 +179,7 @@ const Home = () => {
                   color: "#333"
                 }}
               >
-                {compte && compte.solde && compte.solde} OBT
+                {compte && compte.solde && compte.solde && compte.solde.toFixed(4) } OBT
               </Text>
             </ScrollView>
           </View>
@@ -218,7 +218,7 @@ const Home = () => {
                   color: "#333"
                 }}
               >
-                {compte && compte.solde && compte.solde / 100} % OBT
+                0 % OBT
               </Text>
             </ScrollView>
           </View>

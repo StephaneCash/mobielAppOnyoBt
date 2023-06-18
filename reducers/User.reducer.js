@@ -18,8 +18,9 @@ export const getAllUsers = createAsyncThunk("users/getData", async (arg, {
 export const changeProfil = createAsyncThunk("users/change", async (arg, {
     rejectWithValue
 }) => {
+    console.log(arg , " ARG")
     try {
-        const response = await axios.put(`${baseUrl}/users/${arg.id}`, arg.data, arg.config);
+        const response = await axios.put(`${baseUrl}/users/${arg && arg.id}`, arg.data, arg.config);
         Alert.alert('Photo de profil modifiée avec succès')
         return response.data
     } catch (error) {
