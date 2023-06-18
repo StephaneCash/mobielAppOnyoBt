@@ -51,6 +51,23 @@ export const reduceCompte = createAsyncThunk("comptes/reduce", async (arg, {
     }
 });
 
+export const addSoldeCompte = createAsyncThunk("comptes/addSolde", async (arg, {
+    rejectWithValue
+}) => {
+    try {
+        const response = await axios.patch(`${baseUrl}/comptes/add-solde/${arg && arg}`, {
+            num: 0.0005
+        });
+        if (response.status === 200) {
+            return response.data
+        }
+    } catch (error) {
+        rejectWithValue(error.response);
+        console.log(error && error.response && error.response.data && error.response.data.message, " ERREUR");
+        Alert.alert(error && error.response && error.response.data && error.response.data.message);
+    }
+});
+
 
 export const compteslice = createSlice({
     name: "comptes",
@@ -104,6 +121,23 @@ export const compteslice = createSlice({
             state.isSuccess = true;
         },
         [reduceCompte.rejected]: (state, action) => {
+            state.loading = false;
+            state.isSuccess = false;
+        },
+
+        [addSoldeCompte.pending]: (state, action) => {
+            state.loading = true;
+        },
+        [addSoldeCompte.fulfilled]: (state, action) => {
+            state.loading = false;
+            if (action.payload) {
+                state.value = action.payload;
+            } else {
+                state.value = state.value;
+            }
+            state.isSuccess = true;
+        },
+        [addSoldeCompte.rejected]: (state, action) => {
             state.loading = false;
             state.isSuccess = false;
         },
