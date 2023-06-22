@@ -18,7 +18,6 @@ export const getCompteByUserId = createAsyncThunk("comptes/getData", async (arg,
 export const rechargeCompte = createAsyncThunk("comptes/add", async (arg, {
     rejectWithValue
 }) => {
-    console.log("kkkk")
     try {
         const response = await axios.patch(`${baseUrl}/comptes/${arg && arg.userId}`, {
             num: arg.num
@@ -56,7 +55,7 @@ export const addSoldeCompte = createAsyncThunk("comptes/addSolde", async (arg, {
 }) => {
     try {
         const response = await axios.patch(`${baseUrl}/comptes/add-solde/${arg && arg.id}`, {
-            uid: arg.uid
+            uid: arg.uid + arg.idPost
         });
         if (response.status === 200) {
             return response.data

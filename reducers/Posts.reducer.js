@@ -24,7 +24,7 @@ export const createPost = createAsyncThunk("posts/add", async (arg, {
         if (response.status === 201) {
             Alert.alert('Publication effectuée avec succès');
         }
-        return response.data
+        return response && response.data
     } catch (error) {
         rejectWithValue(error.response);
         console.log(error, " ERREUR");
@@ -116,7 +116,7 @@ export const postSlice = createSlice({
         },
         [createPost.fulfilled]: (state, action) => {
             state.loading = false;
-            state.value.unshift(action.payload)
+            state.value.unshift(action && action.payload && action.payload)
             state.isSuccess = true;
         },
         [createPost.rejected]: (state, action) => {

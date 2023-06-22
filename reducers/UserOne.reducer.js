@@ -21,7 +21,7 @@ export const changeProfil = createAsyncThunk("user/change", async (arg, {
     try {
         const response = await axios.put(`${baseUrl}/users/${arg && arg.id}`, arg.data, arg.config);
         Alert.alert('Photo de profil modifiée avec succès')
-        return response.data
+        return response && response.data
     } catch (error) {
         rejectWithValue(error.response);
         console.log(error, " ERREUR");
@@ -59,7 +59,7 @@ export const userSlice = createSlice({
         [changeProfil.fulfilled]: (state, action) => {
             state.loading = false;
             state.isSuccess = true;
-            state.value = action.payload;
+            state.value = action && action.payload;
         },
         [changeProfil.rejected]: (state, action) => {
             state.loading = false;

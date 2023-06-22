@@ -23,8 +23,6 @@ const ListVideos = ({ valueSearch }) => {
     const users = useSelector(state => state.users.value);
     const compte = useSelector(state => state.comptes.value);
 
-    const [dataFilter, setDataFilter] = useState([])
-
     const views = [];
 
     const handleCountNumberViews = (item) => {
@@ -42,8 +40,12 @@ const ListVideos = ({ valueSearch }) => {
 
     const viewPlayerVideo = (item) => {
         if (compte && compte.solde > 0.002) {
-            dispatch(reduceCompte(fullDataUserConnected && fullDataUserConnected._id));
-            navigation.navigate('videoPlayer', { data: item });
+            if (fullDataUserConnected && fullDataUserConnected.id !== item.posterId) {
+                dispatch(reduceCompte(fullDataUserConnected && fullDataUserConnected._id));
+                navigation.navigate('videoPlayer', { data: item });
+            } else {
+                navigation.navigate('videoPlayer', { data: item });
+            }
         } else {
             Alert.alert('Votre solde est insuffisant pour regarder cette vidéo')
         }
@@ -52,8 +54,11 @@ const ListVideos = ({ valueSearch }) => {
     const addSolde = (item) => {
         let userA = {}
         userA.uid = fullDataUserConnected && fullDataUserConnected._id;
-        userA.id = item && item.posterId && item.posterId
-        dispatch(addSoldeCompte(userA));
+        userA.id = item && item.posterId && item.posterId;
+        userA.idPost = item && item._id;
+        if (compte && compte.solde > 0.002){
+            dispatch(addSoldeCompte(userA));
+        }
     }
 
     useEffect(() => {
