@@ -11,9 +11,9 @@ const Settings = () => {
 
   const navigationRoute = useNavigation();
 
-  const { setUserConnected, fullDataUserConnected } = useContext(ContextApp);
+  const { setUserConnected } = useContext(ContextApp);
 
-  const user = useSelector(state => state.users.value)
+  const user = useSelector(state => state.user.value)
 
   const logoutHandle = async () => {
     try {
@@ -33,12 +33,8 @@ const Settings = () => {
       justifyContent: "center",
       gap: 20
     }}>
-      {user && user.map(val => {
-        if (fullDataUserConnected && fullDataUserConnected._id === val._id) {
-          return <Avatar key={val._id} label={val && val.pseudo && val.pseudo} size={200} color='#fff'
-            image={{ uri: val && baseUrlFile + "/" + val.url }} />
-        }
-      })}
+      <Avatar label={user && user.pseudo && user.pseudo} size={200} color='#fff'
+        image={{ uri: user && baseUrlFile + "/" + user.url }} />
 
       <TouchableOpacity
         style={{ borderRadius: 10, borderWidth: 1, padding: 10, width: "90%" }}
@@ -53,7 +49,7 @@ const Settings = () => {
         style={{ borderRadius: 10, borderWidth: 1, padding: 10, width: "90%" }}
         onPress={logoutHandle}
       >
-        <Text  style={{
+        <Text style={{
           textAlign: "center", color: "#000", fontSize: 17
         }}>Déconnexion</Text>
       </TouchableOpacity>

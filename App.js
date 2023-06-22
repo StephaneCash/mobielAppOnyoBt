@@ -9,12 +9,14 @@ import { combineReducers } from "redux";
 import postSlice from './reducers/Posts.reducer';
 import usersSlice, { getAllUsers } from './reducers/User.reducer';
 import compteslice from './reducers/Compte.reducer';
+import userSlice from './reducers/UserOne.reducer';
 
 const store = configureStore({
   reducer: combineReducers({
     posts: postSlice.reducer,
     users: usersSlice.reducer,
-    comptes: compteslice.reducer
+    comptes: compteslice.reducer,
+    user:  userSlice.reducer
   })
 });
 

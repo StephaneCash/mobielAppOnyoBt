@@ -18,7 +18,7 @@ export const getAllPosts = createAsyncThunk("posts/getData", async (arg, {
 export const createPost = createAsyncThunk("posts/add", async (arg, {
     rejectWithValue
 }) => {
-
+    console.log(arg, " COMMENTS ")
     try {
         const response = await axios.post(`${baseUrl}/posts`, arg.data, arg.config);
         if (response.status === 201) {
@@ -35,7 +35,6 @@ export const createPost = createAsyncThunk("posts/add", async (arg, {
 export const commentPost = createAsyncThunk("posts/comment", async (arg, {
     rejectWithValue
 }) => {
-
     try {
         const response = await axios.patch(`${baseUrl}/posts/comment/${arg.idPost}`, arg.form);
         return response.data

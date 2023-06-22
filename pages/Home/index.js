@@ -1,7 +1,6 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react';
+import React from 'react';
 import dashboardStyles from './style.js';
-import { ContextApp } from '../../context/AuthContext.js';
 import { useNavigation } from "@react-navigation/native";
 import Icon from 'react-native-vector-icons/EvilIcons.js';
 import { useSelector } from 'react-redux';
@@ -10,16 +9,13 @@ import { Avatar } from "@react-native-material/core";
 
 const Home = () => {
 
-  const { fullDataUserConnected } = useContext(ContextApp);
   const navigation = useNavigation();
 
   const handleNavigate = () => {
     navigation.navigate('settings/profil')
   }
-  const user = useSelector(state => state.users.value)
+  const user = useSelector(state => state.user.value)
   const compte = useSelector(state => state.comptes.value);
-
-  console.log(compte, " USER COMPTE")
 
   return (
     <ScrollView>
@@ -29,11 +25,7 @@ const Home = () => {
           flexDirection: "column"
         }}>
           <Text style={dashboardStyles.userName}>
-            {user && user.map(val => {
-              if (fullDataUserConnected && fullDataUserConnected._id === val._id) {
-                return val.pseudo
-              }
-            })}
+            {user && user.pseudo}
           </Text>
           <Text style={{ fontWeight: "bold", color: "#fff" }}>{compte && compte.numero && "Votre numéro : " + compte.numero}</Text>
         </View>
@@ -45,12 +37,8 @@ const Home = () => {
         }}>
           <Icon name='search' style={{ fontSize: 30, color: "#fff", fontWeight: 100 }} />
           <TouchableOpacity onPress={() => handleNavigate()}>
-            {user && user.map(val => {
-              if (fullDataUserConnected && fullDataUserConnected._id === val._id) {
-                return <Avatar key={val._id} label={val && val.pseudo && val.pseudo} size={30} color='#fff'
-                  image={{ uri: val && baseUrlFile + "/" + val.url }} style={dashboardStyles.userImg} />
-              }
-            })}
+             <Avatar label={user && user.pseudo && user.pseudo} size={30} color='#fff'
+                  image={{ uri: user && baseUrlFile + "/" + user.url }} style={dashboardStyles.userImg} />
           </TouchableOpacity>
         </View>
       </View>

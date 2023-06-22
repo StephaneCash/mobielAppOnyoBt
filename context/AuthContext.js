@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { baseUrl } from '../bases/basesUrl';
 import { useDispatch } from 'react-redux';
 import { getCompteByUserId } from '../reducers/Compte.reducer';
+import { getOneUser } from '../reducers/UserOne.reducer';
 
 export const ContextApp = createContext();
 
@@ -43,6 +44,7 @@ const ContextAppGlobal = ({ children }) => {
         if (userConnected && userConnected.user) {
             getUserById();
             dispatch(getCompteByUserId(userConnected && userConnected.user))
+            dispatch(getOneUser(userConnected && userConnected.user))
         }
     }, [userConnected]);
 

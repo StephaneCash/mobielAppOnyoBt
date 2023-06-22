@@ -10,6 +10,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { commentPost, getAllPosts, likePostHanlde } from '../../reducers/Posts.reducer';
 import moment from 'moment';
 import CommentsList from './CommentsList';
+import ListVideos from './ListVideos';
 
 const VideoPlayer = ({ route }) => {
 
@@ -26,7 +27,6 @@ const VideoPlayer = ({ route }) => {
     const data = useSelector(state => state.posts.value);
 
     const dataArr = useSelector(state => state.posts.value)
-    const isLoadng = useSelector(state => state.posts.loading)
 
     const likePost = () => {
         let data = {}
@@ -187,15 +187,18 @@ const VideoPlayer = ({ route }) => {
             <View
                 style={{
                     width: "95%",
-                    padding: 13,
                     backgroundColor: "#0668b4",
                     marginRight: 13,
                     marginLeft: 13,
                     borderRadius: 5,
                     justifyContent: "center",
                     gap: 10,
-                    maxHeight: showComment ? "100%" : 70,
-                    flex: 1,
+                    height: showComment ? "40%" : "auto",
+                    zIndex: 1,
+                    paddingLeft: 13,
+                    paddingRight: 13,
+                    paddingTop: 13,
+                    paddingBottom:13
                 }}
             >
 
@@ -237,19 +240,19 @@ const VideoPlayer = ({ route }) => {
 
             </View>
 
-            <View
-                style={{ flex: 1 }}
-            >
+            <View style={{ flex: 1 }} >
                 {
-                    data && data.length < 0 && <ActivityIndicator
-                        style={{
-                            marginTop: 10
-                        }}
+                    data && data.length < 0 &&
+                    <ActivityIndicator
+                        style={{ marginTop: 10 }}
                         size="large"
                         color="red"
                     />
                 }
+            </View>
 
+            <View style={{ marginTop: 0, paddingBottom: 100 }} >
+                <ListVideos />
             </View>
         </View>
     )

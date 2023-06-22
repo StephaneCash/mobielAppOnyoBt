@@ -1,10 +1,8 @@
-import React from 'react';
-import { View, Text, FlatList,  StyleSheet, Image, TouchableOpacity, Alert } from 'react-native'
-import  { useContext, useEffect, useState } from 'react';
-import Icon from 'react-native-vector-icons/SimpleLineIcons';
+import React, { useState } from 'react';
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native'
+import { useContext, useEffect } from 'react';
 import { useNavigation } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux"
-import Feather from 'react-native-vector-icons/Feather';
 import { Avatar } from "@react-native-material/core";
 import { baseUrlFile } from '../../bases/basesUrl.js';
 import moment from 'moment';
@@ -12,7 +10,7 @@ import { getAllPosts, viewPost } from '../../reducers/Posts.reducer.js';
 import { addSoldeCompte, reduceCompte } from '../../reducers/Compte.reducer.js';
 import { ContextApp } from '../../context/AuthContext.js';
 
-const ListVideos = () => {
+const ListVideos = ({ valueSearch }) => {
 
     const navigation = useNavigation();
 
@@ -24,6 +22,8 @@ const ListVideos = () => {
     const data = useSelector(state => state.posts.value);
     const users = useSelector(state => state.users.value);
     const compte = useSelector(state => state.comptes.value);
+
+    const [dataFilter, setDataFilter] = useState([])
 
     const views = [];
 
@@ -55,6 +55,23 @@ const ListVideos = () => {
         userA.id = item && item.posterId && item.posterId
         dispatch(addSoldeCompte(userA));
     }
+
+    useEffect(() => {
+        if (data) {
+            data && data
+                .filter(value => {
+                    const title = value && value.title && value.title.toLowerCase();
+                    const description = value && value.description && value.description.toLowerCase();
+
+                    return title && title.includes(valueSearch && valueSearch.toLowerCase()) ||
+                        description && description.includes(valueSearch && valueSearch.toLowerCase())
+                })
+                .map(val => {
+                    console.log(val)
+                    return val;
+                })
+        }
+    }, [data]);
 
     return (
         <FlatList

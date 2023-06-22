@@ -1,20 +1,20 @@
-import { TextInput, Text, View, Alert, Pressable, TouchableOpacity } from 'react-native';
+import {  Text, View, Alert, Pressable, TouchableOpacity } from 'react-native';
 import DocumentPicker, { types } from 'react-native-document-picker'
 import { useContext, useState } from 'react'
 import Loader from '../videos/Loader';
 import { ContextApp } from '../../context/AuthContext.js';
 import { useDispatch, useSelector } from 'react-redux';
-import { changeProfil } from '../../reducers/User.reducer';
 import { useNavigation } from "@react-navigation/native";
+import { changeProfil } from '../../reducers/UserOne.reducer';
 
 
 const EditUser = () => {
-    const [uploading, setUploading] = useState(false)
 
-    const isLoading = useSelector(state => state.users.loading);
+    const [uploading, setUploading] = useState(useSelector(state => state.users.loading));
+
     const navigation = useNavigation();
 
-    const { userConnected } = useContext(ContextApp);
+    const { fullDataUserConnected } = useContext(ContextApp);
 
     const handleError = (e) => {
         if (DocumentPicker.isCancel(e)) {
@@ -39,7 +39,7 @@ const EditUser = () => {
 
             const body = new FormData();
 
-            body.append('file', {
+            body.append('image', {
                 uri: pickerResult.fileCopyUri,
                 type: pickerResult.type,
                 name: pickerResult.name,
@@ -56,15 +56,16 @@ const EditUser = () => {
             let form = {};
             form.data = body;
             form.config = config;
-            form.id = userConnected && userConnected.user;
+            form.id = fullDataUserConnected && fullDataUserConnected._id;
 
             dispatch(changeProfil(form))
 
             setUploading(false)
 
         } catch (e) {
-            console.log(e.response)
-            handleError(e)
+            console.log(e)
+            handleError(e);
+            setUploading(false)
         }
     }
 
@@ -106,7 +107,7 @@ const EditUser = () => {
                 color: "#888"
             }}>Change votre photo de profil</Text>
             {
-                isLoading ? <Loader /> :
+                uploading ? <Loader /> :
                     <Pressable
                         style={{
                             borderWidth: 1, borderColor: "silver",

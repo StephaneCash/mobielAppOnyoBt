@@ -46,7 +46,7 @@ const Videos = () => {
           size="large"
           color="red"
         /> :
-          <ListVideos  />
+          <ListVideos valueSearch={valueSearch} />
       }
     </View>
   )
