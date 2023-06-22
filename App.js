@@ -6,7 +6,7 @@ import ContextAppGlobal from './context/AuthContext';
 
 import { configureStore } from '@reduxjs/toolkit';
 import { combineReducers } from "redux";
-import postSlice, { getAllPosts } from './reducers/Posts.reducer';
+import postSlice from './reducers/Posts.reducer';
 import usersSlice, { getAllUsers } from './reducers/User.reducer';
 import compteslice from './reducers/Compte.reducer';
 
@@ -18,7 +18,6 @@ const store = configureStore({
   })
 });
 
-store.dispatch(getAllPosts());
 store.dispatch(getAllUsers());
 
 const App = () => {

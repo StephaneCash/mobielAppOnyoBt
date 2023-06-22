@@ -20,6 +20,7 @@ const RechargeCompte = () => {
         data.num = value;
         dispatch(rechargeCompte(data));
     }
+
     return (
         <View style={styles.mainView}>
             <Text style={{ fontSize: 17, color: '#666' }}>RECHARGE COMPTE</Text>

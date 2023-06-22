@@ -61,7 +61,6 @@ export const likePostHanlde = createAsyncThunk("posts/like", async (arg, {
 export const viewPost = createAsyncThunk("posts/addViewsUser", async (arg, {
     rejectWithValue
 }) => {
-    console.log(arg, " ARGUMENTS")
     try {
         const response = await axios.patch(`${baseUrl}/posts/views/${arg && arg.postId}`, { id: arg.id });
         return response.data
@@ -69,6 +68,12 @@ export const viewPost = createAsyncThunk("posts/addViewsUser", async (arg, {
         rejectWithValue(error.response);
         console.log(error, " ERREUR")
     }
+});
+
+export const initializePost = createAsyncThunk("posts/initize", async (arg, {
+    rejectWithValue
+}) => {
+    return false;
 });
 
 
@@ -80,6 +85,18 @@ export const postSlice = createSlice({
         loading: false
     },
     extraReducers: {
+        // INITIALIZE
+        [initializePost.pending]: (state, { payload }) => {
+            state.loading = false;
+            state.isSuccess = false;
+        },
+        [initializePost.fulfilled]: (state, action) => {
+            state.loading = false;
+        },
+        [initializePost.rejected]: (state, { payload }) => {
+            state.loading = false;
+            state.isSuccess = false;
+        },
         //Get all posts
         [getAllPosts.pending]: (state, { payload }) => {
             state.loading = true;
@@ -156,8 +173,8 @@ export const postSlice = createSlice({
         [viewPost.fulfilled]: (state, action) => {
             state.loading = false;
             state.isSuccess = true;
-            state.value = state.value.filter(val=>{
-                return val._id === action.payload._id
+            state.value = state.value.filter(val => {
+                return val._id !== action.payload._id
             })
             state.value.push(action.payload)
         },

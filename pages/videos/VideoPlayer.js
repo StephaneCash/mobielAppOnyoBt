@@ -239,21 +239,20 @@ const VideoPlayer = ({ route, navigation }) => {
                     </View>
                 }
 
-                {
+                {/* {
                     showComment &&
                     <FlatList
                         data={post && post.comments && post.comments}
-                        keyExtractor={item => item._id}
                         style={{ marginBottom: 10, }}
                         renderItem={({ item, index }) => {
                             return users.map(user => {
                                 arrIndex.push(index)
                                 if (user._id === item.commenterId) {
-                                    return <View key={item._id} style={{
+                                    return <View key={user._id} style={{
                                         flexDirection: "column",
                                         flex: 1
                                     }}>
-                                        <View style={styles.viewComment} key={`${item._id}-1`}>
+                                        <View style={styles.viewComment} key={`${user._id}-1`}>
                                             <Avatar label={item.commenterPseudo} size={30} color='#fff'
                                                 image={{ uri: user && baseUrlFile + "/" + user.url }} />
                                             <Text key={index} style={{ color: "#fff" }}>{item.commenterPseudo}</Text>
@@ -267,8 +266,10 @@ const VideoPlayer = ({ route, navigation }) => {
                                 }
                             })
                         }}
+                        keyExtractor={item => item._id}
+
                     />
-                }
+                } */}
 
 
             </View>
@@ -277,66 +278,13 @@ const VideoPlayer = ({ route, navigation }) => {
                 style={{ flex: 1 }}
             >
                 {
-                    data && data.length < 0 ? <ActivityIndicator
+                    data && data.length < 0 && <ActivityIndicator
                         style={{
                             marginTop: 10
                         }}
                         size="large"
                         color="red"
-                    /> :
-                        <FlatList
-                            data={data}
-                            style={{ marginBottom: 10 }}
-                            renderItem={({ item }) => {
-                                if (item && route.params && route.params.data && route.params.data._id !== item._id) {
-                                    return <View style={styles.postView}>
-                                        <View style={styles.postTitle}>
-                                            <View style={styles.viewImage}>
-                                                {
-                                                    users && users.map((val, index) => {
-                                                        if (val._id === item.posterId) {
-                                                            return <Avatar key={val._id} style={{ backgroundColor: "silver", }} tintColor='#fff' label={val && val.pseudo && val.pseudo} size={40} color='#fff'
-                                                                image={{ uri: val && baseUrlFile + "/" + val.url }} />
-                                                        }
-                                                    })
-                                                }
-                                                <View style={styles.namePoster}>
-                                                    <Text style={{ color: "#000", fontSize: 16 }}>
-                                                        {
-                                                            users && users.map(val => {
-                                                                if (val._id === item.posterId) {
-                                                                    return val.pseudo
-                                                                }
-                                                            })
-                                                        }
-                                                    </Text>
-                                                    <Text style={{color:"#666"}}>
-                                                        {moment(item && item.createdAt).fromNow()}
-                                                    </Text>
-                                                </View>
-                                            </View>
-                                            <View>
-                                                <Icon name='options-vertical' color={'#111'} />
-                                            </View>
-                                        </View>
-
-                                        <TouchableOpacity style={styles.touchableImage}
-                                            onPress={() => {
-                                                navigation.navigate('videoPlayer', { data: item })
-                                            }}
-                                        >
-                                            <Image source={require("../../images/sad.jpg")} style={styles.coverImage} />
-                                        </TouchableOpacity>
-                                        <Text style={{ color: "#000", fontSize: 16, fontWeight: "bold" }}>
-                                            {
-                                                item && item.title
-                                            }
-                                        </Text>
-                                    </View>
-                                }
-                            }}
-                            keyExtractor={item => item && item._id}
-                        />
+                    />
                 }
 
             </View>

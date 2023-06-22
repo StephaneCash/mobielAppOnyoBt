@@ -7,10 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createPost } from '../../reducers/Posts.reducer.js';
 
 const AddVideo = () => {
-    const [uploading, setUploading] = useState(false)
+    const [uploading, setUploading] = useState(useSelector(state => state.posts.loading))
     const [message, setMessage] = useState("");
-
-    const isLoading = useSelector(state => state.posts.loading);
 
     const { userConnected } = useContext(ContextApp);
 
@@ -99,7 +97,7 @@ const AddVideo = () => {
                 placeholderTextColor={'#000'}
             />
             {
-                isLoading ? <Loader /> :
+                uploading ? <Loader /> :
                     <Pressable
                         style={{
                             borderWidth: 1, borderColor: "silver",

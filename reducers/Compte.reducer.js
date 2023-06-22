@@ -18,7 +18,7 @@ export const getCompteByUserId = createAsyncThunk("comptes/getData", async (arg,
 export const rechargeCompte = createAsyncThunk("comptes/add", async (arg, {
     rejectWithValue
 }) => {
-
+    console.log("kkkk")
     try {
         const response = await axios.patch(`${baseUrl}/comptes/${arg && arg.userId}`, {
             num: arg.num
@@ -55,7 +55,6 @@ export const addSoldeCompte = createAsyncThunk("comptes/addSolde", async (arg, {
     rejectWithValue
 }) => {
     try {
-        console.log(arg , " ELEPHANT")
         const response = await axios.patch(`${baseUrl}/comptes/add-solde/${arg && arg.id}`, {
             uid: arg.uid
         });
@@ -78,7 +77,7 @@ export const compteslice = createSlice({
         loading: false
     },
     extraReducers: {
-        //Get all comptes
+        //Get one compte
         [getCompteByUserId.pending]: (state, { payload }) => {
             state.loading = true;
             state.isSuccess = false;
@@ -109,6 +108,7 @@ export const compteslice = createSlice({
             state.loading = false;
             state.isSuccess = false;
         },
+        // REDUIRE COMPTE
         [reduceCompte.pending]: (state, action) => {
             state.loading = true;
         },
@@ -125,7 +125,7 @@ export const compteslice = createSlice({
             state.loading = false;
             state.isSuccess = false;
         },
-
+        // ADD SOLDE
         [addSoldeCompte.pending]: (state, action) => {
             state.loading = true;
         },
