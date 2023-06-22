@@ -10,6 +10,7 @@ import { getAllPosts, viewPost } from '../../reducers/Posts.reducer.js';
 import { addSoldeCompte, reduceCompte } from '../../reducers/Compte.reducer.js';
 import { ContextApp } from '../../context/AuthContext.js';
 import { getAllUsers } from '../../reducers/User.reducer.js';
+import Video from 'react-native-video';
 
 const ListVideos = ({ valueSearch }) => {
 
