@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, FlatList, ActivityIndicator, TextInput } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Video from 'react-native-video';
 import { baseUrlFile } from '../../bases/basesUrl';
@@ -6,13 +6,12 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import { ContextApp } from '../../context/AuthContext';
-import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { commentPost, getAllPosts, likePostHanlde } from '../../reducers/Posts.reducer';
-import { Avatar } from "@react-native-material/core";
 import moment from 'moment';
+import CommentsList from './CommentsList';
 
-const VideoPlayer = ({ route, navigation }) => {
+const VideoPlayer = ({ route }) => {
 
     const { height } = Dimensions.get("screen");
 
@@ -25,7 +24,6 @@ const VideoPlayer = ({ route, navigation }) => {
     const [post, setPost] = useState()
 
     const data = useSelector(state => state.posts.value);
-    const users = useSelector(state => state.users.value);
 
     const dataArr = useSelector(state => state.posts.value)
     const isLoadng = useSelector(state => state.posts.loading)
@@ -77,14 +75,8 @@ const VideoPlayer = ({ route, navigation }) => {
     }, [dataArr])
 
     const showMoreComments = () => {
-        setShowComment(!showComment)
+        setShowComment(!showComment);
     };
-
-    let arrIndex = [];
-
-    useEffect(() => {
-        setValueSearch("");
-    }, [isLoadng])
 
     return (
         <View style={styles.mainPlayerView}>
@@ -95,7 +87,6 @@ const VideoPlayer = ({ route, navigation }) => {
                     controls={true}
                     resizeMode="contain"
                     isLooping
-
                 />
             </View>
             <Text
@@ -149,7 +140,7 @@ const VideoPlayer = ({ route, navigation }) => {
                         onPress={likePost}
                     >
                         {
-                            isLike === 1 ? <AntDesign size={30} name='like1' color={"#666"} /> : <AntDesign size={30} name='like2' color={"#666"} />
+                            post && post.likers && post.likers.length > 0 ? <AntDesign size={30} name='like1' color={"#666"} /> : <AntDesign size={30} name='like2' color={"#666"} />
                         }
                         <Text style={{ color: '#666' }}>
                             {
@@ -239,38 +230,10 @@ const VideoPlayer = ({ route, navigation }) => {
                     </View>
                 }
 
-                {/* {
+                {
                     showComment &&
-                    <FlatList
-                        data={post && post.comments && post.comments}
-                        style={{ marginBottom: 10, }}
-                        renderItem={({ item, index }) => {
-                            return users.map(user => {
-                                arrIndex.push(index)
-                                if (user._id === item.commenterId) {
-                                    return <View key={user._id} style={{
-                                        flexDirection: "column",
-                                        flex: 1
-                                    }}>
-                                        <View style={styles.viewComment} key={`${user._id}-1`}>
-                                            <Avatar label={item.commenterPseudo} size={30} color='#fff'
-                                                image={{ uri: user && baseUrlFile + "/" + user.url }} />
-                                            <Text key={index} style={{ color: "#fff" }}>{item.commenterPseudo}</Text>
-
-                                            <Text key={index} style={{ color: "#fff" }}>{item.text}</Text>
-                                            <Text key={index} style={{ color: "#fff" }}>, {moment(item.timestamp).fromNow()}</Text>
-
-
-                                        </View>
-                                    </View>
-                                }
-                            })
-                        }}
-                        keyExtractor={item => item._id}
-
-                    />
-                } */}
-
+                    <CommentsList post={post} />
+                }
 
             </View>
 
@@ -371,13 +334,6 @@ const styles = StyleSheet.create({
         width: 30,
         height: 30,
         borderRadius: 50
-    },
-    viewComment: {
-        paddingRight: 13,
-        flexDirection: 'row',
-        alignItems: "center",
-        gap: 10,
-        marginBottom: 10
     },
     button: {
         width: "25%",
