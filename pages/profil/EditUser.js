@@ -40,10 +40,10 @@ const EditUser = () => {
             const body = new FormData();
 
             body.append('image', {
-                uri: pickerResult.fileCopyUri,
-                type: pickerResult.type,
-                name: pickerResult.name,
-                size: pickerResult.size,
+                uri: pickerResult && pickerResult.fileCopyUri && pickerResult.fileCopyUri,
+                type: pickerResult && pickerResult.type && pickerResult.type,
+                name: pickerResult && pickerResult.name && pickerResult.name,
+                size: pickerResult && pickerResult.size && pickerResult.size,
             })
 
             const config = {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native'
 import { useContext, useEffect } from 'react';
 import { useNavigation } from "@react-navigation/native";
@@ -9,6 +9,7 @@ import moment from 'moment';
 import { getAllPosts, viewPost } from '../../reducers/Posts.reducer.js';
 import { addSoldeCompte, reduceCompte } from '../../reducers/Compte.reducer.js';
 import { ContextApp } from '../../context/AuthContext.js';
+import { getAllUsers } from '../../reducers/User.reducer.js';
 
 const ListVideos = ({ valueSearch }) => {
 
@@ -20,6 +21,7 @@ const ListVideos = ({ valueSearch }) => {
     moment.locale('fr');
 
     const data = useSelector(state => state.posts.value);
+    const user = useSelector(state => state.user.value);
     const users = useSelector(state => state.users.value);
     const compte = useSelector(state => state.comptes.value);
 
@@ -36,7 +38,12 @@ const ListVideos = ({ valueSearch }) => {
 
     useEffect(() => {
         dispatch(getAllPosts());
+        dispatch(getAllUsers());
     }, []);
+
+    useEffect(() => {
+        dispatch(getAllUsers());
+    }, [user]);
 
     const viewPlayerVideo = (item) => {
         if (compte && compte.solde > 0.002) {
@@ -56,33 +63,16 @@ const ListVideos = ({ valueSearch }) => {
         userA.uid = fullDataUserConnected && fullDataUserConnected._id;
         userA.id = item && item.posterId && item.posterId;
         userA.idPost = item && item._id;
-        if (compte && compte.solde > 0.002){
+        if (compte && compte.solde > 0.002) {
             dispatch(addSoldeCompte(userA));
         }
     }
-
-    useEffect(() => {
-        if (data) {
-            data && data
-                .filter(value => {
-                    const title = value && value.title && value.title.toLowerCase();
-                    const description = value && value.description && value.description.toLowerCase();
-
-                    return title && title.includes(valueSearch && valueSearch.toLowerCase()) ||
-                        description && description.includes(valueSearch && valueSearch.toLowerCase())
-                })
-                .map(val => {
-                    console.log(val)
-                    return val;
-                })
-        }
-    }, [data]);
 
     return (
         <FlatList
             data={data}
             style={{ marginBottom: 10 }}
-            renderItem={({ item, index }) => {
+            renderItem={({ item }) => {
                 return <View style={styles.postView} key={item && item._id}>
                     <View style={styles.postTitle}>
                         <View style={styles.viewImage}>
