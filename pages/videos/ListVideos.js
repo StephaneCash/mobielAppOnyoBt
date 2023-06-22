@@ -47,12 +47,8 @@ const ListVideos = ({ valueSearch }) => {
 
     const viewPlayerVideo = (item) => {
         if (compte && compte.solde > 0.002) {
-            if (fullDataUserConnected && fullDataUserConnected.id !== item.posterId) {
-                dispatch(reduceCompte(fullDataUserConnected && fullDataUserConnected._id));
-                navigation.navigate('videoPlayer', { data: item });
-            } else {
-                navigation.navigate('videoPlayer', { data: item });
-            }
+            dispatch(reduceCompte(fullDataUserConnected && fullDataUserConnected._id));
+            navigation.navigate('videoPlayer', { data: item });
         } else {
             Alert.alert('Votre solde est insuffisant pour regarder cette vidéo')
         }
@@ -64,7 +60,9 @@ const ListVideos = ({ valueSearch }) => {
         userA.id = item && item.posterId && item.posterId;
         userA.idPost = item && item._id;
         if (compte && compte.solde > 0.002) {
-            dispatch(addSoldeCompte(userA));
+            if (user && user._id !== item.posterId) {
+                dispatch(addSoldeCompte(userA));
+            }
         }
     }
 
