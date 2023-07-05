@@ -33,8 +33,9 @@ const ListVideos = ({ valueSearch }) => {
         form.postId = item && item._id;
         form.id = fullDataUserConnected && fullDataUserConnected._id;
         views.push(item.posterId)
-
-        dispatch(viewPost(form));
+        if (compte && compte.solde > 0.002) {
+            dispatch(viewPost(form));
+        }
     };
 
     useEffect(() => {

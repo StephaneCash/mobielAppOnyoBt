@@ -8,9 +8,8 @@ import { getAllPosts } from '../../reducers/Posts.reducer.js';
 
 
 const Videos = () => {
-
+  
   const [valueSearch, setValueSearch] = useState("");
-
   const dispatch = useDispatch()
 
   useEffect(() => {

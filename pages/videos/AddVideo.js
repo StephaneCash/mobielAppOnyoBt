@@ -96,20 +96,18 @@ const AddVideo = () => {
                 placeholder='Votre message'
                 placeholderTextColor={'#000'}
             />
-            {
-                uploading ? <Loader /> :
-                    <Pressable
-                        style={{
-                            borderWidth: 1, borderColor: "silver",
-                            padding: 12,
-                            borderRadius: 10,
-                            backgroundColor: "#0e6bf7",
-                            width: "100%"
-                        }}
-                        onPress={handleUpload} >
-                        <Text style={{ textAlign: "center", color: "#fff", fontSize: 17 }}>Choisir une vidéo</Text>
-                    </Pressable>
-            }
+
+            <Pressable
+                style={{
+                    borderWidth: 1, borderColor: "silver",
+                    padding: 12,
+                    borderRadius: 10,
+                    backgroundColor: "#0e6bf7",
+                    width: "100%"
+                }}
+                onPress={handleUpload} >
+                <Text style={{ textAlign: "center", color: "#fff", fontSize: 17 }}>Choisir une vidéo</Text>
+            </Pressable>
 
         </View>
     );

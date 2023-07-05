@@ -25,8 +25,8 @@ const VideoPlayer = ({ route }) => {
     const [post, setPost] = useState()
 
     const data = useSelector(state => state.posts.value);
-
     const dataArr = useSelector(state => state.posts.value)
+    const isLoading = useSelector(state => state.posts.loading)
 
     const likePost = () => {
         let data = {}
@@ -45,7 +45,10 @@ const VideoPlayer = ({ route }) => {
         form.commenterPseudo = fullDataUserConnected && fullDataUserConnected.pseudo;
         data.form = form;
         dispatch(commentPost(data))
-        dispatch(getAllPosts())
+
+        if(!isLoading){
+            dispatch(getAllPosts())
+        }
     }
 
     const disLikePost = () => {
@@ -198,10 +201,9 @@ const VideoPlayer = ({ route }) => {
                     paddingLeft: 13,
                     paddingRight: 13,
                     paddingTop: 13,
-                    paddingBottom:13
+                    paddingBottom: 13
                 }}
             >
-
                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                     <View style={{}}>
                         <Text style={{ color: "#fff" }}>

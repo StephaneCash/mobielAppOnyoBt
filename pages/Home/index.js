@@ -2,10 +2,11 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import React from 'react';
 import dashboardStyles from './style.js';
 import { useNavigation } from "@react-navigation/native";
-import Icon from 'react-native-vector-icons/EvilIcons.js';
+import Icon from 'react-native-vector-icons/Foundation.js';
 import { useSelector } from 'react-redux';
 import { baseUrlFile } from '../../bases/basesUrl.js';
 import { Avatar } from "@react-native-material/core";
+import ListTransactions from '../transactions/ListTransactions.js';
 
 const Home = () => {
 
@@ -35,10 +36,21 @@ const Home = () => {
           alignItems: "center",
           gap: 20
         }}>
-          <Icon name='search' style={{ fontSize: 30, color: "#fff", fontWeight: 100 }} />
+          <Text style={{
+            width: 30,
+            height: 30,
+            backgroundColor: "green",
+            borderWidth:1,
+            borderColor:compte && compte.solde === 0 ? "red" : "yellow",
+            borderRadius: 50 / 2,
+            backgroundColor: compte && compte.solde === 0 ? "red" : "yellow"
+          }}>
+
+          </Text>
+          <Icon name='mobile-signal' style={{ fontSize: 30, color: "#fff", fontWeight: 100 }} />
           <TouchableOpacity onPress={() => handleNavigate()}>
-             <Avatar label={user && user.pseudo && user.pseudo} size={30} color='#fff'
-                  image={{ uri: user && baseUrlFile + "/" + user.url }} style={dashboardStyles.userImg} />
+            <Avatar label={user && user.pseudo && user.pseudo} size={30} color='#fff'
+              image={{ uri: user && baseUrlFile + "/" + user.url }} style={dashboardStyles.userImg} />
           </TouchableOpacity>
         </View>
       </View>
@@ -228,17 +240,11 @@ const Home = () => {
         backgroundColor: "#fff",
         borderRadius: 10,
         width: "100%",
-        padding: 15
+        padding: 7
       }}>
         <Text style={dashboardStyles.videoTitle}>
           Vos forfaits
         </Text>
-
-        <TouchableOpacity>
-          <Text style={dashboardStyles.link}>
-            Afficher tout
-          </Text>
-        </TouchableOpacity>
       </View>
 
       <View style={dashboardStyles.transactionContainer}></View>

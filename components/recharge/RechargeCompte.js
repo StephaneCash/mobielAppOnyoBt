@@ -4,21 +4,35 @@ import { rechargeCompte } from '../../reducers/Compte.reducer';
 import { useDispatch, useSelector } from 'react-redux';
 import { ContextApp } from '../../context/AuthContext';
 import Loader from '../../pages/videos/Loader';
+import { createTransaction } from '../../reducers/Transactions.reducer';
 
 const RechargeCompte = () => {
 
     const [value, setvalue] = useState('');
     const { fullDataUserConnected } = useContext(ContextApp);
 
-    const isLoading = useSelector(state => state.comptes.loading);
+    const [isLoading, setIsLoading] = useState(false)
 
     let dispatch = useDispatch();
 
     const rechargeCompe = () => {
+        setIsLoading(true)
         const data = {};
         data.userId = fullDataUserConnected && fullDataUserConnected._id;
         data.num = value;
         dispatch(rechargeCompte(data));
+
+        let transaction = {};
+
+        transaction.userId = fullDataUserConnected && fullDataUserConnected._id;
+        let val = value && value.split('.')
+        transaction.montant = val && val[0];
+
+        dispatch(createTransaction(transaction));
+
+        setTimeout(() => {
+            setIsLoading(false)
+        }, 600);
     }
 
     return (
