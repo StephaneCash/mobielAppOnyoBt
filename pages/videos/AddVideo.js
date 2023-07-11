@@ -1,10 +1,10 @@
-import { TextInput, Text, View, Alert, Pressable } from 'react-native';
+import { TextInput, Text, View, Alert, Pressable, TouchableOpacity } from 'react-native';
 import DocumentPicker from 'react-native-document-picker'
 import { useContext, useState } from 'react'
-import Loader from './Loader.js';
 import { ContextApp } from '../../context/AuthContext.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { createPost } from '../../reducers/Posts.reducer.js';
+import { useNavigation } from "@react-navigation/native";
 
 const AddVideo = () => {
     const [uploading, setUploading] = useState(useSelector(state => state.posts.loading))
@@ -55,7 +55,6 @@ const AddVideo = () => {
             form.data = body;
             form.config = config;
 
-
             dispatch(createPost(form))
 
             setUploading(false)
@@ -65,6 +64,8 @@ const AddVideo = () => {
             handleError(e)
         }
     }
+
+    const navigation = useNavigation();
 
     return (
         <View
@@ -79,6 +80,25 @@ const AddVideo = () => {
                 gap: 20
             }}
         >
+            <TouchableOpacity
+                onPress={() => navigation.navigate('home')}
+                style={{
+                    flexDirection: 'column',
+                    backgroundColor: "#fff",
+                    elevation: 2,
+                    borderRadius: 10,
+                    width: '48%',
+                    padding: 15
+                }}>
+                <Text
+                    style={{
+                        fontSize: 16,
+                        textAlign: "center",
+                        fontWeight: "600",
+                        color: '#000'
+                    }}
+                >Retour</Text>
+            </TouchableOpacity>
             <Text style={{
                 fontSize: 16,
                 fontWeight: "bold",
