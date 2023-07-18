@@ -7,7 +7,7 @@ import ListVideos from './ListVideos.js';
 import { getAllPosts } from '../../reducers/Posts.reducer.js';
 import { Modal } from 'react-native';
 
-const Videos = () => {
+const Videos = () => {  
 
   const [valueSearch, setValueSearch] = useState("");
 
@@ -24,11 +24,11 @@ const Videos = () => {
 
   const handleAddVideoOrStartLive = () => {
     setShowModal(true)
-  }
+  };
 
   return (
     <View
-      style={{ flex: 1 }}
+      style={{ flex: 1, borderWidth:2, flexDirection:"column", justifyContent:"center" }}
     >
       <View style={styles.centeredView}>
         <Modal
@@ -48,7 +48,7 @@ const Videos = () => {
                   style={[styles.button, styles.buttonClose]}
                   onPress={() => {
                     setShowModal(!showModal);
-                    navigation.navigate('live/add')
+                    navigation.navigate('liveHome')
                   }}>
                   <Text style={styles.textStyle}>Démarrer un live</Text>
                 </Pressable>
@@ -112,7 +112,8 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     marginTop: 22,
-    flex: 1,
+    display:"flex",
+    alignItems:"center",
     justifyContent: "center",
   },
   modalView: {

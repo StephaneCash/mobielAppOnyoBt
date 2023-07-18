@@ -9,12 +9,16 @@ import { ContextApp } from '../context/AuthContext';
 import EditUser from '../pages/profil/EditUser';
 import AddVideo from '../pages/videos/AddVideo';
 import RechargeCompte from '../components/recharge/RechargeCompte';
+import Home from '../screens/Home';
+import Live from '../screens/Live';
 
 const Stack = createNativeStackNavigator();
 
 const Routes = () => {
 
     const { userConnected } = useContext(ContextApp);
+
+    const options = { headerShown: false };
 
     return (
         <NavigationContainer>
@@ -32,6 +36,8 @@ const Routes = () => {
                             <Stack.Screen name="videos/add" component={AddVideo} />
                             <Stack.Screen name="editprofil" component={EditUser} />
                             <Stack.Screen name="rechargeCompte" component={RechargeCompte} />
+                            <Stack.Screen name="liveHome" component={Home} options={options} />
+                            <Stack.Screen name="Live" component={Live} options={options} />
                         </>
                     ) : (
                         <>
