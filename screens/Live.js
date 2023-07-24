@@ -1,17 +1,24 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Share, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import AgoraUIKit from 'agora-rn-uikit';
+import { useNavigation } from "@react-navigation/native";
+import { modifUser } from '../reducers/UserOne.reducer';
+import { useDispatch } from 'react-redux';
+import { ContextApp } from '../context/AuthContext';
 
 function Live({ route }) {
 
+  const { fullDataUserConnected } = useContext(ContextApp);
   const [videoCall, setVideoCall] = useState(true);
+
+  const navigation = useNavigation();
+
+  const dispatch = useDispatch()
 
   const connectionData = {
     appId: '35a8c9ce2ba04d5c9458575e4f7fc447',
     channel: route.params.channel,
   };
-
-  console.log(route)
 
   const onShare = async () => {
     try {
@@ -22,8 +29,22 @@ function Live({ route }) {
   };
 
   const rtcCallbacks = {
-    EndCall: () => setVideoCall(false),
+    EndCall: () => {
+      setVideoCall(false)
+      navigation.navigate('liveHome');
+      let user = {};
+      user.id = fullDataUserConnected && fullDataUserConnected._id;
+      user.statusLive = false;
+      dispatch(modifUser(user));
+    },
   };
+
+  useEffect(() => {
+    let user = {};
+    user.id = fullDataUserConnected && fullDataUserConnected._id;
+    user.statusLive = true;
+    dispatch(modifUser(user));
+  }, [connectionData]);
 
   return videoCall ? (
     <>

@@ -10,16 +10,15 @@ import { getAllPosts, viewPost } from '../../reducers/Posts.reducer.js';
 import { addSoldeCompte, reduceCompte } from '../../reducers/Compte.reducer.js';
 import { ContextApp } from '../../context/AuthContext.js';
 import { getAllUsers } from '../../reducers/User.reducer.js';
-import Video from 'react-native-video';
 
-const ListVideos = ({ valueSearch }) => {
+moment.locale('fr');
+
+const ListVideos = () => {
 
     const navigation = useNavigation();
-
     const { fullDataUserConnected } = useContext(ContextApp);
 
     const dispatch = useDispatch();
-    moment.locale('fr');
 
     const data = useSelector(state => state.posts.value);
     const user = useSelector(state => state.user.value);
@@ -79,9 +78,24 @@ const ListVideos = ({ valueSearch }) => {
                             {
                                 users && users.map(val => {
                                     if (item && item.posterId && item.posterId === val._id) {
-                                        return <Avatar key={val._id} style={{ backgroundColor: "silver", }} tintColor='#fff'
-                                            label={val && val.pseudo && val.pseudo} size={40} color='#fff'
-                                            image={{ uri: val && baseUrlFile + "/" + val.url }} />
+                                        if (val && val.statusLive === true) {
+                                            return <TouchableOpacity key={val._id} style={styles.avatar} >
+                                                <View style={styles.viewLive}>
+                                                    <Text style={styles.textLive}>
+                                                        Live
+                                                    </Text>
+                                                </View>
+                                                <Avatar style={{ backgroundColor: "silver" }} tintColor='#fff'
+                                                    label={val && val.pseudo && val.pseudo} size={50} color='#fff'
+                                                    image={{ uri: val && baseUrlFile + "/" + val.url }} />
+                                            </TouchableOpacity>
+                                        } else {
+                                            return <Avatar key={val._id} style={{ backgroundColor: "silver", }} tintColor='#fff'
+                                                label={val && val.pseudo && val.pseudo} size={50} color='#fff'
+                                                image={{ uri: val && baseUrlFile + "/" + val.url }} />
+                                        }
+                                    } else {
+                                        return null
                                     }
                                 })
                             }
@@ -180,5 +194,29 @@ const styles = StyleSheet.create({
         height: "100%",
         backgroundColor: (0, 0, 0, 0.06),
         borderRadius: 10
+    },
+    avatar: {
+        borderColor: "crimson",
+        position: "relative",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        borderWidth:2,
+        borderRadius:50/2,
+        borderColor:"crimson"
+    },
+    textLive: {
+        color: "#fff",
+        textAlign: "center",
+        fontSize:11,
+    },
+    viewLive:{
+        zIndex: 100000000000,
+        position: "absolute",
+        backgroundColor:"crimson",
+        borderTopRightRadius:50/2,
+        borderTopLeftRadius:50/2,
+        width:"80%",
+        top:2
     }
 })

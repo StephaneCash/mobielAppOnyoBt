@@ -28,6 +28,19 @@ export const changeProfil = createAsyncThunk("user/change", async (arg, {
     }
 });
 
+export const modifUser = createAsyncThunk("user/modif", async (arg, {
+    rejectWithValue
+}) => {
+    try {
+        const response = await axios.put(`${baseUrl}/users/${arg && arg.id}`, {
+            statusLive: arg.statusLive
+        });
+        return response && response.data
+    } catch (error) {
+        rejectWithValue(error.response);
+        console.log(error, " ERREUR");
+    }
+});
 
 export const userSlice = createSlice({
     name: "user",
@@ -62,6 +75,20 @@ export const userSlice = createSlice({
             state.value = action && action.payload;
         },
         [changeProfil.rejected]: (state, action) => {
+            state.loading = false;
+            state.isSuccess = false;
+        },
+
+        // UPDATE USER
+        [modifUser.pending]: (state, action) => {
+            state.loading = true;
+        },
+        [modifUser.fulfilled]: (state, action) => {
+            state.loading = false;
+            state.isSuccess = true;
+            state.value = action && action.payload;
+        },
+        [modifUser.rejected]: (state, action) => {
             state.loading = false;
             state.isSuccess = false;
         }
