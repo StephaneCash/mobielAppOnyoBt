@@ -11,6 +11,8 @@ import AddVideo from '../pages/videos/AddVideo';
 import RechargeCompte from '../components/recharge/RechargeCompte';
 import Home from '../screens/Home';
 import Live from '../screens/Live';
+import ProfileUser from '../pages/profilUser/ProfileUser';
+import ListFollewers from '../pages/profilUser/ListFollewers';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,8 +27,7 @@ const Routes = () => {
             <Stack.Navigator
                 initialRouteName='login'
                 screenOptions={{ headerShown: false }}
-            >
-
+            > 
                 {
                     userConnected && userConnected.token ? (
                         <>
@@ -35,6 +36,8 @@ const Routes = () => {
                             <Stack.Screen name="settings/profil" component={EditUser} />
                             <Stack.Screen name="videos/add" component={AddVideo} />
                             <Stack.Screen name="editprofil" component={EditUser} />
+                            <Stack.Screen name="profil" component={ProfileUser} />
+                            <Stack.Screen name="listFollowers" component={ListFollewers} />
                             <Stack.Screen name="rechargeCompte" component={RechargeCompte} />
                             <Stack.Screen name="liveHome" component={Home} options={options} />
                             <Stack.Screen name="Live" component={Live} options={options} />

@@ -28,16 +28,17 @@ export const changeProfil = createAsyncThunk("user/change", async (arg, {
     }
 });
 
-export const modifUser = createAsyncThunk("user/modif", async (arg, {
+export const modifUser = createAsyncThunk("users/modif", async (arg, {
     rejectWithValue
 }) => {
     try {
-        const response = await axios.put(`${baseUrl}/users/${arg && arg.id}`, {
-            statusLive: arg.statusLive
+        const response = await axios.put(`${baseUrl}/users/${arg && arg.userId}`, {
+            statusLive: arg.statusLive,
+            idLiveChannel: arg.idLiveChannel
         });
         return response && response.data
     } catch (error) {
-        rejectWithValue(error.response);
+        rejectWithValue(error);
         console.log(error, " ERREUR");
     }
 });
@@ -50,7 +51,6 @@ export const userSlice = createSlice({
         loading: false
     },
     extraReducers: {
-
         [getOneUser.pending]: (state, { payload }) => {
             state.loading = true;
             state.isSuccess = false;

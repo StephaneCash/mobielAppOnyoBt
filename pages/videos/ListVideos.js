@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native'
 import { useContext, useEffect } from 'react';
 import { useNavigation } from "@react-navigation/native";
@@ -16,6 +16,7 @@ moment.locale('fr');
 const ListVideos = () => {
 
     const navigation = useNavigation();
+
     const { fullDataUserConnected } = useContext(ContextApp);
 
     const dispatch = useDispatch();
@@ -24,6 +25,8 @@ const ListVideos = () => {
     const user = useSelector(state => state.user.value);
     const users = useSelector(state => state.users.value);
     const compte = useSelector(state => state.comptes.value);
+
+    const [isShowText, setIsShowText] = useState(true);
 
     const views = [];
 
@@ -62,15 +65,92 @@ const ListVideos = () => {
         userA.idPost = item && item._id;
         if (compte && compte.solde > 0.002) {
             if (user && user._id !== item.posterId) {
+                console.log("USER ID")
                 dispatch(addSoldeCompte(userA));
             }
         }
     }
 
+    const joinLive = (val) => {
+        navigation.navigate('Live', { type: 'join', channel: val })
+    };
+
+    const styles = StyleSheet.create({
+        postTitle: {
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            padding: 1,
+            alignItems: "center"
+        },
+        postView: {
+            width: "100%",
+            alignItems: "center",
+            marginTop: 10,
+            padding: 10,
+        },
+        image: {
+            width: 50,
+            height: 50,
+            borderRadius: 50 / 2,
+            backgroundColor: (0, 0, 0, 0.06)
+        },
+        viewImage: {
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 10
+        },
+        namePoster: {
+            display: "flex",
+            flexDirection: "column",
+            fontFamily: "Dotum"
+        },
+        touchableImage: {
+            width: '100%',
+            height: 200,
+            backgroundColor: (0, 0, 0, 0.06),
+            marginTop: 20,
+        },
+        coverImage: {
+            width: '100%',
+            height: "100%",
+            backgroundColor: (0, 0, 0, 0.06),
+            borderRadius: 10
+        },
+        avatar: {
+            borderColor: "crimson",
+            position: "relative",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            borderWidth: 2,
+            borderRadius: 100 / 2,
+            borderColor: "crimson",
+        },
+        textLive: {
+            color: "#fff",
+            textAlign: "center",
+            fontSize: 11,
+            fontFamily: "Dotum"
+        },
+        viewLive: {
+            zIndex: 100000000000,
+            position: "absolute",
+            backgroundColor: "crimson",
+            borderTopRightRadius: 3 / 2,
+            borderTopLeftRadius: 3 / 2,
+            width: "50%",
+            top: 2,
+            opacity: isShowText ? 1 : 0
+        }
+    });
+
     return (
         <FlatList
             data={data}
-            style={{ marginBottom: 10 }}
+            style={{ marginBottom: 10, }}
             renderItem={({ item }) => {
                 return <View style={styles.postView} key={item && item._id}>
                     <View style={styles.postTitle}>
@@ -79,7 +159,8 @@ const ListVideos = () => {
                                 users && users.map(val => {
                                     if (item && item.posterId && item.posterId === val._id) {
                                         if (val && val.statusLive === true) {
-                                            return <TouchableOpacity key={val._id} style={styles.avatar} >
+                                            return <TouchableOpacity onPress={() => joinLive(val && val.idLiveChannel)}
+                                                key={val._id} style={styles.avatar} >
                                                 <View style={styles.viewLive}>
                                                     <Text style={styles.textLive}>
                                                         Live
@@ -90,9 +171,12 @@ const ListVideos = () => {
                                                     image={{ uri: val && baseUrlFile + "/" + val.url }} />
                                             </TouchableOpacity>
                                         } else {
-                                            return <Avatar key={val._id} style={{ backgroundColor: "silver", }} tintColor='#fff'
-                                                label={val && val.pseudo && val.pseudo} size={50} color='#fff'
-                                                image={{ uri: val && baseUrlFile + "/" + val.url }} />
+                                            return <TouchableOpacity onPress={() => navigation.navigate('profil', { user: val })}
+                                                key={val._id}>
+                                                <Avatar style={{ backgroundColor: "silver", }} tintColor='#fff'
+                                                    label={val && val.pseudo && val.pseudo} size={50} color='#fff'
+                                                    image={{ uri: val && baseUrlFile + "/" + val.url }} />
+                                            </TouchableOpacity>
                                         }
                                     } else {
                                         return null
@@ -152,71 +236,3 @@ const ListVideos = () => {
 export default ListVideos
 
 
-const styles = StyleSheet.create({
-    postTitle: {
-        width: "100%",
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        padding: 1,
-        alignItems: "center"
-    },
-    postView: {
-        width: "100%",
-        alignItems: "center",
-        marginTop: 10,
-        padding: 10,
-    },
-    image: {
-        width: 50,
-        height: 50,
-        borderRadius: 50 / 2,
-        backgroundColor: (0, 0, 0, 0.06)
-    },
-    viewImage: {
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 10
-    },
-    namePoster: {
-        display: "flex",
-        flexDirection: "column",
-    },
-    touchableImage: {
-        width: '100%',
-        height: 200,
-        backgroundColor: (0, 0, 0, 0.06),
-        marginTop: 20,
-    },
-    coverImage: {
-        width: '100%',
-        height: "100%",
-        backgroundColor: (0, 0, 0, 0.06),
-        borderRadius: 10
-    },
-    avatar: {
-        borderColor: "crimson",
-        position: "relative",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        borderWidth:2,
-        borderRadius:50/2,
-        borderColor:"crimson"
-    },
-    textLive: {
-        color: "#fff",
-        textAlign: "center",
-        fontSize:11,
-    },
-    viewLive:{
-        zIndex: 100000000000,
-        position: "absolute",
-        backgroundColor:"crimson",
-        borderTopRightRadius:50/2,
-        borderTopLeftRadius:50/2,
-        width:"80%",
-        top:2
-    }
-})

@@ -22,7 +22,7 @@ const ContextAppGlobal = ({ children }) => {
         } catch (e) {
             console.log(e);
         }
-    }
+    };
 
     const getUserById = async () => {
         if (userConnected && userConnected.user) {

@@ -28,7 +28,7 @@ const Home = () => {
           <Text style={dashboardStyles.userName}>
             {user && user.pseudo}
           </Text>
-          <Text style={{ fontWeight: "bold", color: "#fff" }}>{compte && compte.numero && "Votre numéro : " + compte.numero}</Text>
+          <Text style={{ fontWeight: "bold", color: "#fff" }}>{compte && compte.numero && compte.numero}</Text>
         </View>
         <View style={{
           display: "flex",
@@ -40,8 +40,8 @@ const Home = () => {
             width: 30,
             height: 30,
             backgroundColor: "green",
-            borderWidth:1,
-            borderColor:compte && compte.solde === 0 ? "red" : "yellow",
+            borderWidth: 1,
+            borderColor: compte && compte.solde === 0 ? "red" : "yellow",
             borderRadius: 50 / 2,
             backgroundColor: compte && compte.solde === 0 ? "red" : "yellow"
           }}>
@@ -52,89 +52,6 @@ const Home = () => {
             <Avatar label={user && user.pseudo && user.pseudo} size={30} color='#fff'
               image={{ uri: user && baseUrlFile + "/" + user.url }} style={dashboardStyles.userImg} />
           </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        padding: 10
-      }}>
-        <View style={{
-          flexDirection: 'column',
-          backgroundColor: "#fff",
-          elevation: 2,
-          borderRadius: 5,
-          width: "48%",
-          padding: 15
-        }}>
-          <Text
-            style={{
-              fontSize: 16,
-              marginBottom: 6,
-              color: '#000'
-            }}
-          >Transactions/jour</Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 10
-            }}
-          >
-            <ScrollView
-            >
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: "bold",
-                  color: "#333"
-                }}
-              ></Text>
-              <Text style={{ color: "red", fontWeight: "bold", }}>OBT</Text>
-            </ScrollView>
-          </View>
-        </View>
-
-        <View style={{
-          flexDirection: 'column',
-          backgroundColor: "#fff",
-          elevation: 2,
-          borderRadius: 5,
-          width: "48%",
-          padding: 15
-        }}>
-          <Text
-            style={{
-              fontSize: 16,
-              marginBottom: 6,
-              color: '#000'
-            }}
-          >Argent gagné</Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 10,
-
-            }}
-          >
-            <ScrollView
-            >
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: "bold",
-                  color: "#333"
-                }}
-              >
-                {
-                  compte && compte.pourcentage && compte.pourcentage
-                }</Text>
-
-              <Text style={{ color: "red", fontWeight: "bold", }}>OBT</Text>
-            </ScrollView>
-          </View>
         </View>
       </View>
 
@@ -181,7 +98,51 @@ const Home = () => {
           </View>
         </View>
       </View>
+      <View style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        padding: 10
+      }}>
+        <View style={{
+          flexDirection: 'column',
+          backgroundColor: "#fff",
+          elevation: 2,
+          borderRadius: 5,
+          width: "100%",
+          padding: 15
+        }}>
+          <Text
+            style={{
+              fontSize: 16,
+              marginBottom: 6,
+              color: '#000'
+            }}
+          >Argent gagné</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <ScrollView
+            >
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                  color: "#333"
+                }}
+              >
+                {
+                  compte && compte.pourcentage && compte.pourcentage
+                }</Text>
 
+              <Text style={{ color: "red", fontWeight: "bold", }}>OBT</Text>
+            </ScrollView>
+          </View>
+        </View>
+      </View>
       <Text style={{
         padding: 15,
         fontSize: 20,

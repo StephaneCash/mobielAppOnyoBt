@@ -7,7 +7,7 @@ import ListVideos from './ListVideos.js';
 import { getAllPosts } from '../../reducers/Posts.reducer.js';
 import { Modal } from 'react-native';
 
-const Videos = () => {  
+const Videos = () => {
 
   const [valueSearch, setValueSearch] = useState("");
 
@@ -28,7 +28,10 @@ const Videos = () => {
 
   return (
     <View
-      style={{ flex: 1, borderWidth:2, flexDirection:"column", justifyContent:"center" }}
+      style={{
+        flex: 1, flexDirection: "column",
+        justifyContent: "center", backgroundColor: "#fff"
+      }}
     >
       <View style={styles.centeredView}>
         <Modal
@@ -112,8 +115,8 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     marginTop: 22,
-    display:"flex",
-    alignItems:"center",
+    display: "flex",
+    alignItems: "center",
     justifyContent: "center",
   },
   modalView: {

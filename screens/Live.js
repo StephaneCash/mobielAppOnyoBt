@@ -2,9 +2,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Share, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import AgoraUIKit from 'agora-rn-uikit';
 import { useNavigation } from "@react-navigation/native";
-import { modifUser } from '../reducers/UserOne.reducer';
-import { useDispatch } from 'react-redux';
 import { ContextApp } from '../context/AuthContext';
+import { useDispatch } from 'react-redux';
+import { modifUser } from '../reducers/UserOne.reducer';
 
 function Live({ route }) {
 
@@ -13,7 +13,7 @@ function Live({ route }) {
 
   const navigation = useNavigation();
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const connectionData = {
     appId: '35a8c9ce2ba04d5c9458575e4f7fc447',
@@ -32,29 +32,38 @@ function Live({ route }) {
     EndCall: () => {
       setVideoCall(false)
       navigation.navigate('liveHome');
-      let user = {};
-      user.id = fullDataUserConnected && fullDataUserConnected._id;
-      user.statusLive = false;
-      dispatch(modifUser(user));
+      if (route.params && route.params.type === "create") {
+        let user = {};
+        user.userId = fullDataUserConnected && fullDataUserConnected._id;
+        user.statusLive = false;
+        user.idLiveChannel = "";
+        dispatch(modifUser(user));
+      }
     },
   };
 
   useEffect(() => {
-    let user = {};
-    user.id = fullDataUserConnected && fullDataUserConnected._id;
-    user.statusLive = true;
-    dispatch(modifUser(user));
-  }, [connectionData]);
+    if (route.params && route.params.type === "create") {
+      let user = {};
+      user.userId = fullDataUserConnected && fullDataUserConnected._id;
+      user.statusLive = true;
+      user.idLiveChannel = route.params.channel;
+      dispatch(modifUser(user));
+    }
+  }, [videoCall]);
 
   return videoCall ? (
     <>
-      <AgoraUIKit connectionData={connectionData} rtcCallbacks={rtcCallbacks} />
+      <AgoraUIKit
+        connectionData={connectionData}
+        rtcCallbacks={rtcCallbacks}
+      />
       <TouchableOpacity style={styles.shareButton} onPress={onShare}>
         <Text style={styles.shareButtonText}>Partager</Text>
       </TouchableOpacity>
     </>
   ) : (
-    <Text onPress={() => setVideoCall(true)}>Démarrer</Text>
+    <Text onPress={() => setVideoCall(false)}>Démarrer</Text>
   );
 }
 
@@ -63,7 +72,8 @@ const styles = StyleSheet.create({
     right: 0,
     width: 80,
     height: 40,
-    margin: 25,
+    margin: 25, top: 10,
+
     borderRadius: 8,
     position: "absolute",
     alignItems: "center",
