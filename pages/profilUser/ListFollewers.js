@@ -1,22 +1,33 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios';
 import { baseUrl, baseUrlFile } from '../../bases/basesUrl';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from "@react-navigation/native";
 import { Avatar } from "@react-native-material/core";
+import { ContextApp } from '../../context/AuthContext';
 
 const ListFollewers = ({ route }) => {
 
     const navigation = useNavigation();
-    const user = route && route.params && route.params && route.params.user;
-    const followers = route && route.params && route.params && route.params.user && route.params.user.followers;
-    console.log(followers, " ROUTES USER ");
+    const userProfil = route && route.params && route.params && route.params.user;
+    const followers = route && route.params && route.params && route.params.user 
+    && route.params.user.followers;
+
+    const following = route && route.params && route.params && route.params.user 
+    && route.params.user.following;
 
     const [users, setUsers] = useState([]);
     const [foll, setFoll] = useState([]);
+    const [follW, setFollW] = useState([]);
+
+
+    const [user, setUser] = useState()
+    const [userConnected, setUserConnected] = useState()
 
     const [tab, setTab] = useState(1);
+
+    const { fullDataUserConnected } = useContext(ContextApp);
 
     const getAllUsers = async () => {
         try {
@@ -26,6 +37,33 @@ const ListFollewers = ({ route }) => {
             console.log(error)
         }
     };
+
+    const getOneUser = async (itemUser) => {
+        try {
+            const { data } = await axios.get(`${baseUrl}/users/${itemUser && itemUser._id}`);
+            setUser(data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const getOneUserConnected = async () => {
+        try {
+            const { data } = await axios.get(`${baseUrl}/users/${fullDataUserConnected
+                && fullDataUserConnected._id}`);
+            setUserConnected(data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        getOneUserConnected();
+    }, [fullDataUserConnected]);
+
+    useEffect(() => {
+        getOneUser(userProfil);
+    }, [userProfil]);
 
     useEffect(() => {
         getAllUsers();
@@ -43,7 +81,46 @@ const ListFollewers = ({ route }) => {
         setFoll(arr);
     }, [users, tab]);
 
-    console.log(foll, " USERS ")
+    useEffect(() => {
+        const arr = [];
+        users && users.length > 0 && users.map(val => {
+            return following && following.map(follow => {
+                if (val._id === follow) {
+                    arr.push(val)
+                }
+            })
+        });
+        setFollW(arr);
+    }, [users, tab]);
+
+    const followUser = async (item) => {
+        try {
+            await
+                axios.patch(`${baseUrl}/users/follow/${userConnected && userConnected._id}`, {
+                    idToFollow: item && item._id
+                });
+            getOneUser(userProfil);
+            getOneUserConnected();
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const unFollowUser = async (item) => {
+        try {
+            await
+                axios.patch(`${baseUrl}/users/unFollowUser/${userConnected && userConnected._id}`, {
+                    idToUnfollow: item && item._id
+                });
+            getOneUser(userProfil);
+            getOneUserConnected();
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const isFollow = user && user.followers && user.followers.includes(userConnected && userConnected._id);
+    console.log(isFollow, " USER CONNECTED")
 
     return (
         <View style={styles.mainDIv}>
@@ -88,13 +165,12 @@ const ListFollewers = ({ route }) => {
             <View style={styles.main3}>
                 {
                     tab === 0 ?
-                        <Text style={styles.textItem}>{user && user.following && user.following.length} suivis</Text> :
-                        tab === 1 ? <FlatList
-                            data={foll}
+                        <FlatList
+                            data={follW}
                             style={{ marginBottom: 10, }}
                             renderItem={({ item }) => {
                                 return <View style={styles.viewMainItem}>
-                                    <View style={styles.item}>
+                                    <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('profil', { user: item })}>
                                         <Avatar label={item && item.pseudo && item.pseudo} size={60} color='#fff'
                                             style={styles.avatar}
                                             image={{ uri: baseUrlFile + "/" + item.url }} />
@@ -102,19 +178,116 @@ const ListFollewers = ({ route }) => {
                                             <Text style={styles.textItem}>{item.pseudo}</Text>
                                             <Text style={styles.text2Item}>@{item.pseudo}</Text>
                                         </View>
-                                    </View>
-                                    <TouchableOpacity
-                                        style={{ padding: 7, backgroundColor: 'crimson', borderRadius: 5 }}
-                                    >
-                                        <Text style={{
-                                            textAlign: "center", color: "#fff", fontSize: 15
-                                        }}>
-                                            Suivre en retour
-                                        </Text>
                                     </TouchableOpacity>
+
+                                    {
+                                        item && userConnected && item._id === userConnected._id ?
+                                            <TouchableOpacity
+                                                style={{
+                                                    borderColor: "silver",
+                                                    borderWidth: 1,
+                                                    backgroundColor: 'silver',
+                                                    padding: 7,
+                                                    borderRadius: 5
+                                                }}
+                                            >
+                                                <Text style={styles.text2Item}>Vous</Text>
+                                            </TouchableOpacity>
+                                            :
+                                            <TouchableOpacity
+                                                style={{
+                                                    padding: 7, backgroundColor: 'crimson',
+                                                    borderRadius: 5, width: "40%",
+                                                }}
+                                                onPress={() => {
+                                                    item && item.followers &&
+                                                        item.followers
+                                                            .includes(userConnected && userConnected._id) ?
+                                                        unFollowUser(item) : followUser(item)
+                                                }
+                                                }
+                                            >
+                                                {
+                                                    item && item.followers &&
+                                                        item.followers
+                                                            .includes(userConnected && userConnected._id)
+                                                        ?
+                                                        <Text style={{
+                                                            textAlign: "center", color: "#fff", fontSize: 15
+                                                        }}>Ne plus suivre </Text>
+                                                        :
+                                                        <Text style={{
+                                                            textAlign: "center", color: "#fff", fontSize: 15
+                                                        }}>Suivre </Text>
+
+                                                }
+                                            </TouchableOpacity>
+                                    }
                                 </View>
                             }}
+                            keyExtractor={(item) => item && item._id}
+                        />
+                        :
+                        tab === 1 ? <FlatList
+                            data={foll}
+                            style={{ marginBottom: 10, }}
+                            renderItem={({ item }) => {
+                                return <View style={styles.viewMainItem}>
+                                    <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('profil', { user: item })}>
+                                        <Avatar label={item && item.pseudo && item.pseudo} size={60} color='#fff'
+                                            style={styles.avatar}
+                                            image={{ uri: baseUrlFile + "/" + item.url }} />
+                                        <View style={styles.itemView}>
+                                            <Text style={styles.textItem}>{item.pseudo}</Text>
+                                            <Text style={styles.text2Item}>@{item.pseudo}</Text>
+                                        </View>
+                                    </TouchableOpacity>
 
+                                    {
+                                        item && userConnected && item._id === userConnected._id ?
+                                            <TouchableOpacity
+                                                style={{
+                                                    borderColor: "silver",
+                                                    borderWidth: 1,
+                                                    backgroundColor: 'silver',
+                                                    padding: 7,
+                                                    borderRadius: 5
+                                                }}
+                                            >
+                                                <Text style={styles.text2Item}>Vous</Text>
+                                            </TouchableOpacity>
+                                            :
+                                            <TouchableOpacity
+                                                style={{
+                                                    padding: 7, backgroundColor: 'crimson',
+                                                    borderRadius: 5, width: "40%",
+                                                }}
+                                                onPress={() => {
+                                                    item && item.followers &&
+                                                        item.followers
+                                                            .includes(userConnected && userConnected._id) ?
+                                                        unFollowUser(item) : followUser(item)
+                                                }
+                                                }
+                                            >
+                                                {
+                                                    item && item.followers &&
+                                                        item.followers
+                                                            .includes(userConnected && userConnected._id)
+                                                        ?
+                                                        <Text style={{
+                                                            textAlign: "center", color: "#fff", fontSize: 15
+                                                        }}>Ne plus suivre </Text>
+                                                        :
+                                                        <Text style={{
+                                                            textAlign: "center", color: "#fff", fontSize: 15
+                                                        }}>Suivre </Text>
+
+                                                }
+                                            </TouchableOpacity>
+                                    }
+                                </View>
+                            }}
                             keyExtractor={(item) => item && item._id}
                         /> : ""
                 }
