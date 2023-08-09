@@ -176,7 +176,7 @@ const ProfileUser = ({ route }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.contentEnfantTroisieme}>
-                    <Text style={styles.textTroisiemeContent}>10M</Text>
+                    <Text style={styles.textTroisiemeContent}>0</Text>
                     <Text style={styles.textDeuxTroisieme}>J'aime</Text>
                 </TouchableOpacity>
             </View>

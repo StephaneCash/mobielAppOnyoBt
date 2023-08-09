@@ -6,6 +6,7 @@ import Messages from '../messages';
 import Settings from '../settings';
 import Videos from '../videos';
 import Conferences from '../conferences';
+import { Chats } from '../screens';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -13,6 +14,18 @@ const TabsBottom = () => {
 
   return (
     <Tab.Navigator
+      screenOptions={{
+        tabBarShowLabel: false,
+        headerShown: false,
+        tabBarHideOnKeyboard: true,
+        tabBarStyle: {
+          position: 'absolute',
+          bottom: 0,
+          right: 0,
+          left: 0,
+          elevation: 0,
+        },
+      }}
       initialRouteName="tabs_home"
       barStyle={{ backgroundColor: '#0e6bf7' }}
       activeColor='#fff'
@@ -33,7 +46,7 @@ const TabsBottom = () => {
       />
       <Tab.Screen
         name="messages"
-        component={Messages}
+        component={Chats}
         options={{
           tabBarLabel: 'Messages',
           tabBarIcon: ({ color, size }) => (
