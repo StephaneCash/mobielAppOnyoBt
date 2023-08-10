@@ -13,8 +13,6 @@ import Home from '../screens/Home';
 import Live from '../screens/Live';
 import ProfileUser from '../pages/profilUser/ProfileUser';
 import ListFollewers from '../pages/profilUser/ListFollewers';
-import ProfileAccount from '../pages/profil/ProfileAccount';
-import { PersonalChat } from '../pages/screens';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,13 +33,11 @@ const Routes = () => {
                         <>
                             <Stack.Screen name="home" component={TabsBottom} />
                             <Stack.Screen name="videoPlayer" component={VideoPlayer} />
-                            <Stack.Screen name="settings/profil" component={ProfileAccount} />
                             <Stack.Screen name="videos/add" component={AddVideo} />
                             <Stack.Screen name="editprofil" component={EditUser} />
                             <Stack.Screen name="profil" component={ProfileUser} />
                             <Stack.Screen name="listFollowers" component={ListFollewers} />
                             <Stack.Screen name="rechargeCompte" component={RechargeCompte} />
-                            <Stack.Screen name="PersonalChat" component={PersonalChat} />
                             <Stack.Screen name="liveHome" component={Home} options={options} />
                             <Stack.Screen name="Live" component={Live} options={options} />
                         </>
