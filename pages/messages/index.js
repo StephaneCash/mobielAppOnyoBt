@@ -1,24 +1,44 @@
-import { View, Text, StyleSheet, TextInput, SafeAreaView, Button, Alert } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { View, Text, StyleSheet, TextInput, Button, Alert, ScrollView, Pressable } from 'react-native'
+import React, { useState, useEffect, useContext } from 'react'
+import Icon from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import socketService from '../../utils/socketService';
+import { ContextApp } from '../../context/AuthContext';
+import axios from 'axios';
+import { baseUrl } from '../../bases/basesUrl';
+import UserChat from './UserChat';
 
 const Messages = () => {
+    const { fullDataUserConnected } = useContext(ContextApp);
 
     const [message, setMessage] = useState('');
-    const [data, setData] = useState([]);
+    const [messages, setMessages] = useState([]);
+    const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        socketService.initializeSocket()
+        socketService.initializeSocket();
+    }, []);
+
+    const getAllUsers = async () => {
+        try {
+            const { data } = await axios.get(baseUrl + "/users");
+            setUsers(data);
+        } catch (error) {
+            console.log("Erreur getAllUsers", error)
+        }
+    }
+
+    useEffect(() => {
+        getAllUsers()
     }, []);
 
     useEffect(() => {
         let arr = []
         socketService.on("received_message", (msg) => {
             let arrClone = [...data]
-            setData(arrClone.concat(msg))
+            setMessages(arrClone.concat(msg))
         })
-    }, [data]);
+    }, [messages]);
 
     const sendMessage = () => {
         if (message)
@@ -27,43 +47,73 @@ const Messages = () => {
             Alert.alert('Entrer un msg à envoyer')
     }
 
-    console.log(data, " DATA")
-
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <View style={styles.container}>
-                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    <TextInput
-                        value={message}
-                        placeholder='Entrer votre message'
-                        placeholderTextColor={"#444"}
-                        style={styles.inputStyle}
-                        onChangeText={text => setMessage(text)}
+        <View style={{ flex: 1, position: "relative" }}>
+            <View
+                style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: 10,
+                    borderBottomWidth: .8,
+                    borderBottomColor: "#ddd"
+                }}
+            >
+                <View
+                    style={{
+                        backgroundColor: "#ddd",
+                        width: 50,
+                        height: 50,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: 25
+                    }}
+                >
+                    <Icon
+                        name='plus'
+                        size={20}
+                        color={'#444'}
+                        style={{fontWeight:"bold"}}
                     />
-                    <Button onPress={sendMessage} title='Envoyer' />
                 </View>
-                {
-                    data && data.map((val, index) => {
-                        return <Text style={{ marginTop: 10 }} key={index}>{val}</Text>
-                    })
-                }
+                <Text
+                    style={{
+                        fontSize: 20,
+                        color: "#333"
+                    }}
+                >Messages</Text>
+                <MaterialIcons
+                    name='search'
+                    size={30}
+                    color={'#444'}
+                />
             </View>
-        </SafeAreaView>
+            <ScrollView style={{backgroundColor:"#fff"}} showsVerticalScrollIndicator={false}>
+                <Pressable style={styles.container}>
+                    {
+                        users && users.map((item, index) => {
+                            return <UserChat key={index} item={item} />
+                        })
+                    }
+                </Pressable>
+            </ScrollView>
+        </View>
     )
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 24
-    }, inputStyle
+    }, icon
         : {
         height: 42,
         borderWidth: 1,
         borderRadius: 6,
         borderColor: "silver",
         padding: 10,
-        width: "70%"
+        width: "70%",
+        color: "#000"
     }
 })
 
