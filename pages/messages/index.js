@@ -9,8 +9,7 @@ import { baseUrl } from '../../bases/basesUrl';
 import UserChat from './UserChat';
 
 const Messages = () => {
-    const { fullDataUserConnected } = useContext(ContextApp);
-
+    
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const [users, setUsers] = useState([]);

@@ -1,12 +1,17 @@
-import { View, Text, KeyboardAvoidingView, ScrollView, Pressable, TextInput } from 'react-native'
+import { View, Text, KeyboardAvoidingView, ScrollView, Pressable, TextInput, Touchable, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useState, useLayoutEffect } from 'react'
 import AntDesign from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-vector-icons/AntDesign';
 import EmojiSelector from "react-native-emoji-selector"
 import { ContextApp } from '../../context/AuthContext';
 import axios from 'axios';
-import { baseUrl } from '../../bases/basesUrl';
+import { baseUrl, baseUrlFile } from '../../bases/basesUrl';
 import { useNavigation } from '@react-navigation/native';
+import { Avatar } from "@react-native-material/core";
+import Font from 'react-native-vector-icons/Entypo';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 
 const ChatMessage = ({ route }) => {
 
@@ -16,15 +21,17 @@ const ChatMessage = ({ route }) => {
     const [message, setMessage] = useState("");
     const [receiveData, setReceivedata] = useState();
     const [msgs, setMsgs] = useState([]);
+    const [messages, setMessages] = useState([]);
 
     const recepientId = route && route.params && route.params.recepientId
 
     const { fullDataUserConnected } = useContext(ContextApp);
+    const userIdConnected = fullDataUserConnected && fullDataUserConnected._id
 
-    const fetchMessages = async () => {
+    const fetchMessagesSenderAndRecepient = async () => {
         try {
             const { data } = await axios.
-                get(`${baseUrl}/messages/${fullDataUserConnected && fullDataUserConnected._id}/${recepientId}`);
+                get(`${baseUrl}/messages/${userIdConnected}/${recepientId}`);
             setMsgs(data);
         } catch (error) {
             console.log(error)
@@ -32,7 +39,7 @@ const ChatMessage = ({ route }) => {
     };
 
     useEffect(() => {
-
+        fetchMessagesSenderAndRecepient()
     }, []);
 
     useEffect(() => {
@@ -47,43 +54,114 @@ const ChatMessage = ({ route }) => {
         fetchUserReceive();
     }, []);
 
-    useLayoutEffect(() => {
-        navigation.setOptions({
-            headerTitle: "j",
-            headerLeft: () => (
-                <View>
-                    <Feather name='arrow-back' size={20} color={"red"} />
-                </View>
-            )
-        })
-    }, [recepientId]);
-
     const handleEmoji = () => {
         setShowEmoji(!showEmoji);
     };
 
-    const handleSend = async () => {
+    const getAllMessages = async () => {
         try {
-            const formData = {}
-            formData.senderId = fullDataUserConnected && fullDataUserConnected._id;
-            formData.recepientId = recepientId;
-            formData.messageText = message;
-
-            const { data } = await axios.post(`${baseUrl}/messages`, formData);
-
-            setMessage('');
-            console.log(newMsg);
+            const { data } = await axios.get(`${baseUrl}/messages`);
+            setMessages(data);
         } catch (error) {
             console.log(error)
         }
     }
 
-    console.log(msgs, " MESSAGES")
+    const handleSend = async () => {
+        try {
+            if(message){
+                const formData = {}
+                formData.senderId = fullDataUserConnected && fullDataUserConnected._id;
+                formData.recepientId = recepientId;
+                formData.messageText = message;
+                const { data } = await axios.post(`${baseUrl}/messages`, formData);
+    
+                fetchMessagesSenderAndRecepient()
+                setMessage('');
+            }
+            
+            console.log(data);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const urlImage = receiveData && receiveData.url;
+
+    const formatTime = (time) => {
+        let options = {
+            hour: "2-digit", minute: "2-digit",
+        };
+
+        let timestamp = Date.parse(time);
+        let dateParse = new Date(timestamp).toLocaleDateString('fr-FR', options);
+
+        const dateSplit = dateParse.toString()
+
+        return dateSplit && dateSplit.split(',')[1];
+    };
+
+    const pickImage = async () =>{
+       
+    }   
 
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#D0D0D0" }}>
-            <ScrollView>
+            <View
+                style={{
+                    top: 0,
+                    backgroundColor: "#fff",
+                    padding: 10,
+                    width: "100%",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                }}
+            >
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                    <TouchableOpacity >
+                        <Icon name='arrowleft' size={24} color={'#333'} onPress={() => navigation.navigate('messages')} />
+                    </TouchableOpacity>
+                    <Avatar style={{ backgroundColor: "#eee" }} tintColor='#fff'
+                        icon={<Font name='user' color={"silver"} size={28} />}
+                        size={50} color='#fff'
+                        image={{ uri: baseUrlFile + "/" + urlImage }} />
+                    <Text style={{ color: '#222', fontSize: 15, fontWeight: "800" }}>{receiveData && receiveData.pseudo} </Text>
+                </View>
 
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                    <Feather name='phone-call' size={24} color={'#444'} />
+                    <MaterialIcons name='more-vert' size={24} color={'#444'} />
+                </View>
+            </View>
+            <ScrollView>
+                {
+                    msgs && msgs.length > 0 && msgs.map((val, index) => {
+                        return (
+                            <Pressable key={index}
+                                style={val && val.senderId && val.senderId._id === userIdConnected ?
+                                    {
+                                        alignSelf: "flex-end",
+                                        backgroundColor: "#DCF8C6",
+                                        padding: 8,
+                                        maxWidth: "60%",
+                                        borderRadius: 7,
+                                        margin: 10
+                                    } : {
+                                        alignSelf: "flex-start",
+                                        backgroundColor: '#fff',
+                                        margin: 10,
+                                        padding: 8,
+                                        maxWidth: "60%",
+                                        borderRadius: 7,
+                                    }}
+                            >
+                                <Text style={{ color: "#333", textAlign: "left" }}>{val && val.messageText}</Text>
+                                <Text style={{ textAlign: "right", fontSize: 11, color: "gray", marginTop: 5 }}>{formatTime(val && val.timestamps)}</Text>
+                            </Pressable>
+                        )
+                    })
+                }
             </ScrollView>
 
             <View style={{
@@ -116,18 +194,27 @@ const ChatMessage = ({ route }) => {
                         value={message}
                         onChangeText={(value) => setMessage(value)}
                         underlineColor='transparent'
+                        placeholderTextColor={'#222'}
                         style={{
                             flex: 1,
                             height: 40,
                             borderWidth: 0,
                             borderColor: '#ddd',
-                            backgroundColor: "#fff"
+                            backgroundColor: "#fff", 
+                            color:"#111"
                         }}
                         placeholder='Taper votre message...' />
 
                     <AntDesign
                         size={24}
                         name="camera"
+                        color={"#333"}
+                        onPress={pickImage}
+                    />
+                    <Feather
+                        size={24}
+                        name="mic"
+                        color={"#333"}
                     />
                 </View>
 
