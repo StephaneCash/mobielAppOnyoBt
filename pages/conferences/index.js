@@ -1,114 +1,153 @@
 import {
-    FlatList, View, PermissionsAndroid,
+    FlatList, View,
     StyleSheet,
     Text,
     TextInput, Platform,
     SafeAreaView,
+    TouchableOpacity,
 } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import Contacts from 'react-native-contacts';
+import React, { useContext, useEffect, useState } from 'react'
 import Contact from './Contact';
 import Loader from '../videos/Loader';
+import axios from 'axios';
+import { baseUrl } from '../../bases/basesUrl';
 
-const Conferences = () => {
+import Icon from 'react-native-vector-icons/Feather';
+import { useNavigation } from '@react-navigation/native';
+import { ContextApp } from '../../context/AuthContext';
 
-    const [contacts, setContacts] = useState([]);
+const Conferences = ({ route }) => {
+
+    const navigation = useNavigation()
+
+    const [users, setUsers] = useState([]);
+    const [userConnected, setUserConnected] = useState();
+
+
+    const [dataContacts, setDataContacts] = useState([]);
+
+    const { fullDataUserConnected } = useContext(ContextApp);
+
+    const contactsSorted = userConnected && userConnected.numsRep;
+
+    const getOneUser = async () => {
+        try {
+            let { data } = await axios.get(`${baseUrl}/users/${fullDataUserConnected && fullDataUserConnected._id}`)
+            setUserConnected(data)
+        } catch (error) {
+            console.log(error)
+        }
+    };
+
+    const getAllUsers = async () => {
+        try {
+            let { data } = await axios.get(`${baseUrl}/users`)
+            setUsers(data)
+        } catch (error) {
+            console.log(error)
+        }
+    };
 
     useEffect(() => {
-        const getDataContacts = () => {
-            PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
-                {
-                    "title": "Contacts",
-                    "message": "This app would like to view your contacts",
-                    'buttonPositive': "Autoriser"
-                }
-            ).then(() => {
-                getData()
-            })
-                .catch(e => {
-                    console.log(e)
-                })
-
-        }
-        getDataContacts()
+        getOneUser();
+        getAllUsers();
     }, []);
 
-    function getData() {
-        Contacts.getAll()
-            .then(res => {
-                console.log(res)
-                setContacts(res)
+    useEffect(() => {
+        const arr = [];
+        users && users.length > 0 && users.map(val => {
+            return contactsSorted && contactsSorted.map(num => {
+                if (val._id === num.contactId) {
+                    const value = {};
+                    value.nom = num.contactNom;
+                    value.email = num.contactEmail;
+                    value.url = val.url;
+                    value._id = val._id;
+                    return arr.push(value)
+                } else {
+                    return null;
+                }
             })
-            .catch(err => {
-                console.log(err)
-            })
-    }
+        })
+        setDataContacts(arr);
+    }, [contactsSorted, users]);
 
-    const search = (text) => {
-        const phoneNumberRegex =
-            /\b[\+]?[(]?[0-9]{2,6}[)]?[-\s\.]?[-\s\/\.0-9]{3,15}\b/m;
-        if (text === '' || text === null) {
-            getData()
-        } else if (phoneNumberRegex.test(text)) {
-            Contacts.getContactsByPhoneNumber(text).then(contacts => {
-                contacts.sort(
-                    (a, b) =>
-                        a.givenName.toLowerCase() > b.givenName.toLowerCase(),
-                );
-                setContacts(contacts);
-                console.log('contacts', contacts);
-            });
-        } else {
-            Contacts.getContactsMatchingString(text).then(contacts => {
-                contacts.sort(
-                    (a, b) =>
-                        a.givenName.toLowerCase() > b.givenName.toLowerCase(),
-                );
-                setContacts(contacts);
-                console.log('contacts', contacts);
-            });
-        }
-    };
-
-    const openContact = (contact) => {
-        console.log(JSON.stringify(contact));
-        Contacts.openExistingContact(contact);
-    };
+    useEffect(() => {
+        getOneUser();
+        getAllUsers();
+    }, [route]);
 
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.container}>
-                <Text style={styles.header}>
-                    Liste contacts ONYO-BT
-                </Text>
-                <TextInput
-                    onChangeText={search}
-                    placeholder="Rechercher un contact..."
-                    placeholderTextColor="#000"
-                    style={styles.searchBar}
-                />
+                <TouchableOpacity onPress={() => {
+                    getAllUsers();
+                    getOneUser();
+                }}>
+                    <Text style={styles.header}>
+                        Actualiser
+                    </Text>
+                </TouchableOpacity>
+                <View
+                    style={{
+                        flexDirection: "row", justifyContent: "space-between",
+                        alignItems: "center", marginBottom: 30
+                    }}
+                >
+                    <Icon
+                        name='list'
+                        size={25}
+                        color={'#333'}
+                        style={{ fontWeight: "bold" }}
+                    />
+
+                    <View style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 10
+                    }}>
+                        <Icon
+                            name='plus'
+                            size={25}
+                            color={'#333'}
+                            style={{ fontWeight: "bold" }}
+                            onPress={() => navigation.navigate('newContact', 
+                            { getAllUsers: getAllUsers, getOneUser: getOneUser })}
+                        />
+
+                        <Icon
+                            name='search'
+                            size={25}
+                            color={'#333'}
+                            style={{ fontWeight: "bold" }}
+                            onPress={() => navigation.navigate('newContact')}
+                        />
+
+                        <Icon
+                            name='more-vertical'
+                            size={25}
+                            color={'#333'}
+                            style={{ fontWeight: "bold" }}
+                            onPress={() => navigation.navigate('newContact')}
+                        />
+                    </View>
+                </View>
                 {
-                    contacts ?
+                    dataContacts ?
                         <FlatList
-                            data={contacts}
+                            data={dataContacts}
                             renderItem={(contact) => {
-                                {
-                                    console.log('contact -> ' + JSON.stringify(contact));
-                                }
                                 return (
                                     <Contact
-                                        key={contact.item.recordID}
-                                        item={contact.item}
-                                        onPress={openContact}
+                                        key={contact._id}
+                                        item={contact}
                                     />
                                 );
                             }}
-                            keyExtractor={(item) => item.recordID}
+                            keyExtractor={(item) => item._id}
                         />
                         : <Loader />
                 }
-
             </View>
         </SafeAreaView>
 
@@ -120,12 +159,16 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     header: {
-        backgroundColor: '#4591ed',
+        backgroundColor: '#2366af',
         color: 'white',
         paddingHorizontal: 15,
         paddingVertical: 15,
         fontSize: 20,
-        fontWeight: 700
+        fontWeight: 700,
+        textAlign: "center",
+        height: 70,
+        verticalAlign: "middle",
+        marginBottom: 30
     },
     searchBar: {
         backgroundColor: '#fff',

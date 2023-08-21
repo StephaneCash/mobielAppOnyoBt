@@ -19,8 +19,8 @@ const TabsBottom = () => {
         tabBarHideOnKeyboard: false,
       }}
       initialRouteName="tabs_home"
-      barStyle={{ backgroundColor: '#0e6bf7' }}
-      activeColor='#fff'
+      barStyle={{ backgroundColor: '#fff', borderTopColor:"silver", borderTopWidth:1 }}
+      activeColor='#000'
       inactiveColor='#000'
     >
       <Tab.Screen
@@ -29,7 +29,7 @@ const TabsBottom = () => {
         options={{
           tabBarLabel: 'Dashboard',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="home" color={"#fff"} size={25} />
+            <MaterialCommunityIcons name="home" color={"#333"} size={25} />
           ),
           tabBarOptions: {
             activeTintColor: 'red',
@@ -42,9 +42,9 @@ const TabsBottom = () => {
         options={{
           tabBarLabel: 'Messages',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="chat" color={"#fff"} size={25} />
+            <MaterialCommunityIcons name="chat" color={"#333"} size={25} />
           ),
-          tabBarBadge: 1,
+          tabBarBadge: 0,
 
         }}
       />
@@ -55,9 +55,9 @@ const TabsBottom = () => {
         options={{
           tabBarLabel: 'Vidéos',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="animation-play" color={"#fff"} size={25} />
+            <MaterialCommunityIcons name="animation-play" color={"#333"} size={25} />
           ),
-          tabBarBadge: 1,
+          tabBarBadge: 0,
         }}
       />
 
@@ -67,7 +67,7 @@ const TabsBottom = () => {
         options={{
           tabBarLabel: 'Contacts',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="phone" color={"#fff"} size={25} />
+            <MaterialCommunityIcons name="phone" color={"#333"} size={25} />
           ),
           tabBarBadge: 0,
         }}
@@ -79,7 +79,7 @@ const TabsBottom = () => {
         options={{
           tabBarLabel: 'Compte',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account-cog" color={"#fff"} size={25} />
+            <MaterialCommunityIcons name="account-cog" color={"#333"} size={25} />
           ),
         }}
       />

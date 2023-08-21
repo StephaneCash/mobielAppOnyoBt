@@ -1,10 +1,12 @@
 import React, { memo } from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-
+import FontAwesome from 'react-native-vector-icons/Entypo';
 import PropTypes from 'prop-types';
-import Avatar from './Avatar';
+import { Avatar } from "@react-native-material/core";
+import { baseUrlFile } from '../../bases/basesUrl';
 
 const getAvatarInitials = (textString) => {
+
     if (!textString) return '';
     const text = textString.trim();
     const textSplit = text.split(' ');
@@ -15,36 +17,30 @@ const getAvatarInitials = (textString) => {
 };
 
 const Contact = (props) => {
-  
+
     const { item, onPress } = props;
+
+    const user = item && item && item.item;
+    const urlImage = user && user.url;
+
     return (
-        <View>
-            <TouchableOpacity onPress={() => onPress(item)}>
-                <View style={styles.itemContainer}>
-                    <View style={styles.leftElementContainer}>
-                        <Avatar
-                            img={
-                                item.hasThumbnail ?
-                                    { uri: item.thumbnailPath } : undefined
-                            }
-                            placeholder={getAvatarInitials(
-                                `${item.givenName} ${item.familyName}`,
-                            )}
-                            width={40}
-                            height={40}
-                        />
-                    </View>
-                    <View style={styles.rightSectionContainer}>
-                        <View style={styles.mainTitleContainer}>
-                            <Text
-                                style={
-                                    styles.titleStyle
-                                }>{`${item.givenName} ${item.familyName}`}</Text>
-                        </View>
+        <TouchableOpacity onPress={() => onPress(item)}>
+            <View style={styles.itemContainer}>
+                <View style={styles.leftElementContainer}>
+                    <Avatar style={{ backgroundColor: "#ddd", }} tintColor='#fff' icon={<FontAwesome name='user' color={"silver"} size={28} />}
+                        size={50} color='#fff'
+                        image={{ uri: baseUrlFile + "/" + urlImage }} />
+                </View>
+                <View style={styles.rightSectionContainer}>
+                    <View style={styles.mainTitleContainer}>
+                        <Text
+                            style={
+                                styles.titleStyle
+                            }>{`${user && user.nom}`}</Text>
                     </View>
                 </View>
-            </TouchableOpacity>
-        </View>
+            </View>
+        </TouchableOpacity>
     );
 };
 
@@ -74,7 +70,7 @@ const styles = StyleSheet.create({
     },
     titleStyle: {
         fontSize: 16,
-        color:'#555'
+        color: '#555'
     },
 });
 

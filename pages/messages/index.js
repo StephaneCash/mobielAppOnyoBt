@@ -1,22 +1,17 @@
-import { View, Text, StyleSheet, TextInput, Button, Alert, ScrollView, Pressable } from 'react-native'
-import React, { useState, useEffect, useContext } from 'react'
+import { View, Text, StyleSheet, Alert, ScrollView, Pressable } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import socketService from '../../utils/socketService';
-import { ContextApp } from '../../context/AuthContext';
 import axios from 'axios';
 import { baseUrl } from '../../bases/basesUrl';
 import UserChat from './UserChat';
+import Contacts from './Contacts';
 
 const Messages = () => {
     
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const [users, setUsers] = useState([]);
-
-    useEffect(() => {
-        socketService.initializeSocket();
-    }, []);
 
     const getAllUsers = async () => {
         try {
@@ -31,21 +26,6 @@ const Messages = () => {
         getAllUsers()
     }, []);
 
-    useEffect(() => {
-        let arr = []
-        socketService.on("received_message", (msg) => {
-            let arrClone = [...data]
-            setMessages(arrClone.concat(msg))
-        })
-    }, [messages]);
-
-    const sendMessage = () => {
-        if (message)
-            socketService.emit("send_message", message)
-        else
-            Alert.alert('Entrer un msg à envoyer')
-    }
-
     return (
         <View style={{ flex: 1, position: "relative" }}>
             <View
@@ -55,7 +35,8 @@ const Messages = () => {
                     justifyContent: "space-between",
                     padding: 10,
                     borderBottomWidth: .8,
-                    borderBottomColor: "#ddd"
+                    borderBottomColor: "#fff",
+                    backgroundColor:"#fff"
                 }}
             >
                 <View
@@ -71,8 +52,8 @@ const Messages = () => {
                 >
                     <Icon
                         name='plus'
-                        size={20}
-                        color={'#444'}
+                        size={25}
+                        color={'#333'}
                         style={{fontWeight:"bold"}}
                     />
                 </View>
@@ -88,7 +69,18 @@ const Messages = () => {
                     color={'#444'}
                 />
             </View>
-            <ScrollView style={{backgroundColor:"#fff"}} showsVerticalScrollIndicator={false}>
+
+            <ScrollView horizontal={true} style={{backgroundColor:"#fff", marginTop:10,}} showsVerticalScrollIndicator={false}>
+                <Pressable style={styles.containerHoriz}>
+                    {
+                        users && users.map((item, index) => {
+                            return <Contacts key={index} item={item} />
+                        })
+                    }
+                </Pressable>
+            </ScrollView>
+
+            <ScrollView style={{backgroundColor:"#fff", marginTop:10}} showsVerticalScrollIndicator={false}>
                 <Pressable style={styles.container}>
                     {
                         users && users.map((item, index) => {
@@ -104,7 +96,12 @@ const Messages = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-    }, icon
+    },
+    containerHoriz: {
+        flex: 1,
+        flexDirection:"row"
+    }
+    , icon
         : {
         height: 42,
         borderWidth: 1,

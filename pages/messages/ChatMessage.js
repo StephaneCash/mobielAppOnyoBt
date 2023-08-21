@@ -1,19 +1,35 @@
-import { View, Text, KeyboardAvoidingView, ScrollView, Pressable, TextInput, Touchable, TouchableOpacity } from 'react-native'
-import React, { useContext, useEffect, useState, useLayoutEffect } from 'react'
+import { View, Text, KeyboardAvoidingView, ScrollView, Pressable, TextInput, Image, TouchableOpacity } from 'react-native'
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import AntDesign from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/AntDesign';
 import EmojiSelector from "react-native-emoji-selector"
 import { ContextApp } from '../../context/AuthContext';
 import axios from 'axios';
-import { baseUrl, baseUrlFile } from '../../bases/basesUrl';
+import { baseUrl, baseUrlFile, baseUrlSocket } from '../../bases/basesUrl';
 import { useNavigation } from '@react-navigation/native';
 import { Avatar } from "@react-native-material/core";
 import Font from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import DocumentPicker, { types } from 'react-native-document-picker';
 
 
 const ChatMessage = ({ route }) => {
+
+    const { fullDataUserConnected } = useContext(ContextApp);
+    const userIdConnected = fullDataUserConnected && fullDataUserConnected._id
+
+    const scrollWiewRef = useRef(null);
+
+    useEffect(() => {
+        scrollToBottom()
+    }, []);
+
+    const scrollToBottom = () => {
+        if (scrollWiewRef.current) {
+            scrollWiewRef.current.scrollToEnd({ animated: false })
+        }
+    };
 
     const navigation = useNavigation();
 
@@ -21,12 +37,9 @@ const ChatMessage = ({ route }) => {
     const [message, setMessage] = useState("");
     const [receiveData, setReceivedata] = useState();
     const [msgs, setMsgs] = useState([]);
-    const [messages, setMessages] = useState([]);
+    const [messagesSelect, setMessagesSelect] = useState([]);
 
     const recepientId = route && route.params && route.params.recepientId
-
-    const { fullDataUserConnected } = useContext(ContextApp);
-    const userIdConnected = fullDataUserConnected && fullDataUserConnected._id
 
     const fetchMessagesSenderAndRecepient = async () => {
         try {
@@ -58,29 +71,18 @@ const ChatMessage = ({ route }) => {
         setShowEmoji(!showEmoji);
     };
 
-    const getAllMessages = async () => {
-        try {
-            const { data } = await axios.get(`${baseUrl}/messages`);
-            setMessages(data);
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
     const handleSend = async () => {
         try {
-            if(message){
+            if (message) {
                 const formData = {}
                 formData.senderId = fullDataUserConnected && fullDataUserConnected._id;
                 formData.recepientId = recepientId;
                 formData.messageText = message;
-                const { data } = await axios.post(`${baseUrl}/messages`, formData);
-    
+                await axios.post(`${baseUrl}/messages`, formData);
+
                 fetchMessagesSenderAndRecepient()
                 setMessage('');
             }
-            
-            console.log(data);
         } catch (error) {
             console.log(error)
         }
@@ -97,13 +99,66 @@ const ChatMessage = ({ route }) => {
         let dateParse = new Date(timestamp).toLocaleDateString('fr-FR', options);
 
         const dateSplit = dateParse.toString()
-
         return dateSplit && dateSplit.split(',')[1];
     };
 
-    const pickImage = async () =>{
-       
-    }   
+    const pickImage = async () => {
+        try {
+
+            const config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Content-Disposition': 'form-data',
+                }
+            }
+
+            const pickerResult = await DocumentPicker.pickSingle({
+                type: [types.images],
+                presentationStyle: 'fullScreen',
+                copyTo: 'cachesDirectory',
+            })
+            const formData = new FormData();
+
+            formData.append('imageMsg', {
+                uri: pickerResult && pickerResult.fileCopyUri && pickerResult.fileCopyUri,
+                type: pickerResult && pickerResult.type && pickerResult.type,
+                name: pickerResult && pickerResult.name && pickerResult.name,
+                size: pickerResult && pickerResult.size && pickerResult.size,
+            })
+
+            formData.append("senderId", userIdConnected);
+            formData.append('recepientId', recepientId);
+            const data = await axios.post(`${baseUrl}/messages`, formData, config);
+
+            fetchMessagesSenderAndRecepient()
+        } catch (error) {
+            console.log(error)
+        }
+    };
+
+    const handleSelectMessage = (item) => {
+        const isSelected = messagesSelect && messagesSelect.includes(item && item._id);
+
+        if (isSelected) {
+            setMessagesSelect((prevMsgs) => prevMsgs.filter((id) => item && id !== item._id))
+        } else {
+            setMessagesSelect((prevMsgs) => [...prevMsgs, item._id])
+        }
+    };
+
+    const deleteMsgHandle = async (msgId) => {
+        try {
+            await axios.post(`${baseUrl}/messages/deleteMessages`, { messages: msgId });
+            setMessagesSelect((prevMsgs) => prevMsgs.filter((id) => !msgId.includes(id)));
+            fetchMessagesSenderAndRecepient();
+        } catch (error) {
+            console.log(error)
+        }
+    };
+
+    const handleContentSizeChange = () => {
+        scrollToBottom();
+    };
 
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#D0D0D0" }}>
@@ -120,46 +175,120 @@ const ChatMessage = ({ route }) => {
             >
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
                     <TouchableOpacity >
-                        <Icon name='arrowleft' size={24} color={'#333'} onPress={() => navigation.navigate('messages')} />
+                        <Icon name='arrowleft' size={24} color={'#333'} onPress={() => navigation.navigate('messages', {
+                            retour: true
+                        })} />
                     </TouchableOpacity>
-                    <Avatar style={{ backgroundColor: "#eee" }} tintColor='#fff'
-                        icon={<Font name='user' color={"silver"} size={28} />}
-                        size={50} color='#fff'
-                        image={{ uri: baseUrlFile + "/" + urlImage }} />
-                    <Text style={{ color: '#222', fontSize: 15, fontWeight: "800" }}>{receiveData && receiveData.pseudo} </Text>
-                </View>
+                    {
+                        messagesSelect && messagesSelect.length > 0 ? (
+                            <View style={{ padding: 14.5 }}>
+                                <Text style={{ fontSize: 16, fontWeight: 500, color: "#222" }}>{messagesSelect && messagesSelect.length}</Text>
+                            </View>
+                        ) : (
+                            <>
+                                <Avatar
+                                    style={{ backgroundColor: "#eee" }} tintColor='#fff'
+                                    icon={<Font name='user' color={"silver"} size={28} />}
+                                    size={50} color='#fff'
+                                    image={{ uri: baseUrlFile + "/" + urlImage }}
+                                />
+                                <Text
+                                    style={{ color: '#222', fontSize: 15, fontWeight: "800" }}
+                                >
+                                    {receiveData && receiveData.pseudo}
+                                </Text>
+                            </>
+                        )
+                    }
 
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                    <Feather name='phone-call' size={24} color={'#444'} />
-                    <MaterialIcons name='more-vert' size={24} color={'#444'} />
                 </View>
+                {
+                    messagesSelect && messagesSelect.length === 0
+                        ? <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                            <Feather name='phone-call' size={24} color={'#444'} />
+                            <MaterialIcons name='more-vert' size={24} color={'#444'} />
+                        </View>
+                        :
+                        <View style={{ flexDirection: "row", alignItems: "center", gap: 15 }}>
+                            <AntDesign name='mail-reply' size={24} color={'#444'} />
+                            <Feather name='star' size={24} color={'#444'} />
+                            <Feather name='trash' onPress={() => deleteMsgHandle(messagesSelect)} size={24} color={'#444'} />
+                            <Font name='share' size={24} color={'#444'} />
+                            <AntDesign name='mail-forward' size={24} color={'#444'} />
+                        </View>
+                }
+
             </View>
-            <ScrollView>
+            <ScrollView ref={scrollWiewRef} contentContainerStyle={{ flexGrow: 1 }} onContentSizeChange={handleContentSizeChange}>
                 {
                     msgs && msgs.length > 0 && msgs.map((val, index) => {
-                        return (
-                            <Pressable key={index}
-                                style={val && val.senderId && val.senderId._id === userIdConnected ?
-                                    {
-                                        alignSelf: "flex-end",
-                                        backgroundColor: "#DCF8C6",
-                                        padding: 8,
-                                        maxWidth: "60%",
-                                        borderRadius: 7,
-                                        margin: 10
-                                    } : {
-                                        alignSelf: "flex-start",
-                                        backgroundColor: '#fff',
-                                        margin: 10,
-                                        padding: 8,
-                                        maxWidth: "60%",
-                                        borderRadius: 7,
-                                    }}
-                            >
-                                <Text style={{ color: "#333", textAlign: "left" }}>{val && val.messageText}</Text>
-                                <Text style={{ textAlign: "right", fontSize: 11, color: "gray", marginTop: 5 }}>{formatTime(val && val.timestamps)}</Text>
-                            </Pressable>
-                        )
+                        const isSlectedMsg = messagesSelect && messagesSelect.includes(val && val._id);
+                        if (val && val.imageUrl) {
+                            return (
+                                <Pressable
+                                    key={index}
+                                    onPress={() => handleSelectMessage(val)}
+                                    style={val && val.senderId && val.senderId._id === userIdConnected ?
+                                        {
+                                            alignSelf: "flex-end",
+                                            backgroundColor: isSlectedMsg ? "#F0FFFF" : "#DCF8C6",
+                                            padding: 8,
+                                            maxWidth: isSlectedMsg ? "100%" : "60%",
+                                            borderRadius: 7,
+                                            margin: 10,
+
+                                        } : {
+                                            alignSelf: "flex-start",
+                                            backgroundColor: isSlectedMsg ? "#F0FFFF" : "#fff",
+                                            margin: 10,
+                                            padding: 8,
+                                            maxWidth: isSlectedMsg ? "100%" : "60%",
+                                            borderRadius: 7,
+                                        }}
+                                >
+                                    <View>
+                                        <Image
+                                            source={{ uri: `${baseUrlFile}/${val.imageUrl}` }}
+                                            style={{ width: 200, height: 200, borderRadius: 7 }}
+                                        />
+                                        <Text
+                                            style={{
+                                                textAlign: "right", fontSize: 11, color: "white", marginTop: 5,
+                                                position: "absolute", bottom: 7, right: 10
+                                            }}
+                                        >
+                                            {formatTime(val && val.timestamps)}
+                                        </Text>
+                                    </View>
+                                </Pressable>
+                            )
+                        } else {
+                            return (
+                                <Pressable
+                                    key={index}
+                                    onPress={() => handleSelectMessage(val)}
+                                    style={val && val.senderId && val.senderId._id === userIdConnected ?
+                                        {
+                                            alignSelf: "flex-end",
+                                            backgroundColor: isSlectedMsg ? "#F0FFFF" : "#DCF8C6",
+                                            padding: 8,
+                                            maxWidth: isSlectedMsg ? "100%" : "60%",
+                                            borderRadius: 7,
+                                            margin: 10,
+                                        } : {
+                                            alignSelf: "flex-start",
+                                            backgroundColor: isSlectedMsg ? "#F0FFFF" : "#fff",
+                                            margin: 10,
+                                            padding: 8,
+                                            maxWidth: isSlectedMsg ? "100%" : "60%",
+                                            borderRadius: 7,
+                                        }}
+                                >
+                                    <Text style={{ color: "#333", textAlign: "left" }}>{val && val.messageText}</Text>
+                                    <Text style={{ textAlign: "right", fontSize: 11, color: "gray", marginTop: 5 }}>{formatTime(val && val.timestamps)}</Text>
+                                </Pressable>
+                            )
+                        }
                     })
                 }
             </ScrollView>
@@ -200,8 +329,8 @@ const ChatMessage = ({ route }) => {
                             height: 40,
                             borderWidth: 0,
                             borderColor: '#ddd',
-                            backgroundColor: "#fff", 
-                            color:"#111"
+                            backgroundColor: "#fff",
+                            color: "#111"
                         }}
                         placeholder='Taper votre message...' />
 
