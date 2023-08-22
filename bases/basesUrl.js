@@ -1,3 +1,3 @@
-export const baseUrl = "http://192.168.8.103:5001/api";
-export const baseUrlFile = "http://192.168.8.103:5001";
-export const baseUrlSocket = "http://192.168.8.103:5001"
+export const baseUrl = "https://api.starbankgroup/api";
+export const baseUrlFile = "https://api.starbankgroup";
+export const baseUrlSocket = "https://api.starbankgroup"
