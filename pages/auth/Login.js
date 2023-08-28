@@ -41,7 +41,10 @@ const Login = () => {
             .catch(err => {
                 Alert.alert(err && err.response && err.response.data && err.response.data.message);
                 setLoading(false);
-                console.log(err)
+                console.log(err.message)
+                if(err.message === 'Network Error'){
+                    Alert.alert('Erreur de connexion')
+                }
             })
     };
 

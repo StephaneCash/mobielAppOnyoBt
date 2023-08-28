@@ -1,4 +1,4 @@
-import React, {  useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, Image, StyleSheet } from 'react-native'
 import { useNavigation } from "@react-navigation/native";
 import { baseUrl } from '../../bases/basesUrl';
@@ -32,6 +32,9 @@ const SignUp = () => {
       .catch(err => {
         Alert.alert(err && err.response && err.response.data && err.response.data.message);
         setLoading(false);
+        if (err.message === 'Network Error') {
+          Alert.alert('Erreur de connexion')
+        }
       })
   };
 
@@ -129,7 +132,7 @@ const styles = StyleSheet.create({
   },
   formView: {
     width: "100%",
-    flex:1,
+    flex: 1,
     backgroundColor: "#006abd",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30
