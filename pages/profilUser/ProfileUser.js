@@ -14,7 +14,7 @@ import { addSoldeCompte, reduceCompte } from '../../reducers/Compte.reducer';
 import Feather from "react-native-vector-icons/Feather"
 
 
-const ProfileUser = ({ route }) => {
+const ProfileUser = ({ navigation, route }) => {
 
     const { height } = Dimensions.get("screen");
     const dispatch = useDispatch();
@@ -28,7 +28,7 @@ const ProfileUser = ({ route }) => {
 
     const compte = useSelector(state => state.comptes.value);
 
-    const navigation = useNavigation();
+    console.log(navigation)
     const userProfile = route && route.params && route.params.user;
 
     const urlShare = `https://www.onyobt.com/@${user && user.pseudo}`

@@ -46,7 +46,7 @@ const VideoPlayer = ({ route }) => {
         data.form = form;
         dispatch(commentPost(data))
 
-        if(!isLoading){
+        if (!isLoading) {
             dispatch(getAllPosts())
         }
     }
@@ -81,12 +81,14 @@ const VideoPlayer = ({ route }) => {
         setShowComment(!showComment);
     };
 
+    const videoUrl = post && post.video
+
     return (
         <View style={styles.mainPlayerView}>
             <View style={{ height: height / 3.9, backgroundColor: "gray", width: "100%" }}>
                 <Video
                     style={styles.videoP}
-                    source={{ uri: post && baseUrlFile + "/" + post.video }}
+                    source={{ uri: baseUrlFile + '/' + videoUrl }}
                     controls={true}
                     resizeMode="contain"
                     isLooping

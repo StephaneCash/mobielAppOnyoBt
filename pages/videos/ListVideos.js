@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native'
 import { useContext, useEffect } from 'react';
-import { useNavigation } from "@react-navigation/native";
+import { useLinkProps, useNavigation } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux"
 import { Avatar } from "@react-native-material/core";
 import { baseUrlFile } from '../../bases/basesUrl.js';
@@ -157,6 +157,7 @@ const ListVideos = () => {
                         <View style={styles.viewImage}>
                             {
                                 users && users.map(val => {
+                                    const url = val && baseUrlFile + "/" + val.url
                                     if (item && item.posterId && item.posterId === val._id) {
                                         if (val && val.statusLive === true) {
                                             return <TouchableOpacity onPress={() => joinLive(val && val.idLiveChannel)}
@@ -168,7 +169,7 @@ const ListVideos = () => {
                                                 </View>
                                                 <Avatar style={{ backgroundColor: "silver" }} tintColor='#fff'
                                                     label={val && val.pseudo && val.pseudo} size={50} color='#fff'
-                                                    image={{ uri: val && baseUrlFile + "/" + val.url }} />
+                                                    image={{ uri: useLinkProps }} />
                                             </TouchableOpacity>
                                         } else {
                                             return <TouchableOpacity onPress={() => navigation.navigate('profil', { user: val })}
