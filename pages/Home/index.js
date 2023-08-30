@@ -6,7 +6,6 @@ import Icon from 'react-native-vector-icons/Foundation.js';
 import { useSelector } from 'react-redux';
 import { baseUrlFile } from '../../bases/basesUrl.js';
 import { Avatar } from "@react-native-material/core";
-import ListTransactions from '../transactions/ListTransactions.js';
 
 const Home = () => {
 
@@ -17,6 +16,8 @@ const Home = () => {
   }
   const user = useSelector(state => state.user.value)
   const compte = useSelector(state => state.comptes.value);
+
+  const url = user && user.url
 
   return (
     <ScrollView>
@@ -50,7 +51,7 @@ const Home = () => {
           <Icon name='mobile-signal' style={{ fontSize: 30, color: "#fff", fontWeight: 100 }} />
           <TouchableOpacity onPress={() => handleNavigate()}>
             <Avatar label={user && user.pseudo && user.pseudo} size={30} color='#fff'
-              image={{ uri: user && baseUrlFile + "/" + user.url }} style={dashboardStyles.userImg} />
+              image={{ uri: baseUrlFile + "/" + url }} style={dashboardStyles.userImg} />
           </TouchableOpacity>
         </View>
       </View>

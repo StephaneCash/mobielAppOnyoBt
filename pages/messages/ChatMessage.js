@@ -12,7 +12,9 @@ import { Avatar } from "@react-native-material/core";
 import Font from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import DocumentPicker, { types } from 'react-native-document-picker';
+import { io } from "socket.io-client";
 
+const socket = io(baseUrlSocket);
 
 const ChatMessage = ({ route }) => {
 
@@ -39,7 +41,18 @@ const ChatMessage = ({ route }) => {
     const [msgs, setMsgs] = useState([]);
     const [messagesSelect, setMessagesSelect] = useState([]);
 
-    const recepientId = route && route.params && route.params.recepientId
+    const recepientId = route && route.params && route.params.recepientId;
+
+    useEffect(() => {
+        // Room connection
+        socket.emit("joinRoom", "ChatOnyoBT");
+
+        socket.on("newMessage", (data) => {
+            setMsgs((current) => {
+                return [...current, data];
+            })
+        })
+    }, []);
 
     const fetchMessagesSenderAndRecepient = async () => {
         try {
@@ -80,7 +93,16 @@ const ChatMessage = ({ route }) => {
                 formData.messageText = message;
                 await axios.post(`${baseUrl}/messages`, formData);
 
-                fetchMessagesSenderAndRecepient()
+                const msgRoom = {
+                    room: "ChatOnyoBT",
+                    senderId: fullDataUserConnected && fullDataUserConnected,
+                    recepientId: recepientId,
+                    messageText: message,
+                    timestamps: new Date()
+                }
+
+                socket.emit("sendMsg", msgRoom);
+
                 setMessage('');
             }
         } catch (error) {

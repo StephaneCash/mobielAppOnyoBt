@@ -1,12 +1,11 @@
 import { View, Text, Pressable } from 'react-native'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Avatar } from "@react-native-material/core";
 import { baseUrl, baseUrlFile, baseUrlSocket } from '../../bases/basesUrl';
 import { useNavigation } from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/Entypo';
 import { ContextApp } from '../../context/AuthContext';
 import axios from 'axios';
-import {io} from "socket.io-client"
 
 const UserChat = ({ item, route }) => {
 
@@ -17,15 +16,6 @@ const UserChat = ({ item, route }) => {
 
     const { fullDataUserConnected } = useContext(ContextApp);
     const userIdConnected = fullDataUserConnected && fullDataUserConnected._id;
-
-    const socket  = useRef()
-
-    useEffect(() => {
-        if(userIdConnected){
-            socket.current = io(baseUrlSocket);
-            socket.current.emit('add-user', userIdConnected)
-        }
-    }, [userIdConnected]);
 
     const fetchMessagesSenderAndRecepient = async () => {
         try {
