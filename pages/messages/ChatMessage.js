@@ -40,8 +40,12 @@ const ChatMessage = ({ route }) => {
     const [receiveData, setReceivedata] = useState();
     const [msgs, setMsgs] = useState([]);
     const [messagesSelect, setMessagesSelect] = useState([]);
+    const [write, setWrite] = useState(false);
+    const [userWriter, setUserWrite] = useState('')
 
     const recepientId = route && route.params && route.params.recepientId;
+
+    const idUser = fullDataUserConnected && fullDataUserConnected._id
 
     useEffect(() => {
         // Room connection
@@ -51,7 +55,9 @@ const ChatMessage = ({ route }) => {
             setMsgs((current) => {
                 return [...current, data];
             })
-        })
+        });
+
+        setWrite(false);
     }, []);
 
     const fetchMessagesSenderAndRecepient = async () => {
@@ -102,7 +108,13 @@ const ChatMessage = ({ route }) => {
                 }
 
                 socket.emit("sendMsg", msgRoom);
+                setWrite(false);
 
+                const roomEmpty = {
+                    recepientId: false
+                }
+
+                socket.emit("userWrite", roomEmpty);
                 setMessage('');
             }
         } catch (error) {
@@ -182,6 +194,47 @@ const ChatMessage = ({ route }) => {
         scrollToBottom();
     };
 
+    useEffect(() => {
+        const msgRoom = {
+            room: "ChatOnyoBT",
+            senderId: fullDataUserConnected && fullDataUserConnected,
+            recepientId: recepientId,
+        }
+
+        if (message && message.length > 0) {
+            msgRoom.isWriting = true;
+            socket.emit("userWrite", msgRoom);
+        } else {
+            msgRoom.isWriting = false;
+            socket.emit("userWrite", msgRoom);
+            setWrite(false);
+        }
+    }, [message]);
+
+    useEffect(() => {
+        const roomEmpty = {
+            recepientId: false
+        }
+        socket.on("userWriteSignal", (data) => {
+            const isActive = data && data.isWriting
+            if (isActive) {
+                if (data && data.recepientId === idUser) {
+                    if (data && data.senderId && data.senderId._id === recepientId) {
+                        setWrite(true);
+                        setUserWrite(data && data.senderId && data.senderId._id)
+                    }
+                }
+            } else if (isActive === false) {
+                if (data && data.recepientId === idUser) {
+                    if (data && data.senderId && data.senderId._id === recepientId) {
+                        setWrite(false);
+                        socket.emit("userWrite", roomEmpty);
+                    }
+                }
+            }
+        });
+    }, [socket]);
+
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#D0D0D0" }}>
             <View
@@ -214,11 +267,18 @@ const ChatMessage = ({ route }) => {
                                     size={50} color='#fff'
                                     image={{ uri: baseUrlFile + "/" + urlImage }}
                                 />
-                                <Text
-                                    style={{ color: '#222', fontSize: 15, fontWeight: "800" }}
-                                >
-                                    {receiveData && receiveData.pseudo}
-                                </Text>
+                                <View>
+                                    <Text
+                                        style={{ color: '#222', fontSize: 15, fontWeight: "800" }}
+                                    >
+                                        {receiveData && receiveData.pseudo}
+                                    </Text>
+                                    <Text
+                                        style={{ color: '#666', fontSize: 12, fontWeight: "800" }}
+                                    >
+                                        {write && userWriter === recepientId && "Ecrit..."}
+                                    </Text>
+                                </View>
                             </>
                         )
                     }
@@ -227,7 +287,9 @@ const ChatMessage = ({ route }) => {
                 {
                     messagesSelect && messagesSelect.length === 0
                         ? <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+                            <TouchableOpacity onPress={()=>navigation.navigate("voiceCall")}>
                             <Feather name='phone-call' size={24} color={'#444'} />
+                            </TouchableOpacity>
                             <MaterialIcons name='more-vert' size={24} color={'#444'} />
                         </View>
                         :
@@ -343,7 +405,9 @@ const ChatMessage = ({ route }) => {
                     />
                     <TextInput
                         value={message}
-                        onChangeText={(value) => setMessage(value)}
+                        onChangeText={(value) => {
+                            setMessage(value);
+                        }}
                         underlineColor='transparent'
                         placeholderTextColor={'#222'}
                         style={{

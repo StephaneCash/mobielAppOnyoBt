@@ -169,14 +169,14 @@ const ListVideos = () => {
                                                 </View>
                                                 <Avatar style={{ backgroundColor: "silver" }} tintColor='#fff'
                                                     label={val && val.pseudo && val.pseudo} size={50} color='#fff'
-                                                    image={{ uri: useLinkProps }} />
+                                                    image={{ uri: url }} />
                                             </TouchableOpacity>
                                         } else {
                                             return <TouchableOpacity onPress={() => navigation.navigate('profil', { user: val })}
                                                 key={val._id}>
                                                 <Avatar style={{ backgroundColor: "silver", }} tintColor='#fff'
                                                     label={val && val.pseudo && val.pseudo} size={50} color='#fff'
-                                                    image={{ uri: val && baseUrlFile + "/" + val.url }} />
+                                                    image={{ uri: url }} />
                                             </TouchableOpacity>
                                         }
                                     } else {

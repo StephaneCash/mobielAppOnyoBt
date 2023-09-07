@@ -7,10 +7,8 @@ import { baseUrl } from '../../bases/basesUrl';
 import UserChat from './UserChat';
 import Contacts from './Contacts';
 
-const Messages = () => {
-    
-    const [message, setMessage] = useState('');
-    const [messages, setMessages] = useState([]);
+const Messages = ({ navigation }) => {
+
     const [users, setUsers] = useState([]);
 
     const getAllUsers = async () => {
@@ -24,7 +22,7 @@ const Messages = () => {
 
     useEffect(() => {
         getAllUsers()
-    }, []);
+    }, [navigation]);
 
     return (
         <View style={{ flex: 1, position: "relative" }}>
@@ -36,7 +34,7 @@ const Messages = () => {
                     padding: 10,
                     borderBottomWidth: .8,
                     borderBottomColor: "#fff",
-                    backgroundColor:"#fff"
+                    backgroundColor: "#fff"
                 }}
             >
                 <View
@@ -54,7 +52,7 @@ const Messages = () => {
                         name='plus'
                         size={25}
                         color={'#333'}
-                        style={{fontWeight:"bold"}}
+                        style={{ fontWeight: "bold" }}
                     />
                 </View>
                 <Text
@@ -70,7 +68,7 @@ const Messages = () => {
                 />
             </View>
 
-            <ScrollView horizontal={true} style={{backgroundColor:"#fff", marginTop:10,}} showsVerticalScrollIndicator={false}>
+            <ScrollView horizontal={true} style={{ backgroundColor: "#fff", marginTop: 10, }} showsVerticalScrollIndicator={false}>
                 <Pressable style={styles.containerHoriz}>
                     {
                         users && users.map((item, index) => {
@@ -80,7 +78,7 @@ const Messages = () => {
                 </Pressable>
             </ScrollView>
 
-            <ScrollView style={{backgroundColor:"#fff", marginTop:10}} showsVerticalScrollIndicator={false}>
+            <ScrollView style={{ backgroundColor: "#fff", marginTop: 10 }} showsVerticalScrollIndicator={false}>
                 <Pressable style={styles.container}>
                     {
                         users && users.map((item, index) => {
@@ -99,7 +97,7 @@ const styles = StyleSheet.create({
     },
     containerHoriz: {
         flex: 1,
-        flexDirection:"row"
+        flexDirection: "row"
     }
     , icon
         : {
