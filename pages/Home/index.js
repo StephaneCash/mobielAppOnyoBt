@@ -1,10 +1,10 @@
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
-import React from 'react';
+import React, { useEffect } from 'react';
 import dashboardStyles from './style.js';
 import { useNavigation } from "@react-navigation/native";
 import Icon from 'react-native-vector-icons/Foundation.js';
 import { useSelector } from 'react-redux';
-import { baseUrlFile } from '../../bases/basesUrl.js';
+import { baseUrlFile, baseUrlSocket } from '../../bases/basesUrl.js';
 import { Avatar } from "@react-native-material/core";
 
 const Home = () => {
@@ -17,7 +17,7 @@ const Home = () => {
   const user = useSelector(state => state.user.value)
   const compte = useSelector(state => state.comptes.value);
 
-  const url = user && user.url
+  const url = user && user.url;
 
   return (
     <ScrollView>

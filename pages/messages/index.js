@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Alert, ScrollView, Pressable } from 'react-native'
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Pressable } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -77,6 +77,12 @@ const Messages = ({ navigation }) => {
                     }
                 </Pressable>
             </ScrollView>
+
+            {
+                users && users.length === 0 && <View style={{ backgroundColor: '#fff' }}>
+                    <ActivityIndicator color={"red"} size={30} />
+                </View>
+            }
 
             <ScrollView style={{ backgroundColor: "#fff", marginTop: 10 }} showsVerticalScrollIndicator={false}>
                 <Pressable style={styles.container}>

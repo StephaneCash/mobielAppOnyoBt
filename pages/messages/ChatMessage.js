@@ -1,24 +1,24 @@
 import { View, Text, KeyboardAvoidingView, ScrollView, Pressable, TextInput, Image, TouchableOpacity } from 'react-native'
-import React, { useContext, useEffect, useState, useRef } from 'react'
+import React, { useContext, useEffect, useState, useRef, useCallback } from 'react'
 import AntDesign from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/AntDesign';
 import EmojiSelector from "react-native-emoji-selector"
 import { ContextApp } from '../../context/AuthContext';
 import axios from 'axios';
-import { baseUrl, baseUrlFile, baseUrlSocket } from '../../bases/basesUrl';
+import { baseUrl, baseUrlFile } from '../../bases/basesUrl';
 import { useNavigation } from '@react-navigation/native';
 import { Avatar } from "@react-native-material/core";
 import Font from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import DocumentPicker, { types } from 'react-native-document-picker';
-import { io } from "socket.io-client";
+import { useInitializeAgora, useRequestAudioHook } from './voiceCall/hooks';
+import { v4 as uuid } from "uuid"
 
-const socket = io(baseUrlSocket);
 
 const ChatMessage = ({ route }) => {
 
-    const { fullDataUserConnected } = useContext(ContextApp);
+    const { fullDataUserConnected, socket } = useContext(ContextApp);
     const userIdConnected = fullDataUserConnected && fullDataUserConnected._id
 
     const scrollWiewRef = useRef(null);
@@ -41,15 +41,12 @@ const ChatMessage = ({ route }) => {
     const [msgs, setMsgs] = useState([]);
     const [messagesSelect, setMessagesSelect] = useState([]);
     const [write, setWrite] = useState(false);
-    const [userWriter, setUserWrite] = useState('')
-
+    const [userWriter, setUserWrite] = useState('');
     const recepientId = route && route.params && route.params.recepientId;
 
     const idUser = fullDataUserConnected && fullDataUserConnected._id
 
     useEffect(() => {
-        // Room connection
-        socket.emit("joinRoom", "ChatOnyoBT");
 
         socket.on("newMessage", (data) => {
             setMsgs((current) => {
@@ -134,6 +131,16 @@ const ChatMessage = ({ route }) => {
 
         const dateSplit = dateParse.toString()
         return dateSplit && dateSplit.split(',')[1];
+    };
+
+    const callUserFunction = () => {
+        const msgRoom = {
+            room: "ChatOnyoBT",
+            caller: fullDataUserConnected,
+            called: receiveData
+        }
+
+        socket.emit("newAppel", msgRoom);
     };
 
     const pickImage = async () => {
@@ -235,6 +242,28 @@ const ChatMessage = ({ route }) => {
         });
     }, [socket]);
 
+    const [clic, setClic] = useState(false)
+
+    useRequestAudioHook();
+    const {
+        joinChannel,
+        setChannelName
+    } = useInitializeAgora();
+
+    const demarreAppel = useCallback(async () => {
+        try {
+            await joinChannel()
+        } catch (error) {
+            console.log(error)
+        }
+    });
+
+    useEffect(() => {
+        demarreAppel()
+        const idNameApp = Math.random + uuid();
+        setChannelName(idNameApp)
+    }, [clic])
+
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#D0D0D0" }}>
             <View
@@ -250,9 +279,10 @@ const ChatMessage = ({ route }) => {
             >
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
                     <TouchableOpacity >
-                        <Icon name='arrowleft' size={24} color={'#333'} onPress={() => navigation.navigate('messages', {
-                            retour: true
-                        })} />
+                        <Icon name='arrowleft' size={24} color={'#333'}
+                            onPress={() => navigation.navigate('messages', {
+                                retour: true
+                            })} />
                     </TouchableOpacity>
                     {
                         messagesSelect && messagesSelect.length > 0 ? (
@@ -271,24 +301,36 @@ const ChatMessage = ({ route }) => {
                                     <Text
                                         style={{ color: '#222', fontSize: 15, fontWeight: "800" }}
                                     >
-                                        {receiveData && receiveData.pseudo}
+                                        {
+                                            receiveData && receiveData.pseudo &&
+                                                receiveData.pseudo.length > 20 ?
+                                                receiveData && receiveData.pseudo &&
+                                                receiveData.pseudo.substring(0, 20) + "..." :
+                                                receiveData && receiveData.pseudo
+                                        }
                                     </Text>
                                     <Text
-                                        style={{ color: '#666', fontSize: 12, fontWeight: "800" }}
+                                        style={{ color: 'green', fontSize: 12, fontWeight: "800" }}
                                     >
-                                        {write && userWriter === recepientId && "Ecrit..."}
+                                        {write && userWriter === recepientId && "écrit..."}
                                     </Text>
                                 </View>
                             </>
                         )
                     }
-
                 </View>
                 {
                     messagesSelect && messagesSelect.length === 0
                         ? <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                            <TouchableOpacity onPress={()=>navigation.navigate("voiceCall")}>
-                            <Feather name='phone-call' size={24} color={'#444'} />
+                            <TouchableOpacity
+                                onPress={async () => {
+                                    navigation.navigate('voiceCall', { appelEntrant: true })
+                                    demarreAppel();
+                                    callUserFunction();
+                                    setClic(!clic)
+                                }}
+                            >
+                                <Feather name='phone-call' size={24} color={'#444'} />
                             </TouchableOpacity>
                             <MaterialIcons name='more-vert' size={24} color={'#444'} />
                         </View>

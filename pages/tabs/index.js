@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Home from '../Home';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
@@ -6,10 +6,24 @@ import Messages from '../messages';
 import Settings from '../settings';
 import Videos from '../videos';
 import Conferences from '../conferences';
+import { useNavigation } from '@react-navigation/native';
+import { ContextApp } from '../../context/AuthContext';
 
 const Tab = createMaterialBottomTabNavigator();
 
 const TabsBottom = () => {
+
+  const navigateion = useNavigation()
+  const { socket } = useContext(ContextApp);
+
+  useEffect(() => {
+    socket.on("newAppelEntrant", (data) => {
+      navigateion.navigate('voiceCall', {
+        called: data.called,
+        caller: data.caller,
+      });
+    });
+  }, [socket]);
 
   return (
     <Tab.Navigator
@@ -19,7 +33,7 @@ const TabsBottom = () => {
         tabBarHideOnKeyboard: false,
       }}
       initialRouteName="tabs_home"
-      barStyle={{ backgroundColor: '#fff', borderTopColor:"silver", borderTopWidth:1 }}
+      barStyle={{ backgroundColor: '#fff', borderTopColor: "silver", borderTopWidth: 1 }}
       activeColor='#000'
       inactiveColor='#000'
     >

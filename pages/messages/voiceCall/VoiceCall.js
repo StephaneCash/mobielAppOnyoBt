@@ -1,27 +1,9 @@
 import { View, Text } from 'react-native'
-import React, { useCallback, useEffect, useRef } from 'react'
-import { SafeAreaView, TextInput } from 'react-native';
-import { useInitializeAgora, useRequestAudioHook } from './hooks';
-import Button from './Button';
-import styles from './styles';
+import React, { useEffect } from 'react'
 import Sound from 'react-native-sound';
 import callVoiceSound from "../../../assets/sounds/call.mp3"
 
 const VoiceCall = () => {
-
-    useRequestAudioHook();
-    const {
-        channelName,
-        isMute,
-        joinSucceed,
-        isSpeakerEnable,
-        peerIds,
-        setChannelName,
-        joinChannel,
-        leaveChannel,
-        toggleIsMute,
-        toggleIsSpeakerEnable
-    } = useInitializeAgora();
 
     Sound.setCategory('Playback');
 
@@ -76,68 +58,19 @@ const VoiceCall = () => {
     // Seek to a specific point in seconds
     sound.setCurrentTime(2.5);
 
-    // Get the current playback point in seconds
     sound.getCurrentTime((seconds) => console.log('at ' + seconds));
 
     // Pause the sound
     sound.pause();
 
-    // Stop the sound and rewind to the beginning
     sound.stop(() => {
-        // Note: If you want to play a sound after stopping and rewinding it,
-        // it is important to call play() in a callback.
         sound.play();
     });
 
     // Release the audio player resource
     sound.release();
 
-
-    return (
-        <SafeAreaView>
-            <View style={styles.container}>
-                <View style={styles.channelInputContainer}>
-                    <Text>Enter Channel Name:</Text>
-
-                    <TextInput
-                        style={styles.input}
-                        onChangeText={(text) => setChannelName(text)}
-                        placeholder={'Channel Name'}
-                        value={channelName}
-                    />
-                </View>
-
-                <View style={styles.joinLeaveButtonContainer}>
-                    <Button
-                        onPress={joinSucceed ? leaveChannel : joinChannel}
-                        title={`${joinSucceed ? 'Leave' : 'Join'} channel`}
-                    />
-                </View>
-
-                <View style={styles.floatRight}>
-                    <Button onPress={toggleIsMute} title={isMute ? 'UnMute' : 'Mute'} />
-                </View>
-
-                <View style={styles.floatLeft}>
-                    <Button
-                        onPress={toggleIsSpeakerEnable}
-                        title={isSpeakerEnable ? 'Disable Speaker' : 'Enable Speaker'}
-                    />
-                </View>
-
-
-                <View style={styles.usersListContainer}>
-                    {peerIds.map((peerId) => {
-                        return (
-                            <View key={peerId}>
-                                <Text>{`Joined User ${peerId}`}</Text>
-                            </View>
-                        );
-                    })}
-                </View>
-            </View>
-        </SafeAreaView>
-    )
+    return
 }
 
 export default VoiceCall

@@ -20,15 +20,12 @@ export const useRequestAudioHook = () => {
 export const useInitializeAgora = () => {
     // Replace yourAppId with the App ID of your Agora project.
     const appId = '35a8c9ce2ba04d5c9458575e4f7fc447';
-    const token =
-      '0061af140d1d92848d4a4f315e62e37727bIAB+fGiaLhFQO3PXJPVULfFjNcwWEn6Jp0We13gBM2/eQYa0dcYAAAAAEABVr+ww+rO+XwEAAQD6s75f';
-  
-
-    const [channelName, setChannelName] = useState('my-channel');
+    
+    const [channelName, setChannelName] = useState('');
     const [joinSucceed, setJoinSucceed] = useState(false);
     const [peerIds, setPeerIds] = useState([]);
     const [isMute, setIsMute] = useState(false);
-    const [isSpeakerEnable, setIsSpeakerEnable] = useState(true);
+    const [isSpeakerEnable, setIsSpeakerEnable] = useState(false);
     const rtcEngine = useRef(null);
 
     const initAgora = useCallback(async () => {
@@ -58,7 +55,7 @@ export const useInitializeAgora = () => {
             console.log('UserOffline', uid, reason);
 
             setPeerIds((peerIdsLocal) => {
-                return peerIdsLocal.filter((id) => id !== uid);
+                return peerIdsLocal.filter((id) => id === uid);
             });
         });
 
@@ -82,19 +79,20 @@ export const useInitializeAgora = () => {
 
     const joinChannel = useCallback(async () => {
         try {
-         let data =   await rtcEngine.current?.joinChannel("35a8c9ce2ba04d5c9458575e4f7fc447", "cash", null, 0);
-         console.log(data , " DATA")
+            await rtcEngine.current?.joinChannel("35a8c9ce2ba04d5c9458575e4f7fc447", "cash", null, 0);
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     }, [channelName]);
+
+    console.log(channelName , " NOM CHAINE CHANGED")
 
     const leaveChannel = useCallback(async () => {
         try {
             await rtcEngine.current?.leaveChannel();
-
             setPeerIds([]);
             setJoinSucceed(false);
+            setChannelName('');
         } catch (error) {
             console.log(error)
         }
@@ -103,7 +101,7 @@ export const useInitializeAgora = () => {
     const toggleIsSpeakerEnable = useCallback(async () => {
         await rtcEngine.current?.setEnableSpeakerphone(!isSpeakerEnable);
         setIsSpeakerEnable(!isSpeakerEnable);
-      }, [isSpeakerEnable]);
+    }, [isSpeakerEnable]);
 
     const toggleIsMute = useCallback(async () => {
         try {
@@ -134,11 +132,22 @@ export const useInitializeAgora = () => {
 
     useEffect(() => {
         initAgora();
-
         return () => {
             destroyAgoraEngine();
         };
     }, [destroyAgoraEngine, initAgora]);
+
+    const formatCounter = (time) => {
+        let hours = Math.floor(time / 60 / 60 % 24);
+        let minutes = Math.floor(time / 60 % 60);
+        let secondes = Math.floor(time % 60);
+    
+        hours = hours < 10 ? "0" + hours : hours;
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        secondes = secondes < 10 ? "0" + secondes : secondes;
+    
+        return hours + ":" + minutes + ":" + secondes;
+    }
 
     return {
         channelName,
@@ -150,6 +159,7 @@ export const useInitializeAgora = () => {
         joinChannel,
         leaveChannel,
         toggleIsMute,
-        toggleIsSpeakerEnable
+        toggleIsSpeakerEnable,
+        formatCounter
     };
 };

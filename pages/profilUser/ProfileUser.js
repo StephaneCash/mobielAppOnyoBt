@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, Share, Dimensions, FlatList, Alert } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import { useNavigation } from "@react-navigation/native";
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { Avatar } from "@react-native-material/core";
@@ -27,8 +26,7 @@ const ProfileUser = ({ navigation, route }) => {
     const [isFollow, setIsFollow] = useState(false);
 
     const compte = useSelector(state => state.comptes.value);
-
-    console.log(navigation)
+    
     const userProfile = route && route.params && route.params.user;
 
     const urlShare = `https://www.onyobt.com/@${user && user.pseudo}`

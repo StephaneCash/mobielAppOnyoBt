@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import TabsBottom from '../pages/tabs';
@@ -15,7 +15,7 @@ import ProfileUser from '../pages/profilUser/ProfileUser';
 import ListFollewers from '../pages/profilUser/ListFollewers';
 import ChatMessage from '../pages/messages/ChatMessage';
 import NewContact from '../pages/conferences/NewContact';
-import VoiceCall from '../pages/messages/voiceCall/VoiceCall';
+import AppelVoice from '../pages/messages/voiceCall/AppelVoice';
 
 const Stack = createNativeStackNavigator();
 
@@ -45,7 +45,7 @@ const Routes = () => {
                             <Stack.Screen name="newContact" component={NewContact} options={options} />
                             <Stack.Screen name="Live" component={Live} options={options} />
                             <Stack.Screen name="liveHome" component={Home} options={options} />
-                            <Stack.Screen name="voiceCall" component={VoiceCall} options={options} />
+                            <Stack.Screen name="voiceCall" component={AppelVoice} options={options} />
                         </>
                     ) : (
                         <>

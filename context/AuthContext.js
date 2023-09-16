@@ -1,10 +1,13 @@
 import axios from 'axios';
 import React, { createContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { baseUrl } from '../bases/basesUrl';
+import { baseUrl, baseUrlSocket } from '../bases/basesUrl';
 import { useDispatch } from 'react-redux';
 import { getCompteByUserId } from '../reducers/Compte.reducer';
 import { getOneUser } from '../reducers/UserOne.reducer';
+import { io } from "socket.io-client";
+
+const socket = io(baseUrlSocket);
 
 export const ContextApp = createContext();
 
@@ -38,6 +41,8 @@ const ContextAppGlobal = ({ children }) => {
 
     useEffect(() => {
         getUserConnected();
+         // Room connection
+         socket.emit("joinRoom", "ChatOnyoBT");
     }, []);
 
     useEffect(() => {
@@ -52,6 +57,7 @@ const ContextAppGlobal = ({ children }) => {
         <ContextApp.Provider
             value={{
                 userConnected, setUserConnected, fullDataUserConnected,
+                socket
             }}
         >
             {children}
