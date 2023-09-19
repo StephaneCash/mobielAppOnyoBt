@@ -16,6 +16,7 @@ import ListFollewers from '../pages/profilUser/ListFollewers';
 import ChatMessage from '../pages/messages/ChatMessage';
 import NewContact from '../pages/conferences/NewContact';
 import AppelVoice from '../pages/messages/voiceCall/AppelVoice';
+import Historique from '../pages/historique/Historique';
 
 const Stack = createNativeStackNavigator();
 
@@ -46,6 +47,7 @@ const Routes = () => {
                             <Stack.Screen name="Live" component={Live} options={options} />
                             <Stack.Screen name="liveHome" component={Home} options={options} />
                             <Stack.Screen name="voiceCall" component={AppelVoice} options={options} />
+                            <Stack.Screen name="historique" component={Historique} options={options} />
                         </>
                     ) : (
                         <>

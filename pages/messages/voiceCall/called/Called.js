@@ -5,49 +5,67 @@ import Feather from 'react-native-vector-icons/Feather';
 import { Avatar } from "@react-native-material/core";
 import { baseUrlFile } from '../../../../bases/basesUrl';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
-const Called = ({ caller, joinChannel, time, formatCounter, peerIds, leaveChannel, stopVoiceCall, joinSucceed }) => {
+
+const Called = ({ caller, joinChannel, time, formatCounter,
+  peerIds, leaveChannel, stopVoiceCall, joinSucceed, toggleIsSpeakerEnable,
+  isSpeakerEnable, isMute, toggleIsMute }) => {
 
   const { height } = Dimensions.get("screen");
   const imageCaller = caller && caller.url;
+  const pseudo = caller && caller.pseudo;
+
+  console.log(peerIds && peerIds.length, " Nombre users connectés")
 
   return (
     <View style={styles.container(height)}>
-      <View>
-        {
-          peerIds && peerIds.length === 2 ? "" :
+
+      {
+        peerIds && peerIds.length === 2 ? "" :
+          <View>
             <View style={styles.head}>
               <View style={styles.iconCallHead}>
                 <Feather name='phone' color={"#fff"} />
               </View>
               <Text style={styles.textAppel}>APPEL VOCAL ONYO-BT</Text>
             </View>
-        }
 
-        {
-          peerIds && peerIds.length === 2 ?
-            "" :
             <View style={styles.containerName}>
               <Text style={{ fontSize: 18, color: "#222" }}>
                 {caller && caller.pseudo}
               </Text>
               <Text style={styles.textAppelEntrant}>Appel vocal entrant</Text>
             </View>
-        }
-
-      </View>
+          </View>
+      }
 
       <View style={styles.usersListContainer}>
-        <Text style={{ color: "#222", fontSize: 18, textAlign: "center", marginTop: 10 }}>
-          Fin d'appel
-        </Text>
         {peerIds && peerIds.length === 1 ? joinSucceed &&
           <View >
             <Text style={{ color: '#333', textAlign: "center", fontWeight: '800' }}>Appel en cours...</Text>
           </View> :
           peerIds && peerIds.length === 2 ?
-            <View >
-              <Text style={{ color: '#333', textAlign: "center" }}>
+            <View>
+              <View style={styles.head}>
+                <TouchableOpacity>
+                  <Feather name='arrow-left' size={24} color={'#333'} onPress={() => navigation.goBack()} />
+                </TouchableOpacity>
+
+                <View style={styles.containerTitle}>
+                  <Feather name='lock' size={15} color={'#333'} />
+                  <Text style={styles.titleHead}>Chiffré de bout en bout</Text>
+                </View>
+
+                <TouchableOpacity>
+                  <Feather name='user-plus' size={24} color={'#333'} />
+                </TouchableOpacity>
+              </View>
+              <Text style={{ fontSize: 18, color: "#222", textAlign: "center", fontWeight: "800", marginBottom: 10 }}>
+                {caller && caller.pseudo}
+              </Text>
+              <Text style={{ color: '#333', textAlign: "center", fontSize: 17 }}>
                 {
                   formatCounter(time)
                 }
@@ -66,19 +84,44 @@ const Called = ({ caller, joinChannel, time, formatCounter, peerIds, leaveChanne
           image={{ uri: baseUrlFile + "/" + imageCaller }}
         />
       </View>
+      {
+        peerIds && peerIds.length === 2 ?
+          <View style={styles.bottomCall}>
+            <TouchableOpacity style={styles.speaker(isSpeakerEnable)} onPress={toggleIsSpeakerEnable}>
+              <FontAwesome5 name='volume-up' size={24} color={isSpeakerEnable ? "#fff" : '#333'} />
+            </TouchableOpacity>
 
-      <View style={styles.bottomCall}>
-        <TouchableOpacity style={styles.btnStopCall} onPress={() => {
-          joinSucceed && leaveChannel();
-          stopVoiceCall()
-        }}>
-          <MaterialCommunityIcons name='phone-hangup' size={30} color={'#fff'} />
-        </TouchableOpacity>
+            <TouchableOpacity>
+              <MaterialCommunityIcons name='video' size={30} color={'#333'} />
+            </TouchableOpacity>
 
-        <TouchableOpacity style={styles.btnAcceptpCall} onPress={() => joinChannel()}>
-          <Feather name='phone' size={30} color={"#fff"} />
-        </TouchableOpacity>
-      </View>
+            <TouchableOpacity style={styles.speaker(isMute)} onPress={() => {
+              toggleIsMute()
+            }}>
+              <FontAwesome name="microphone-slash" size={24} color={isMute ? "#fff" : '#333'} />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.btnStopCall2} onPress={() => {
+              joinSucceed && leaveChannel();
+              stopVoiceCall()
+            }}>
+              <MaterialCommunityIcons name='phone-hangup' size={24} color={'#fff'} />
+            </TouchableOpacity>
+          </View> :
+          <View style={styles.bottomCall}>
+            <TouchableOpacity style={styles.btnStopCall} onPress={() => {
+              joinSucceed && leaveChannel();
+              stopVoiceCall()
+            }}>
+              <MaterialCommunityIcons name='phone-hangup' size={30} color={'#fff'} />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.btnAcceptpCall} onPress={() => joinChannel()}>
+              <Feather name='phone' size={30} color={"#fff"} />
+            </TouchableOpacity>
+          </View>
+      }
+
     </View>
   )
 }

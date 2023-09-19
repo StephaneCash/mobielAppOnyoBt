@@ -9,12 +9,10 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { baseUrlFile } from '../../../../bases/basesUrl';
 
-const Caller = ({ called, peerIds, formatCounter, time, joinSucceed, isMute, stopVoiceCall, navigation, leaveChannel }) => {
+const Caller = ({ called, peerIds, toggleIsSpeakerEnable, formatCounter,toggleIsMute, time, joinSucceed, isMute, stopVoiceCall, navigation, leaveChannel, isSpeakerEnable }) => {
 
     const { height } = Dimensions.get("screen");
     const imageCalled = called && called.url;
-
-    const [clic, setClic] = useState(false);
 
     return (
         <View style={styles.container(height)}>
@@ -43,16 +41,13 @@ const Caller = ({ called, peerIds, formatCounter, time, joinSucceed, isMute, sto
                 </View>
 
                 <View style={styles.usersListContainer}>
-                    <Text style={{ color: "#222", fontSize: 18, textAlign: "center", marginTop: 10 }}>
-                       Fin d'appel
-                    </Text>
                     {peerIds && peerIds.length === 1 ? joinSucceed &&
                         <View >
                             <Text style={{ color: '#333', textAlign: "center", fontWeight: '800' }}>Appel en cours...</Text>
                         </View> :
                         peerIds && peerIds.length === 2 ?
                             <View >
-                                <Text style={{ color: '#333', textAlign: "center" }}>
+                                <Text style={{ color: '#333', textAlign: "center", fontSize:17 }}>
                                     {
                                         formatCounter(time)
                                     }
@@ -74,11 +69,10 @@ const Caller = ({ called, peerIds, formatCounter, time, joinSucceed, isMute, sto
             </View>
 
             <View style={styles.bottomCall}>
-                <TouchableOpacity style={styles.speaker(clic)} onPress={() => {
+                <TouchableOpacity style={styles.speaker(isSpeakerEnable)} onPress={() => {
                     toggleIsSpeakerEnable();
-                    setClic(!clic);
                 }}>
-                    <FontAwesome5 name='volume-up' size={24} color={clic ? "#fff" : '#333'} />
+                    <FontAwesome5 name='volume-up' size={24} color={isSpeakerEnable ? "#fff" : '#333'} />
                 </TouchableOpacity>
 
                 <TouchableOpacity>
@@ -86,7 +80,7 @@ const Caller = ({ called, peerIds, formatCounter, time, joinSucceed, isMute, sto
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.speaker(isMute)} onPress={() => {
-                    functionToggleMute()
+                  toggleIsMute()
                 }}>
                     <FontAwesome name="microphone-slash" size={24} color={isMute ? "#fff" : '#333'} />
                 </TouchableOpacity>

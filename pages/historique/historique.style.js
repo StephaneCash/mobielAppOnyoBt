@@ -6,28 +6,24 @@ export default StyleSheet.create({
             height: "100%",
             width: '100%',
             padding: 10,
-            backgroundColor: "#fff",
+            backgroundColor: "#ddd",
             flexDirection: "column",
             justifyContent: "space-between",
         }
     ),
-    iconCallHead: {
-        backgroundColor: "#006abd",
-        width: 30,
-        height: 30,
-        borderRadius: 15,
+    speaker: (clic) => ({
+        backgroundColor: clic ? "#006abd" : "transparent",
+        width: 40,
+        height: 40,
+        borderRadius: 20,
         flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center"
-    },
-    textAppel: {
-        color: "#333",
-        fontWeight: "600"
-    },
-    textAppelEntrant: {
-        marginTop: 5,
-        color: "#333",
-        fontWeight: "600",
+        alignItems: "center",
+        justifyContent: "center"
+    }),
+    headTwo: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10
     },
     bloc1: {
         width: "100%",
@@ -35,18 +31,26 @@ export default StyleSheet.create({
     head: {
         flexDirection: "row",
         alignItems: "center",
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        gap: 10,
-        justifyContent: "space-between"
+        justifyContent: "space-between",
     },
-    containerName: {
-        paddingHorizontal: 15,
-        paddingTop: 10
+    headMain: {
+        flexDirection: "column",
+        gap:10,
+        paddingVertical: 10,
+        backgroundColor: "#006abd",
+        paddingHorizontal: 10,
+    },
+    headIcons: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        backgroundColor: "#006abd",
+        gap: 10
     },
     titleHead: {
-        color: "#333",
-        fontWeight: 500
+        color: "#fff",
+        fontWeight: 500,
+        fontSize: 17
     },
     containerTitle: {
         flexDirection: "row",
@@ -80,54 +84,20 @@ export default StyleSheet.create({
         padding: 30,
         alignItems: "center",
         justifyContent: "space-between",
-        borderRadius: 10,
-        backgroundColor: "#ddd"
+        borderRadius: 10
     },
     btnStopCall:
-    {
-        padding: 5,
-        width: 60,
-        height: 60,
-        backgroundColor: "red",
-        borderRadius: 30,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center"
-    },
-    btnStopCall2:
     {
         padding: 5,
         width: 40,
         height: 40,
         backgroundColor: "red",
-        borderRadius: 30,
+        borderRadius: 20,
         flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center"
-    },
-    btnAcceptpCall: {
-        padding: 5,
-        width: 60,
-        height: 60,
-        backgroundColor: "green",
-        borderRadius: 30,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center"
     },
     usersListContainer: {
         padding: 10,
     },
-    speaker: (clic) => ({
-        backgroundColor: clic ? "#006abd" : "transparent",
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center"
-    }),
 });

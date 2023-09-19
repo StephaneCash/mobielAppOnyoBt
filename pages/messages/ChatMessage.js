@@ -1,4 +1,4 @@
-import { View, Text, KeyboardAvoidingView, ScrollView, Pressable, TextInput, Image, TouchableOpacity } from 'react-native'
+import { View, Text, KeyboardAvoidingView, ActivityIndicator, ScrollView, Pressable, TextInput, Image, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useState, useRef, useCallback } from 'react'
 import AntDesign from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
@@ -347,7 +347,7 @@ const ChatMessage = ({ route }) => {
             </View>
             <ScrollView ref={scrollWiewRef} contentContainerStyle={{ flexGrow: 1 }} onContentSizeChange={handleContentSizeChange}>
                 {
-                    msgs && msgs.length > 0 && msgs.map((val, index) => {
+                    msgs && msgs.length > 0 ? msgs.map((val, index) => {
                         const isSlectedMsg = messagesSelect && messagesSelect.includes(val && val._id);
                         if (val && val.imageUrl) {
                             return (
@@ -415,7 +415,9 @@ const ChatMessage = ({ route }) => {
                                 </Pressable>
                             )
                         }
-                    })
+                    }) : <View style={{ flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                        <ActivityIndicator color={"red"} size={30} />
+                    </View>
                 }
             </ScrollView>
 

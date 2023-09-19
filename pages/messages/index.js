@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Pressable } from 'react-native'
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Pressable, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -18,7 +18,7 @@ const Messages = ({ navigation }) => {
         } catch (error) {
             console.log("Erreur getAllUsers", error)
         }
-    }
+    };
 
     useEffect(() => {
         getAllUsers()
@@ -55,12 +55,14 @@ const Messages = ({ navigation }) => {
                         style={{ fontWeight: "bold" }}
                     />
                 </View>
-                <Text
-                    style={{
-                        fontSize: 20,
-                        color: "#333"
-                    }}
-                >Messages</Text>
+                <TouchableOpacity onPress={()=>navigation.navigate('historique')}>
+                    <Text
+                        style={{
+                            fontSize: 15,
+                            color: "#333"
+                        }}
+                    >Historiques</Text>
+                </TouchableOpacity>
                 <MaterialIcons
                     name='search'
                     size={30}

@@ -98,11 +98,6 @@ export const useInitializeAgora = () => {
         }
     }, []);
 
-    const toggleIsSpeakerEnable = useCallback(async () => {
-        await rtcEngine.current?.setEnableSpeakerphone(!isSpeakerEnable);
-        setIsSpeakerEnable(!isSpeakerEnable);
-    }, [isSpeakerEnable]);
-
     const toggleIsMute = useCallback(async () => {
         try {
             await rtcEngine.current?.muteLocalAudioStream(!isMute);
@@ -112,15 +107,13 @@ export const useInitializeAgora = () => {
         }
     }, [isMute]);
 
-    // const toggleIsSpeakerEnable = useCallback(async () => {
-    //     console.log(YOKA)
-    //     try {
-    //         await rtcEngine.current?.setEnableSpeakerphone(!isSpeakerEnable);
-    //         setIsSpeakerEnable(!isSpeakerEnable);
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }, [isSpeakerEnable]);
+    const toggleIsSpeakerEnable = useCallback(async () => {
+        try {
+           await rtcEngine.current?.setEnableSpeakerphone(!isSpeakerEnable);
+           setIsSpeakerEnable(!isSpeakerEnable);
+       } catch (error) {
+           console.log(error)
+      } }, [isSpeakerEnable]);
 
     const destroyAgoraEngine = useCallback(async () => {
         try {
