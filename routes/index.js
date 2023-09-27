@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import TabsBottom from '../pages/tabs';
 import VideoPlayer from '../pages/videos/VideoPlayer';
 import Login from '../pages/auth/Login';
@@ -17,21 +17,22 @@ import ChatMessage from '../pages/messages/ChatMessage';
 import NewContact from '../pages/conferences/NewContact';
 import AppelVoice from '../pages/messages/voiceCall/AppelVoice';
 import Historique from '../pages/historique/Historique';
+import CallerVideo from '../pages/messages/videoCall/caller/CallerVideo';
+import CalledVideo from '../pages/messages/videoCall/called/CalledVideo';
 
 const Stack = createNativeStackNavigator();
 
 const Routes = () => {
 
-    const { userConnected } = useContext(ContextApp);
-
     const options = { headerShown: false };
+    const {  userConnected } = useContext(ContextApp);
 
     return (
         <NavigationContainer>
             <Stack.Navigator
                 initialRouteName='login'
                 screenOptions={{ headerShown: false }}
-            > 
+            >
                 {
                     userConnected && userConnected.token ? (
                         <>
@@ -48,6 +49,8 @@ const Routes = () => {
                             <Stack.Screen name="liveHome" component={Home} options={options} />
                             <Stack.Screen name="voiceCall" component={AppelVoice} options={options} />
                             <Stack.Screen name="historique" component={Historique} options={options} />
+                            <Stack.Screen name="videoCall" component={CallerVideo} options={options} />
+                            <Stack.Screen name="calledVideoCall" component={CalledVideo} options={options} />
                         </>
                     ) : (
                         <>

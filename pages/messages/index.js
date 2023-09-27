@@ -1,13 +1,17 @@
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Pressable, TouchableOpacity } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Icon from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { baseUrl } from '../../bases/basesUrl';
 import UserChat from './UserChat';
 import Contacts from './Contacts';
+import { ContextApp } from '../../context/AuthContext';
 
 const Messages = ({ navigation }) => {
+
+    const { fullDataUserConnected } = useContext(ContextApp);
+    const userId = fullDataUserConnected && fullDataUserConnected._id;
 
     const [users, setUsers] = useState([]);
 
@@ -23,6 +27,15 @@ const Messages = ({ navigation }) => {
     useEffect(() => {
         getAllUsers()
     }, [navigation]);
+
+    const handleHistoriques = async () => {
+        try {
+            const { data } = await axios.get(`${baseUrl}/historiques/${userId}`);
+            navigation.navigate('historique', { data })
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <View style={{ flex: 1, position: "relative" }}>
@@ -55,7 +68,7 @@ const Messages = ({ navigation }) => {
                         style={{ fontWeight: "bold" }}
                     />
                 </View>
-                <TouchableOpacity onPress={()=>navigation.navigate('historique')}>
+                <TouchableOpacity onPress={() => handleHistoriques()}>
                     <Text
                         style={{
                             fontSize: 15,

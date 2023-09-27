@@ -8,7 +8,7 @@ export default StyleSheet.create({
             padding: 10,
             backgroundColor: "#ddd",
             flexDirection: "column",
-            justifyContent: "space-between",
+            justifyContent: "space-between"
         }
     ),
     speaker: (clic) => ({
@@ -20,11 +20,6 @@ export default StyleSheet.create({
         alignItems: "center",
         justifyContent: "center"
     }),
-    headTwo: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 10
-    },
     bloc1: {
         width: "100%",
     },
@@ -32,25 +27,11 @@ export default StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-    },
-    headMain: {
-        flexDirection: "column",
-        gap: 10,
         paddingVertical: 10,
-        backgroundColor: "#006abd",
-        paddingHorizontal: 10,
-    },
-    headIcons: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        backgroundColor: "#006abd",
-        gap: 10
     },
     titleHead: {
-        color: "#fff",
-        fontWeight: 500,
-        fontSize: 17
+        color: "#333",
+        fontWeight: 500
     },
     containerTitle: {
         flexDirection: "row",
@@ -97,21 +78,20 @@ export default StyleSheet.create({
         alignItems: "center",
         justifyContent: "center"
     },
+    btnAcceptpCall:{
+        padding: 5,
+        width: 40,
+        height: 40,
+        backgroundColor: "green",
+        borderRadius: 20,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection:"column",
+        alignItems:"center",
+        justifyContent:"center"
+    },
     usersListContainer: {
         padding: 10,
     },
-    itemUser: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginBottom: 15
-    },
-    containerItem: {
-        padding: 20,
-        paddingBottom:100
-    },
-    avatarAndText: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 10
-    }
 });

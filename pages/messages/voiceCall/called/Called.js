@@ -1,23 +1,45 @@
 import { View, Text, Dimensions, TouchableOpacity } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "./called.style"
 import Feather from 'react-native-vector-icons/Feather';
 import { Avatar } from "@react-native-material/core";
-import { baseUrlFile } from '../../../../bases/basesUrl';
+import { baseUrl, baseUrlFile } from '../../../../bases/basesUrl';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-
+import { ContextApp } from '../../../../context/AuthContext';
+import axios from 'axios';
 
 const Called = ({ caller, joinChannel, time, formatCounter,
   peerIds, leaveChannel, stopVoiceCall, joinSucceed, toggleIsSpeakerEnable,
-  isSpeakerEnable, isMute, toggleIsMute }) => {
+  isSpeakerEnable, isMute, toggleIsMute, called }) => {
+
+  const { socket } = useContext(ContextApp);
 
   const { height } = Dimensions.get("screen");
   const imageCaller = caller && caller.url;
-  const pseudo = caller && caller.pseudo;
 
-  console.log(peerIds && peerIds.length, " Nombre users connectés")
+  const [accept, setAccept] = useState(false);
+
+  useEffect(() => {
+    socket.emit("acceptCallVoice", {
+      accept: true
+    });
+  }, [accept]);
+
+  const createHistorique = async (status) => {
+    try {
+      await axios.post(`${baseUrl}/historiques`, {
+        callerId: caller && caller._id,
+        calledId: called && called._id,
+        duree: formatCounter(time),
+        status: status,
+        type: 0
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <View style={styles.container(height)}>
@@ -104,6 +126,7 @@ const Called = ({ caller, joinChannel, time, formatCounter,
             <TouchableOpacity style={styles.btnStopCall2} onPress={() => {
               joinSucceed && leaveChannel();
               stopVoiceCall()
+              createHistorique(1)
             }}>
               <MaterialCommunityIcons name='phone-hangup' size={24} color={'#fff'} />
             </TouchableOpacity>
@@ -112,11 +135,17 @@ const Called = ({ caller, joinChannel, time, formatCounter,
             <TouchableOpacity style={styles.btnStopCall} onPress={() => {
               joinSucceed && leaveChannel();
               stopVoiceCall()
+              createHistorique(0)
             }}>
               <MaterialCommunityIcons name='phone-hangup' size={30} color={'#fff'} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.btnAcceptpCall} onPress={() => joinChannel()}>
+            <TouchableOpacity
+              style={styles.btnAcceptpCall}
+              onPress={() => {
+                joinChannel()
+              }}
+            >
               <Feather name='phone' size={30} color={"#fff"} />
             </TouchableOpacity>
           </View>

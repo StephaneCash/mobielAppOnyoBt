@@ -53,7 +53,6 @@ const ChatMessage = ({ route }) => {
                 return [...current, data];
             })
         });
-
         setWrite(false);
     }, []);
 
@@ -242,7 +241,7 @@ const ChatMessage = ({ route }) => {
         });
     }, [socket]);
 
-    const [clic, setClic] = useState(false)
+    const [clic, setClic] = useState(false);
 
     useRequestAudioHook();
     const {
@@ -261,8 +260,8 @@ const ChatMessage = ({ route }) => {
     useEffect(() => {
         demarreAppel()
         const idNameApp = Math.random + uuid();
-        setChannelName(idNameApp)
-    }, [clic])
+        setChannelName(idNameApp);
+    }, [clic]);
 
     return (
         <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#D0D0D0" }}>
@@ -321,17 +320,31 @@ const ChatMessage = ({ route }) => {
                 </View>
                 {
                     messagesSelect && messagesSelect.length === 0
-                        ? <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                            <TouchableOpacity
-                                onPress={async () => {
-                                    navigation.navigate('voiceCall', { appelEntrant: true })
-                                    demarreAppel();
-                                    callUserFunction();
-                                    setClic(!clic)
-                                }}
-                            >
-                                <Feather name='phone-call' size={24} color={'#444'} />
-                            </TouchableOpacity>
+                        ? <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
+                            {
+                                fullDataUserConnected && fullDataUserConnected._id === recepientId ? "" :
+
+                                    <>
+                                        <TouchableOpacity
+                                            onPress={async () => {
+                                                navigation.navigate('videoCall', { type: 'create', channel: uuid(), fullDataUserConnected, receiveData })
+                                            }}
+                                        >
+                                            <Feather name='video' size={24} color={'#444'} />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            onPress={async () => {
+                                                navigation.navigate('voiceCall', { appelEntrant: true })
+                                                demarreAppel();
+                                                callUserFunction();
+                                                setClic(!clic)
+                                            }}
+                                        >
+                                            <Feather name='phone-call' size={24} color={'#444'} />
+                                        </TouchableOpacity>
+                                    </>
+                            }
+
                             <MaterialIcons name='more-vert' size={24} color={'#444'} />
                         </View>
                         :

@@ -112,8 +112,6 @@ const AppelVoice = ({ navigation, route, }) => {
         }
     }, [idUser, called, caller]);
 
-    console.log(joinSucceed , " IS SUCCESS")
-
     return (
         <>
             {
@@ -131,6 +129,7 @@ const AppelVoice = ({ navigation, route, }) => {
                     isSpeakerEnable={isSpeakerEnable}
                     time={time}
                     peerIds={peerIds}
+                    caller={caller}
                 />
             }
 
@@ -150,6 +149,7 @@ const AppelVoice = ({ navigation, route, }) => {
                     isSpeakerEnable={isSpeakerEnable}
                     toggleIsMute={toggleIsMute}
                     isMute={isMute}
+                    called={called}
                 />
             }
         </>

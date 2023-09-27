@@ -13,17 +13,26 @@ const Tab = createMaterialBottomTabNavigator();
 
 const TabsBottom = () => {
 
-  const navigateion = useNavigation()
-  const { socket } = useContext(ContextApp);
+  const navigation = useNavigation()
+  const { socket, fullDataUserConnected } = useContext(ContextApp);
+  const idUser = fullDataUserConnected && fullDataUserConnected._id;
 
   useEffect(() => {
     socket.on("newAppelEntrant", (data) => {
-      navigateion.navigate('voiceCall', {
+      navigation.navigate('voiceCall', {
         called: data.called,
         caller: data.caller,
       });
     });
   }, [socket]);
+
+  socket.on("newVideoAppel", (data) => {
+    if (data && data.channel) {
+      if (data && data.called && data.called._id === idUser) {
+        navigation.navigate('calledVideoCall', { channel: data && data.channel, caller: data && data.caller })
+      }
+    }
+  });
 
   return (
     <Tab.Navigator

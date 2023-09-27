@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { ContextApp } from '../context/AuthContext';
 import { useDispatch } from 'react-redux';
 import { modifUser } from '../reducers/UserOne.reducer';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
 function Live({ route }) {
 
@@ -59,7 +60,7 @@ function Live({ route }) {
         rtcCallbacks={rtcCallbacks}
       />
       <TouchableOpacity style={styles.shareButton} onPress={onShare}>
-        <Text style={styles.shareButtonText}>Partager</Text>
+        <EvilIcons size={40} color="#fff" name='share-google' />
       </TouchableOpacity>
     </>
   ) : (
@@ -70,18 +71,14 @@ function Live({ route }) {
 const styles = StyleSheet.create({
   shareButton: {
     right: 0,
-    width: 80,
-    height: 40,
+    width: 50,
+    height: 50,
     margin: 25, top: 10,
-
+    flexDirection:"column",
     borderRadius: 8,
     position: "absolute",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#78b0ff",
-  },
-  shareButtonText: {
-    fontSize: 16,
   },
 })
 
